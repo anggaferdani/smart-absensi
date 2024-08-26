@@ -20,15 +20,9 @@ class DatabaseSeeder extends Seeder
         $users = [
             [
                 'name' => 'Admin',
-                'email' => 'admin@gmail.com',
-                'password' => bcrypt('123456789'),
+                'email' => 'admin@smart-absensi.com',
+                'password' => bcrypt('smartabsensi123*'),
                 'role' => 1,
-            ],
-            [
-                'name' => 'Angga',
-                'email' => 'angga@gmail.com',
-                'password' => bcrypt('123456789'),
-                'role' => 2,
             ],
         ];
 
