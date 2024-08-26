@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
             [
                 'name' => 'Admin',
                 'email' => 'admin@smart-absensi.com',
-                'password' => bcrypt('smartabsensi123*'),
+                'password' => bcrypt('admin123*'),
                 'role' => 1,
             ],
         ];
