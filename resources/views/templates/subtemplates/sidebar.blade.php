@@ -4,7 +4,7 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <h1 class="navbar-brand navbar-brand-autodark">
-      <a href=".">
+      <a href="{{ route('admin.dashboard') }}">
         Smart Absensi
         {{-- <img src="{{ asset('logo.png') }}" width="150" height="" alt="" class="img-fluid"> --}}
       </a>

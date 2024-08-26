@@ -40,7 +40,7 @@
         <div class="d-flex flex-column flex-md-row flex-fill align-items-stretch align-items-md-center">
           <ul class="navbar-nav ms-md-auto">
             <li class="nav-item">
-              <a class="nav-link" href="{{ route('user.index') }}">Index</a>
+              <a class="nav-link" href="{{ route('user.index') }}">Absen</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="{{ route('user.history') }}">History</a>
