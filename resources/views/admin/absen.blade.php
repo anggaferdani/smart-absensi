@@ -74,6 +74,7 @@
                 <th>Nama</th>
                 <th>Kode</th>
                 <th>Tanggal</th>
+                <th>Status Absen</th>
                 <th>Status</th>
                 <th>Actions</th>
               </tr>
@@ -85,6 +86,13 @@
                   <td>{{ $absen->user->name }}</td>
                   <td>{{ $absen->kode }}</td>
                   <td>{{ $absen->tanggal }}</td>
+                  <td>
+                    @if($absen->token->status == 1)
+                      <span class="badge bg-blue text-blue-fg">Masuk</span>
+                    @elseif($absen->token->status == 2)
+                      <span class="badge bg-red text-red-fg">Pulang</span>
+                    @endif
+                  </td>
                   <td>
                     @if($absen->status == 1)
                       <span class="badge bg-blue text-blue-fg">Lebih Awal</span>

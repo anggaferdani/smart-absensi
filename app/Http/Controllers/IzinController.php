@@ -61,6 +61,7 @@ class IzinController extends Controller
                 'keterangan' => $request['keterangan'],
                 'tanggal' => $request['tanggal'],
                 'jangka_waktu' => $request['jangka_waktu'],
+                'status_izin' => 1,
             ];
 
             $izin->update($array);
