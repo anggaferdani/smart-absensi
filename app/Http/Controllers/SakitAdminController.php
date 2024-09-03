@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\IzinExport;
-use Carbon\Carbon;
 use App\Models\Izin;
 use Illuminate\Http\Request;
+use App\Exports\IzinExport;
+use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Maatwebsite\Excel\Facades\Excel;
 
-class IzinAdminController extends Controller
+class SakitAdminController extends Controller
 {
-    public function izin(Request $request) {
+    public function sakit(Request $request) {
         $query = Izin::with('user')
-                ->where('status_izin', 1)
+                ->where('status_izin', 2)
                 ->orderByRaw('CASE WHEN status_process = 1 THEN 0 ELSE 1 END')
                 ->where('status', 1)
                 ->latest();
@@ -54,12 +54,12 @@ class IzinAdminController extends Controller
     
         $izins = $query->paginate(10);
     
-        return view('admin.izin.izin', compact('izins'));
+        return view('admin.sakit.sakit', compact('izins'));
     }
 
     public function show($kode) {
         $izin = Izin::where('kode', $kode)->first();
-        return view('admin.izin.show', compact('izin'));
+        return view('admin.sakit.show', compact('izin'));
     }
 
     public function approve($id) {

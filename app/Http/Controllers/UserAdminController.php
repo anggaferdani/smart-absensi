@@ -14,7 +14,9 @@ class UserAdminController extends Controller
             $search = $request->input('search');
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', '%' . $search . '%');
+                $q->where('phone', 'like', '%' . $search . '%');
                 $q->where('email', 'like', '%' . $search . '%');
+                $q->where('jabatan', 'like', '%' . $search . '%');
             });
         }
 
@@ -29,16 +31,21 @@ class UserAdminController extends Controller
 
     public function store(Request $request) {
         $request->validate([
+            'profile_picture' => 'image|mimes:jpeg,png,jpg|dimensions:ratio=1/1',
             'name' => 'required',
+            'phone' => 'required|unique:users,phone',
             'email' => 'required|email|unique:users,email',
             'password' => 'required',
         ]);
 
         try {
             $array = [
+                'profile_picture' => $this->handleFileUpload($request->file('profile_picture'), 'profile-picture/'),
                 'name' => $request['name'],
+                'phone' => $request['phone'],
                 'email' => $request['email'],
                 'password' => bcrypt($request['password']),
+                'jabatan' => $request['jabatan'],
                 'role' => 2,
             ];
 
@@ -58,18 +65,26 @@ class UserAdminController extends Controller
         $user = User::find($id);
 
         $request->validate([
+            'profile_picture' => 'dimensions:ratio=1/1',
             'name' => 'required',
+            'phone' => 'required|unique:users,phone,'.$user->id.",id",
             'email' => 'required|email|unique:users,email,'.$user->id.",id",
         ]);
 
         try {
             $array = [
                 'name' => $request['name'],
+                'phone' => $request['phone'],
                 'email' => $request['email'],
+                'jabatan' => $request['jabatan'],
             ];
 
             if ($request['password']) {
                 $array['password'] = bcrypt($request['password']);
+            }
+
+            if ($request->hasFile('profile_picture')) {
+                $array['profile_picture'] = $this->handleFileUpload($request->file('profile_picture'), 'profile-picture/');
             }
 
             $user->update($array);
@@ -92,5 +107,15 @@ class UserAdminController extends Controller
         } catch (\Throwable $th) {
             return back()->with('error', $th->getMessage());
         }
+    }
+
+    private function handleFileUpload($file, $path)
+    {
+        if ($file) {
+            $fileName = date('YmdHis') . rand(999999999, 9999999999) . $file->getClientOriginalExtension();
+            $file->move(public_path($path), $fileName);
+            return $fileName;
+        }
+        return null;
     }
 }

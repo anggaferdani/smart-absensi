@@ -12,22 +12,24 @@ class AuthenticationController extends Controller
     }
 
     public function postLogin(Request $request) {
+        $loginType = filter_var($request->input('login'), FILTER_VALIDATE_EMAIL) ? 'email' : 'phone';
+
         $this->validate($request, [
-            'email' => 'required|email|exists:users,email',
+            'login' => $loginType == 'email' ? 'email|exists:users,email' : 'required|numeric|exists:users,phone',
             'password' => 'required',
         ]);
 
-        $credentials = array(
-            'email' => $request['email'],
-            'password' => $request['password'],
-        );
+        $credentials = [
+            $loginType => $request->input('login'),
+            'password' => $request->input('password'),
+        ];
 
         if (Auth::guard('web')->attempt($credentials)) {
             if (auth()->user()->status == 1) {
                 if (auth()->user()->role == 1) {
                     return redirect()->route('admin.dashboard');
                 } elseif (auth()->user()->role == 2) {
-                    return redirect()->route('user.index');
+                    return redirect()->route('user.dashboard');
                 } else {
                     return redirect()->route('login')->with('error', 'The account level you entered does not match');
                 }

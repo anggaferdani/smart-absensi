@@ -33,8 +33,10 @@ class LokasiController extends Controller
             'lat' => 'required',
             'long' => 'required',
             'radius' => 'required',
-            'jam_masuk' => 'required',
-            'jam_pulang' => 'required',
+            'jam_masuk_siang' => 'required',
+            'jam_pulang_siang' => 'required',
+            'jam_masuk_malam' => 'required',
+            'jam_pulang_malam' => 'required',
         ]);
 
         try {
@@ -42,11 +44,14 @@ class LokasiController extends Controller
 
             $array = [
                 'nama' => $request['nama'],
+                'deskripsi' => $request['deskripsi'],
                 'lat' => $request['lat'],
                 'long' => $request['long'],
                 'radius' => $request['radius'],
-                'jam_masuk' => $request['jam_masuk'],
-                'jam_pulang' => $request['jam_pulang'],
+                'jam_masuk_siang' => $request['jam_masuk_siang'],
+                'jam_pulang_siang' => $request['jam_pulang_siang'],
+                'jam_masuk_malam' => $request['jam_masuk_malam'],
+                'jam_pulang_malam' => $request['jam_pulang_malam'],
                 'slug' => $slug,
             ];
 
@@ -68,8 +73,10 @@ class LokasiController extends Controller
             'lat' => 'required',
             'long' => 'required',
             'radius' => 'required',
-            'jam_masuk' => 'required',
-            'jam_pulang' => 'required',
+            'jam_masuk_siang' => 'required',
+            'jam_pulang_siang' => 'required',
+            'jam_masuk_malam' => 'required',
+            'jam_pulang_malam' => 'required',
         ]);
 
         try {
@@ -77,11 +84,14 @@ class LokasiController extends Controller
     
             $array = [
                 'nama' => $request['nama'],
+                'deskripsi' => $request['deskripsi'],
                 'lat' => $request['lat'],
                 'long' => $request['long'],
                 'radius' => $request['radius'],
-                'jam_masuk' => $request['jam_masuk'],
-                'jam_pulang' => $request['jam_pulang'],
+                'jam_masuk_siang' => $request['jam_masuk_siang'],
+                'jam_pulang_siang' => $request['jam_pulang_siang'],
+                'jam_masuk_malam' => $request['jam_masuk_malam'],
+                'jam_pulang_malam' => $request['jam_pulang_malam'],
             ];
 
             $lokasi->update($array);

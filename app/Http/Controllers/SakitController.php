@@ -6,11 +6,11 @@ use App\Models\Izin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class IzinController extends Controller
+class SakitController extends Controller
 {
     public function index() {
-        $izins = Izin::with('user')->where('user_id', Auth::id())->where('status_izin', 1)->where('status', 1)->latest()->paginate(5);
-        return view('user.izin', compact(
+        $izins = Izin::with('user')->where('user_id', Auth::id())->where('status_izin', 2)->where('status', 1)->latest()->paginate(5);
+        return view('user.sakit', compact(
             'izins',
         ));
     }
@@ -22,6 +22,7 @@ class IzinController extends Controller
             'keterangan' => 'required',
             'dari' => 'required',
             'sampai' => 'required',
+            'lampiran' => 'required',
         ]);
 
         try {
@@ -33,8 +34,8 @@ class IzinController extends Controller
                 'keterangan' => $request['keterangan'],
                 'dari' => $request['dari'],
                 'sampai' => $request['sampai'],
-                'lampiran' => $this->handleFileUpload($request->file('lampiran'), 'izin/'),
-                'status_izin' => 1,
+                'lampiran' => $this->handleFileUpload($request->file('lampiran'), 'sakit/'),
+                'status_izin' => 2,
             ];
 
             Izin::create($arrayIzin);
@@ -67,7 +68,7 @@ class IzinController extends Controller
             ];
 
             if ($request->hasFile('lampiran')) {
-                $array['lampiran'] = $this->handleFileUpload($request->file('lampiran'), 'izin/');
+                $array['lampiran'] = $this->handleFileUpload($request->file('lampiran'), 'sakit/');
             }
 
             $izin->update($array);

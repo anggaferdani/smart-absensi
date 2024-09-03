@@ -8,26 +8,45 @@ use App\Models\Absen;
 use App\Models\Token;
 use App\Models\Lokasi;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
-    public function index() {
+    public function dashboard() {
+        return view('user.dashboard');
+    }
+
+    public function shift() {
+        return view('user.shift');
+    }
+    
+    public function index(Request $request) {
         $lokasis = Lokasi::where('status', 1)->get();
         return view('user.index', compact(
             'lokasis',
         ));
     }
 
+    public function response($kode) {
+        $absen = Absen::with('token')->where('kode', $kode)->first();
+        return view('user.response', compact(
+            'absen',
+        ));
+    }
+
     public function absen(Request $request) {
         $request->validate([
+            'shift' => 'required',
             'lokasi_id' => 'required',
             'token' => 'required',
             'status' => 'required',
             'lat' => 'required',
             'long' => 'required',
-            'jam_masuk' => 'required',
-            'jam_pulang' => 'required',
+            'jam_masuk_siang' => 'required',
+            'jam_pulang_siang' => 'required',
+            'jam_masuk_malam' => 'required',
+            'jam_pulang_malam' => 'required',
         ]);
 
         try {
@@ -42,24 +61,46 @@ class UserController extends Controller
 
             if ($token) {
                 $time = $token->tanggal->format('H:i');
-                $jamMasukTime = Carbon::parse($request['jam_masuk'])->format('H:i');
-                $jamPulangTime = Carbon::parse($request['jam_pulang'])->format('H:i');
+                $jamMasukSiangTime = Carbon::parse($request['jam_masuk_siang'])->format('H:i');
+                $jamPulangSiangTime = Carbon::parse($request['jam_pulang_siang'])->format('H:i');
+                $jamMasukMalamTime = Carbon::parse($request['jam_masuk_malam'])->format('H:i');
+                $jamPulangMalamTime = Carbon::parse($request['jam_pulang_malam'])->format('H:i');
 
-                if ($token->status == 1) {
-                    if ($time < $jamMasukTime) {
-                        $absenStatus = 1;
-                    } elseif ($time == $jamMasukTime) {
-                        $absenStatus = 2;
-                    } else {
-                        $absenStatus = 3;
+                if ($request->shift == 'siang') {
+                    if ($token->status == 1) {
+                        if ($time < $jamMasukSiangTime) {
+                            $absenStatus = 1;
+                        } elseif ($time == $jamMasukSiangTime) {
+                            $absenStatus = 2;
+                        } else {
+                            $absenStatus = 3;
+                        }
+                    } elseif ($token->status == 2) {
+                        if ($time < $jamPulangSiangTime) {
+                            $absenStatus = 1;
+                        } elseif ($time == $jamPulangSiangTime) {
+                            $absenStatus = 2;
+                        } else {
+                            $absenStatus = 3;
+                        }
                     }
-                } elseif ($token->status == 2) {
-                    if ($time < $jamPulangTime) {
-                        $absenStatus = 1;
-                    } elseif ($time == $jamPulangTime) {
-                        $absenStatus = 2;
-                    } else {
-                        $absenStatus = 3;
+                } elseif ($request->shift == 'malam') {
+                    if ($token->status == 1) {
+                        if ($time < $jamMasukMalamTime) {
+                            $absenStatus = 1;
+                        } elseif ($time == $jamMasukMalamTime) {
+                            $absenStatus = 2;
+                        } else {
+                            $absenStatus = 3;
+                        }
+                    } elseif ($token->status == 2) {
+                        if ($time < $jamPulangMalamTime) {
+                            $absenStatus = 1;
+                        } elseif ($time == $jamPulangMalamTime) {
+                            $absenStatus = 2;
+                        } else {
+                            $absenStatus = 3;
+                        }
                     }
                 }
 
@@ -72,19 +113,15 @@ class UserController extends Controller
                     'lat' => $request['lat'],
                     'long' => $request['long'],
                     'tanggal' => now(),
+                    'shift' => $request['shift'],
                     'status' => $absenStatus,
                 ];
     
                 $absen = Absen::create($arrayAbsen);
 
                 if ($absen) {
-                    $tokenMessage = Token::with('lokasi')->find($token->id);
-                    $absenMessage = Absen::with('token', 'user')->find($absen->id);
-
-                    return redirect()->back()
-                        ->with('success', 'Success.')
-                        ->with('tokenMessage', $tokenMessage)
-                        ->with('absenMessage', $absenMessage);
+                    return redirect()->route('user.response', ['kode' => $absen->kode])
+                        ->with('success', 'Success.');
                 }
             }
         } catch (\Throwable $th) {
@@ -92,11 +129,64 @@ class UserController extends Controller
         }
     }
 
-    public function history() {
-        $absens = Absen::with('token', 'token.lokasi', 'user')->where('user_id', Auth::id())->latest()->paginate(5);
-        return view('user.history', compact(
-            'absens',
-        ));
+    public function history(Request $request) {
+        $userId = Auth::id();
+        $currentYear = now()->year;
+        $currentMonth = now()->month;
+    
+        $selectedMonth = $request->get('bulan', $currentMonth);
+    
+        $absens = Absen::with('token', 'token.lokasi', 'user')
+            ->where('user_id', $userId)
+            ->whereYear('tanggal', $currentYear)
+            ->whereMonth('tanggal', $selectedMonth)
+            ->latest()
+            ->paginate(5);
+    
+        $izinDays = Izin::where('user_id', $userId)
+            ->where('status_izin', 1)
+            ->where('status', 1)
+            ->whereYear('dari', $currentYear)
+            ->whereMonth('dari', $selectedMonth)
+            ->sum(DB::raw("DATEDIFF(sampai, dari) + 1"));
+    
+        $sickDays = Izin::where('user_id', $userId)
+            ->where('status_izin', 2)
+            ->where('status', 1)
+            ->whereYear('dari', $currentYear)
+            ->whereMonth('dari', $selectedMonth)
+            ->sum(DB::raw("DATEDIFF(sampai, dari) + 1"));
+    
+        $lateDays = Absen::where('user_id', $userId)
+            ->where('status', 3)
+            ->whereHas('token', function($query) {
+                $query->where('status', 1);
+            })
+            ->whereYear('tanggal', $currentYear)
+            ->whereMonth('tanggal', $selectedMonth)
+            ->count();
+    
+        $totalDaysInMonth = $this->countBusinessDays($currentYear, $selectedMonth);
+    
+        $absentDays = $izinDays + $sickDays;
+    
+        $attendancePercentage = (($totalDaysInMonth - $absentDays) / $totalDaysInMonth) * 100;
+    
+        return view('user.history', compact('absens', 'selectedMonth', 'izinDays', 'sickDays', 'lateDays', 'attendancePercentage'));
+    }
+    
+    private function countBusinessDays($year, $month) {
+        $totalDays = 0;
+    
+        $date = \Carbon\Carbon::create($year, $month, 1);
+        while ($date->month == $month) {
+            if ($date->dayOfWeek != \Carbon\Carbon::SUNDAY) {
+                $totalDays++;
+            }
+            $date->addDay();
+        }
+    
+        return $totalDays;
     }
 
     private function generateKodeAbsen() {
