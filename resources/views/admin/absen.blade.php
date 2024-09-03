@@ -37,7 +37,7 @@
             <form action="{{ route('admin.absen') }}" class="">
               <div class="d-flex gap-1">
                 <select class="form-select" name="status_absen">
-                  <option disabled selected value="">Status Absen</option>
+                  <option disabled selected value="">Status</option>
                   <option value="">Semua</option>
                   <option value="1" {{ request('status_absen') == '1' ? 'selected' : '' }}>Masuk</option>
                   <option value="2" {{ request('status_absen') == '2' ? 'selected' : '' }}>Pulang</option>
@@ -51,12 +51,12 @@
                         </option>
                     @endforeach
                 </select>
-                <select class="form-select" name="status_kedatangan">
+                <select class="form-select" name="status">
                     <option disabled selected value="">Status Kedatangan</option>
                     <option value="">Semua</option>
-                    <option value="1" {{ request('status_kedatangan') == '1' ? 'selected' : '' }}>Lebih Awal</option>
-                    <option value="2" {{ request('status_kedatangan') == '2' ? 'selected' : '' }}>Tepat Waktu</option>
-                    <option value="3" {{ request('status_kedatangan') == '3' ? 'selected' : '' }}>Terlambat</option>
+                    <option value="1" {{ request('status') == '1' ? 'selected' : '' }}>Lebih Awal</option>
+                    <option value="2" {{ request('status') == '2' ? 'selected' : '' }}>Tepat Waktu</option>
+                    <option value="3" {{ request('status') == '3' ? 'selected' : '' }}>Terlambat</option>
                 </select>
                 <input type="date" class="form-control" name="tanggal" value="{{ request('tanggal') }}" placeholder="">
                 <input type="text" class="form-control" name="search" value="{{ request('search') }}" placeholder="Search">
@@ -74,6 +74,7 @@
                 <th>Nama</th>
                 <th>Kode</th>
                 <th>Tanggal</th>
+                <th>Shift</th>
                 <th>Status Absen</th>
                 <th>Status</th>
                 <th>Actions</th>
@@ -86,6 +87,13 @@
                   <td>{{ $absen->user->name }}</td>
                   <td>{{ $absen->kode }}</td>
                   <td>{{ $absen->tanggal }}</td>
+                  <td>
+                    @if($absen->shift == 'siang')
+                      <span class="badge bg-yellow text-yellow-fg">Siang</span>
+                    @elseif($absen->shift == 'malam')
+                      <span class="badge bg-dark text-dark-fg">Malam</span>
+                    @endif
+                  </td>
                   <td>
                     @if($absen->token->status == 1)
                       <span class="badge bg-blue text-blue-fg">Masuk</span>

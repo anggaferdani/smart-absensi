@@ -1,5 +1,5 @@
 @extends('templates.user')
-@section('title', 'Izin')
+@section('title', 'Sakit')
 @section('content')
 <div class="row mb-3">
   <div class="bg-blue d-flex align-items-center p-1">
@@ -12,7 +12,7 @@
 </div>
 <div class="row g-2 align-items-center mb-3">
   <div class="col">
-    <h2 class="page-title">Izin</h2>
+    <h2 class="page-title">Sakit</h2>
   </div>
   <div class="col-auto ms-auto">
     <div class="btn-list">
@@ -46,13 +46,13 @@
           <div>Dari : {{ $izin->dari }}</div>
           <div>Sampai : {{ $izin->sampai }}</div>
           <div>Keterangan : {{ $izin->keterangan }}</div>
-          <div>Lampiran : @if($izin->lampiran) <a href="/izin/{{ $izin->lampiran }}" target="_blank">{{ $izin->lampiran }}</a> @else - @endif</div>
+          <div>Lampiran : @if($izin->lampiran) <a href="/sakit/{{ $izin->lampiran }}" target="_blank">{{ $izin->lampiran }}</a> @else - @endif</div>
           <div>Status : @if($izin->status_process == 1) <span class="badge bg-blue text-blue-fg">Pending</span> @elseif($izin->status_process == 2) <span class="badge bg-green text-green-fg">Approved</span> @elseif($izin->status_process == 3) <span class="badge bg-red text-red-fg">Denied</span> @endif</div>
         </div>
         <div class="card-footer">
           <button type="button" class="btn btn-icon btn-primary" data-bs-toggle="modal" data-bs-target="#edit{{ $izin->id }}"><i class="fa-solid fa-pen"></i></button>
           <button type="button" class="btn btn-icon btn-danger" data-bs-toggle="modal" data-bs-target="#delete{{ $izin->id }}"><i class="fa-solid fa-trash"></i></button>
-          <button type="button" class="btn btn-success" onclick="sendWhatsApp('{{ route('admin.izin.show', $izin->kode) }}')">
+          <button type="button" class="btn btn-success" onclick="sendWhatsApp('{{ route('admin.sakit.show', $izin->kode) }}')">
             <i class="fa-brands fa-whatsapp"></i>&nbsp;Kirim ke WhatsApp
           </button>
         </div>
@@ -76,7 +76,7 @@
 <div class="modal modal-blur fade" id="createModal" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
-      <form action="{{ route('user.izin.store') }}" method="POST" class="" enctype="multipart/form-data">
+      <form action="{{ route('user.sakit.store') }}" method="POST" class="" enctype="multipart/form-data">
         @csrf
         <div class="modal-header">
           <h5 class="modal-title">Create</h5>
@@ -99,8 +99,8 @@
             @error('keterangan')<div class="text-danger">{{ $message }}</div>@enderror
           </div>
           <div class="mb-3">
-            <label class="form-label">Lampiran</label>
-            <input type="file" class="form-control" name="lampiran" placeholder="">
+            <label class="form-label required">Lampiran Surat Dokter</label>
+            <input type="file" class="form-control" name="lampiran" placeholder="" required>
             @error('lampiran')<div class="text-danger">{{ $message }}</div>@enderror
           </div>
         </div>
@@ -119,7 +119,7 @@
 <div class="modal modal-blur fade" id="edit{{ $izin->id }}" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
-      <form action="{{ route('user.izin.update', $izin->id) }}" method="POST" class="" enctype="multipart/form-data">
+      <form action="{{ route('user.sakit.update', $izin->id) }}" method="POST" class="" enctype="multipart/form-data">
         @csrf
         @method('PUT')
         <div class="modal-header">
@@ -143,9 +143,9 @@
             @error('keterangan')<div class="text-danger">{{ $message }}</div>@enderror
           </div>
           <div class="mb-3">
-            <label class="form-label">Lampiran</label>
+            <label class="form-label required">Lampiran Surat Dokter</label>
             <input type="file" class="form-control" name="lampiran" placeholder="" value="{{ $izin->lampiran }}">
-            <a href="/izin/{{ $izin->lampiran }}" target="_blank">{{ $izin->lampiran }}</a>
+            <a href="/sakit/{{ $izin->lampiran }}" target="_blank">{{ $izin->lampiran }}</a>
             @error('lampiran')<div class="text-danger">{{ $message }}</div>@enderror
           </div>
         </div>
@@ -167,7 +167,7 @@
     <div class="modal-content">
       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       <div class="modal-status bg-danger"></div>
-      <form action="{{ route('user.izin.destroy', $izin->id) }}" method="POST">
+      <form action="{{ route('user.sakit.destroy', $izin->id) }}" method="POST">
         @csrf
         @method('Delete')
         <div class="modal-body text-center py-4">

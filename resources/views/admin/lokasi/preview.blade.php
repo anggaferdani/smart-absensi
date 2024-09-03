@@ -45,7 +45,16 @@
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {}).addTo(map);
 
-  L.marker([{{ $lokasi->lat }}, {{ $lokasi->long }}]).addTo(map);
+  var popupContent = `
+    <div style="text-align: center;">
+      <div class="fw-bold fs-5 mb-2">{{ $lokasi->nama }}</div>
+      <div>{{ $lokasi->deskripsi }}</div>
+    </div>`;
+
+  L.marker([{{ $lokasi->lat }}, {{ $lokasi->long }}])
+    .addTo(map)
+    .bindPopup(popupContent)
+    .openPopup();
   
   L.circle([{{ $lokasi->lat }}, {{ $lokasi->long }}], {
     color: 'red',

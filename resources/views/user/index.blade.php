@@ -2,6 +2,15 @@
 @section('title', 'Index')
 @section('content')
 <div class="row">
+  <div class="bg-blue d-flex align-items-center p-1">
+    <div class="d-flex justify-content-center p-3"><img src="/profile-picture/{{ auth()->user()->profile_picture }}" alt="" class="rounded-circle border border-dark border-3" width="70"></div>
+    <div>
+      <div class="text-white fs-1">{{ auth()->user()->name }}</div>
+      <div class="text-white fs-3">{{ auth()->user()->jabatan }}</div>
+    </div>
+  </div>
+</div>
+<div class="row py-3">
   @if(Session::get('success'))
   <div>
     <div class="alert alert-important alert-success" role="alert">
@@ -25,23 +34,29 @@
       </div>
     </div>
   @endif
-  <div>
-    <div id="map" class="mb-3" style="height: 300px;"></div>
+  <div class="mb-3">
+    <div id="map" class="border border-3 border-dark" style="height: 300px;"></div>
   </div>
   <form action="{{ route('user.absen') }}" method="POST">
       @csrf
       <button type="button" class="btn btn-primary w-100 mb-3" id="absen">Absen</button>
       <div id="form" style="display: none;">
           <div class="mb-3">
-              <label class="form-label">Token</label>
-              <input readonly type="text" class="form-control" name="token" placeholder="Token" id="token">
+              <label class="form-label"><i class="fa-solid fa-location-dot"></i> Lokasi</label>
+              <div id="namaLokasi" class="mb-1 fw-bold fs-3"></div>
+              <div id="deskripsiLokasi"></div>
           </div>
           <div class="mb-3">
-              <label class="form-label required">Confirm Token</label>
+              <label class="form-label"><i class="fa-solid fa-lock"></i> Token</label>
+              <input readonly type="text" class="form-control" name="token" placeholder="Token" id="token">
+              <div class="text-danger">Masukan access token diatas</div>
+          </div>
+          <div class="mb-3">
+              <label class="form-label required"><i class="fa-solid fa-key"></i> Confirm Token</label>
               <input type="number" class="form-control" name="" placeholder="Token" id="confirmToken">
           </div>
           <div class="mb-3">
-            <label class="form-label required">Status</label>
+            <label class="form-label required"><i class="fa-solid fa-bell"></i> Status</label>
             <div class="form-selectgroup form-selectgroup-boxes d-flex flex-column">
               <label class="form-selectgroup-item flex-fill">
                 <input type="radio" name="status" value="1" class="form-selectgroup-input">
@@ -67,11 +82,14 @@
               </label>
             </div>
           </div>
+          <input type="hidden" class="form-control" name="shift" placeholder="" value="{{ request('shift') }}">
           <input type="hidden" class="form-control" name="lat" placeholder="" id="lat">
           <input type="hidden" class="form-control" name="long" placeholder="" id="long">
           <input type="hidden" class="form-control" name="lokasi_id" placeholder="" id="lokasi">
-          <input type="hidden" class="form-control" name="jam_masuk" placeholder="" id="jam_masuk">
-          <input type="hidden" class="form-control" name="jam_pulang" placeholder="" id="jam_pulang">
+          <input type="hidden" class="form-control" name="jam_masuk_siang" placeholder="" id="jam_masuk_siang">
+          <input type="hidden" class="form-control" name="jam_pulang_siang" placeholder="" id="jam_pulang_siang">
+          <input type="hidden" class="form-control" name="jam_masuk_malam" placeholder="" id="jam_masuk_malam">
+          <input type="hidden" class="form-control" name="jam_pulang_malam" placeholder="" id="jam_pulang_malam">
           <button type="submit" class="btn btn-primary w-100" id="submitButton" disabled>Submit</button>
       </div>
   </form>
@@ -166,16 +184,23 @@
                     var officeLng = parseFloat(location.long);
                     var radius = parseFloat(location.radius);
                     var officeId = location.id;
-                    var jamMasuk = location.jam_masuk;
-                    var jamPulang = location.jam_pulang;
+                    var jamMasukSiang = location.jam_masuk_siang;
+                    var jamPulangSiang = location.jam_pulang_siang;
+                    var jamMasukMalam = location.jam_masuk_malam;
+                    var jamPulangMalam = location.jam_pulang_malam;
 
                     var distance = calculateDistance(userLat, userLng, officeLat, officeLng);
                     if (distance <= radius) {
                         document.getElementById('lat').value = userLat;
                         document.getElementById('long').value = userLng;
                         document.getElementById('lokasi').value = officeId;
-                        document.getElementById('jam_masuk').value = jamMasuk;
-                        document.getElementById('jam_pulang').value = jamPulang;
+                        document.getElementById('jam_masuk_siang').value = jamMasukSiang;
+                        document.getElementById('jam_pulang_siang').value = jamPulangSiang;
+                        document.getElementById('jam_masuk_malam').value = jamMasukMalam;
+                        document.getElementById('jam_pulang_malam').value = jamPulangMalam;
+                        console.log(namaLokasi);
+                        document.getElementById('namaLokasi').textContent = location.nama;
+                        document.getElementById('deskripsiLokasi').textContent = location.deskripsi;
                         return true;
                     }
                     return false;

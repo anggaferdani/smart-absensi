@@ -29,7 +29,7 @@
   <header class="navbar navbar-expand-md navbar-transparent d-print-none border-bottom sticky-top bg-white" data-bs-theme="">
     <div class="container">
       <h1 class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
-        <a href="{{ route('user.index') }}">Smart Absensi</a>
+        <a href="{{ route('user.dashboard') }}">Smart Absensi</a>
       </h1>
       <div class="navbar-nav flex-row order-md-last">
       </div>
@@ -39,18 +39,11 @@
       <div class="collapse navbar-collapse" id="navbar-menu">
         <div class="d-flex flex-column flex-md-row flex-fill align-items-stretch align-items-md-center">
           <ul class="navbar-nav ms-md-auto">
-            <li class="nav-item">
-              <a class="nav-link" href="{{ route('user.index') }}">Absen</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{{ route('user.history') }}">History</a>
-            </li>
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="" data-bs-toggle="dropdown" data-bs-auto-close="outside" role="button">
                 <span class="nav-link-title">{{ auth()->user()->email }}</span>
               </a>
               <div class="dropdown-menu">
-                <a class="dropdown-item" href="{{ route('user.izin.index') }}">Izin</a>
                 <a class="dropdown-item" href="{{ route('logout') }}">Logout</a>
               </div>
             </li>
@@ -61,11 +54,18 @@
   </header>
   <div class="col-md-4 m-auto">
     <div class="page-wrapper">
-      <div class="page-body">
+      <div class="page-body my-1">
         <div class="container">
           @yield('content')
         </div>
       </div>
+      <footer class="footer footer-transparent d-print-none">
+        <div class="container-xl">
+          <div class="row text-center align-items-center">
+            <div class=""><img src="{{ asset('images/logo.png') }}" alt="" class="img-fluid" width="200"></div>
+          </div>
+        </div>
+      </footer>
     </div>
   </div>
 

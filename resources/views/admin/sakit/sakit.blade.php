@@ -1,17 +1,17 @@
 @extends('templates.admin')
-@section('title', 'Izin')
+@section('title', 'Sakit')
 @section('header')
 <div class="container-xl">
   <div class="row g-2 align-items-center">
     <div class="col">
       <h2 class="page-title">
-        Izin
+        Sakit
       </h2>
     </div>
     <div class="col-auto ms-auto">
       <div class="btn-list">
-        <a href="{{ route('admin.izin', array_merge(request()->query(), ['export' => 'excel'])) }}" class="btn btn-success">Excel</a>
-        <a href="{{ route('admin.izin', array_merge(request()->query(), ['export' => 'pdf'])) }}" class="btn btn-danger">PDF</a>
+        <a href="{{ route('admin.sakit', array_merge(request()->query(), ['export' => 'excel'])) }}" class="btn btn-success">Excel</a>
+        <a href="{{ route('admin.sakit', array_merge(request()->query(), ['export' => 'pdf'])) }}" class="btn btn-danger">PDF</a>
       </div>
     </div>
   </div>
@@ -34,7 +34,7 @@
       <div class="card">
         <div class="card-header">
           <div class="ms-auto">
-            <form action="{{ route('admin.izin') }}" class="">
+            <form action="{{ route('admin.sakit') }}" class="">
               <div class="d-flex gap-1">
                   <select class="form-select" name="status">
                       <option disabled selected value="">Status</option>
@@ -46,7 +46,7 @@
                   <input type="date" class="form-control" name="tanggal" value="{{ request('tanggal') }}" placeholder="">
                   <input type="text" class="form-control" name="search" value="{{ request('search') }}" placeholder="Search">
                   <button type="submit" class="btn btn-icon btn-dark-outline"><i class="fa-solid fa-magnifying-glass"></i></button>
-                  <a href="{{ route('admin.izin') }}" class="btn btn-icon btn-dark-outline"><i class="fa-solid fa-times"></i></a>
+                  <a href="{{ route('admin.sakit') }}" class="btn btn-icon btn-dark-outline"><i class="fa-solid fa-times"></i></a>
               </div>
             </form>
           </div>
@@ -58,7 +58,8 @@
                 <th>No.</th>
                 <th>Kode</th>
                 <th>Nama</th>
-                <th>Tanggal</th>
+                <th>Dari</th>
+                <th>Sampai</th>
                 <th>Status</th>
                 <th>Actions</th>
               </tr>
@@ -69,7 +70,8 @@
                   <td>{{ ($izins->currentPage() - 1) * $izins->perPage() + $loop->iteration }}</td>
                   <td>{{ $izin->kode }}</td>
                   <td>{{ $izin->user->name }}</td>
-                  <td>{{ $izin->tanggal }}</td>
+                  <td>{{ $izin->dari }}</td>
+                  <td>{{ $izin->sampai }}</td>
                   <td>
                     @if($izin->status_izin == 1)
                       <span class="badge bg-blue text-blue-fg">Pending</span>
@@ -80,7 +82,7 @@
                     @endif
                   </td>
                   <td>
-                    <button type="button" class="btn btn-icon btn-primary" data-bs-toggle="modal" data-bs-target="#show{{ $izin->id }}"><i class="fa-solid fa-eye"></i></button>
+                    <a href="{{ route('admin.sakit.show', $izin->kode) }}" class="btn btn-icon btn-primary"><i class="fa-solid fa-eye"></i></a>
                     @if($izin->status_izin == 1)
                     <button type="button" class="btn btn-icon btn-success" data-bs-toggle="modal" data-bs-target="#approve{{ $izin->id }}"><i class="fa-solid fa-check"></i></button>
                     <button type="button" class="btn btn-icon btn-danger" data-bs-toggle="modal" data-bs-target="#reject{{ $izin->id }}"><i class="fa-solid fa-times"></i></button>
@@ -106,41 +108,12 @@
 </div>
 
 @foreach ($izins as $izin)
-<div class="modal modal-blur fade" id="show{{ $izin->id }}" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-      <form action="" method="POST" class="">
-        <div class="modal-header">
-          <h5 class="modal-title">Kode {{ $izin->kode }}</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <div>Kode : {{ $izin->kode }}</div>
-          <div>Nama : {{ $izin->user->name }}</div>
-          <div>Email : {{ $izin->user->email }}</div>
-          <div>Keterangan : {{ $izin->keterangan }}</div>
-          <div>Tanggal : {{ $izin->tanggal }}</div>
-          <div>Jangka Waktu : {{ $izin->jangka_waktu }} Hari</div>
-          <div>Status : @if($izin->status_izin == 1) <span class="badge bg-blue text-blue-fg">Pending</span> @elseif($izin->status_izin == 2) <span class="badge bg-green text-green-fg">Approved</span> @elseif($izin->status_izin == 3) <span class="badge bg-red text-red-fg">Denied</span> @endif</div>
-        </div>
-        <div class="modal-footer">
-          <a href="#" class="btn btn-link link-secondary" data-bs-dismiss="modal">
-            Cancel
-          </a>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-@endforeach
-
-@foreach ($izins as $izin)
 <div class="modal modal-blur fade" id="approve{{ $izin->id }}" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
     <div class="modal-content">
       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       <div class="modal-status bg-success"></div>
-      <form action="{{ route('admin.izin.approve', $izin->id) }}" method="POST">
+      <form action="{{ route('admin.sakit.approve', $izin->id) }}" method="POST">
         @csrf
         @method('PUT')
         <div class="modal-body text-center py-4">
@@ -167,7 +140,7 @@
     <div class="modal-content">
       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       <div class="modal-status bg-danger"></div>
-      <form action="{{ route('admin.izin.reject', $izin->id) }}" method="POST">
+      <form action="{{ route('admin.sakit.reject', $izin->id) }}" method="POST">
         @csrf
         @method('PUT')
         <div class="modal-body text-center py-4">

@@ -47,8 +47,11 @@
             <thead>
               <tr>
                 <th>No.</th>
+                <th>Profile Picture</th>
                 <th>Name</th>
                 <th>Email</th>
+                <th>No. HP</th>
+                <th>Jabatan</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -56,8 +59,11 @@
               @foreach ($users as $user)
                 <tr>
                   <td>{{ ($users->currentPage() - 1) * $users->perPage() + $loop->iteration }}</td>
+                  <td><a href="/profile-picture/{{ $user->profile_picture }}" target="_blank"><img src="/profile-picture/{{ $user->profile_picture }}" alt="" class="img-fluid" width="50"></a></td>
                   <td>{{ $user->name }}</td>
-                  <td>{{ $user->email }}</td>
+                  <td>{{ $user->phone_number ?? '-' }}</td>
+                  <td>{{ $user->email ?? '-' }}</td>
+                  <td>{{ $user->jabatan ?? '-' }}</td>
                   <td>
                     <button type="button" class="btn btn-icon btn-primary" data-bs-toggle="modal" data-bs-target="#edit{{ $user->id }}"><i class="fa-solid fa-pen"></i></button>
                     <button type="button" class="btn btn-icon btn-danger" data-bs-toggle="modal" data-bs-target="#delete{{ $user->id }}"><i class="fa-solid fa-trash"></i></button>
@@ -84,7 +90,7 @@
 <div class="modal modal-blur fade" id="createModal" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
-      <form action="{{ route('admin.user.store') }}" method="POST" class="">
+      <form action="{{ route('admin.user.store') }}" method="POST" class="" enctype="multipart/form-data">
         @csrf
         <div class="modal-header">
           <h5 class="modal-title">Create</h5>
@@ -92,9 +98,19 @@
         </div>
         <div class="modal-body">
           <div class="mb-3">
+            <label class="form-label">Profile Picture</label>
+            <input type="file" class="form-control" name="profile_picture" placeholder="Profile Picture">
+            @error('profile_picture')<div class="text-danger">{{ $message }}</div>@enderror
+          </div>
+          <div class="mb-3">
             <label class="form-label required">Name</label>
             <input type="text" class="form-control" name="name" placeholder="Name">
             @error('name')<div class="text-danger">{{ $message }}</div>@enderror
+          </div>
+          <div class="mb-3">
+            <label class="form-label required">No. HP</label>
+            <input type="number" class="form-control" name="phone" placeholder="No. HP">
+            @error('phone')<div class="text-danger">{{ $message }}</div>@enderror
           </div>
           <div class="mb-3">
             <label class="form-label required">Email</label>
@@ -105,6 +121,11 @@
             <label class="form-label required">Password</label>
             <input type="password" class="form-control" name="password" placeholder="Password">
             @error('password')<div class="text-danger">{{ $message }}</div>@enderror
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Jabatan</label>
+            <input type="text" class="form-control" name="jabatan" placeholder="Jabatan">
+            @error('jabatan')<div class="text-danger">{{ $message }}</div>@enderror
           </div>
         </div>
         <div class="modal-footer">
@@ -122,7 +143,7 @@
 <div class="modal modal-blur fade" id="edit{{ $user->id }}" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
-      <form action="{{ route('admin.user.update', $user->id) }}" method="POST" class="">
+      <form action="{{ route('admin.user.update', $user->id) }}" method="POST" class="" enctype="multipart/form-data">
         @csrf
         @method('PUT')
         <div class="modal-header">
@@ -131,9 +152,20 @@
         </div>
         <div class="modal-body">
           <div class="mb-3">
+            <label class="form-label">Profile Picture</label>
+            <input type="file" class="form-control" name="profile_picture" placeholder="Profile Picture">
+            <a href="/profile-picture/{{ $user->profile_picture }}" target="_blank">{{ $user->profile_picture }}</a>
+            @error('profile_picture')<div class="text-danger">{{ $message }}</div>@enderror
+          </div>
+          <div class="mb-3">
             <label class="form-label required">Name</label>
             <input type="text" class="form-control" name="name" placeholder="Name" value="{{ $user->name }}">
             @error('name')<div class="text-danger">{{ $message }}</div>@enderror
+          </div>
+          <div class="mb-3">
+            <label class="form-label required">No. HP</label>
+            <input type="number" class="form-control" name="phone" placeholder="No. HP" value="{{ $user->phone }}">
+            @error('phone')<div class="text-danger">{{ $message }}</div>@enderror
           </div>
           <div class="mb-3">
             <label class="form-label required">Email</label>
@@ -144,6 +176,11 @@
             <label class="form-label required">Password</label>
             <input type="password" class="form-control" name="password" placeholder="Password">
             @error('password')<div class="text-danger">{{ $message }}</div>@enderror
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Jabatan</label>
+            <input type="text" class="form-control" name="jabatan" placeholder="Jabatan" value="{{ $user->jabatan }}">
+            @error('jabatan')<div class="text-danger">{{ $message }}</div>@enderror
           </div>
         </div>
         <div class="modal-footer">

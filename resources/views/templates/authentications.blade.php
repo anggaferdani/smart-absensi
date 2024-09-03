@@ -20,12 +20,13 @@
       }
     </style>
   </head>
-  <body  class=" d-flex flex-column">
+  <body class=" d-flex flex-column bg-white">
     <script src="{{ asset('tabler/dist/js/demo-theme.min.js?1692870487') }}"></script>
     <div class="page page-center">
       @yield('content')
     </div>
     <script src="{{ asset('tabler/dist/js/tabler.min.js?1692870487') }}" defer></script>
     <script src="{{ asset('tabler/dist/js/demo.min.js?1692870487') }}" defer></script>
+    @stack('scripts')
   </body>
 </html>

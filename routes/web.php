@@ -16,6 +16,8 @@ use App\Http\Controllers\UserAdminController;
 use App\Http\Controllers\ExperienceController;
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\IzinAdminController;
+use App\Http\Controllers\SakitAdminController;
+use App\Http\Controllers\SakitController;
 use App\Http\Controllers\WhyTradersChooseUsController;
 
 /*
@@ -54,16 +56,25 @@ Route::prefix('admin')->name('admin.')->group(function(){
         Route::get('/token', [TokenController::class, 'token'])->name('token');
         Route::get('/absen', [AbsenController::class, 'absen'])->name('absen');
         Route::get('/izin', [IzinAdminController::class, 'izin'])->name('izin');
+        Route::get('/izin/{kode}', [IzinAdminController::class, 'show'])->name('izin.show');
         Route::put('/izin/approve/{id}', [IzinAdminController::class, 'approve'])->name('izin.approve');
         Route::put('/izin/reject/{id}', [IzinAdminController::class, 'reject'])->name('izin.reject');
+        Route::get('/sakit', [SakitAdminController::class, 'sakit'])->name('sakit');
+        Route::get('/sakit/{kode}', [SakitAdminController::class, 'show'])->name('sakit.show');
+        Route::put('/sakit/approve/{id}', [SakitAdminController::class, 'approve'])->name('sakit.approve');
+        Route::put('/sakit/reject/{id}', [SakitAdminController::class, 'reject'])->name('sakit.reject');
     });
 });
 
 Route::prefix('user')->name('user.')->group(function(){
     Route::middleware(['auth:web', 'disableBackButton', 'user'])->group(function(){
+        Route::get('/dashboard', [UserController::class, 'dashboard'])->name('dashboard');
+        Route::get('/shift', [UserController::class, 'shift'])->name('shift');
         Route::get('/index', [UserController::class, 'index'])->name('index');
+        Route::get('/response/{kode}', [UserController::class, 'response'])->name('response');
         Route::post('/absen', [UserController::class, 'absen'])->name('absen');
         Route::get('/history', [UserController::class, 'history'])->name('history');
         Route::resource('izin', IzinController::class);
+        Route::resource('sakit', SakitController::class);
     });
 });
