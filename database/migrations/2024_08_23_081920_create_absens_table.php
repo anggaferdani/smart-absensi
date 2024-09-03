@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('lat');
             $table->string('long');
             $table->dateTime('tanggal');
+            $table->string('shift');
             $table->integer('status');
             $table->timestamps();
         });

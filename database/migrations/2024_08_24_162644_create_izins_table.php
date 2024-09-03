@@ -17,9 +17,11 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->string('kode')->unique();
             $table->text('keterangan');
-            $table->date('tanggal');
-            $table->string('jangka_waktu');
-            $table->integer('status_izin')->default(1);
+            $table->date('dari');
+            $table->date('sampai');
+            $table->string('lampiran')->nullable();
+            $table->integer('status_process')->default(1);
+            $table->integer('status_izin');
             $table->integer('status')->default(1);
             $table->timestamps();
         });
