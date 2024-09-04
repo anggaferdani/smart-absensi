@@ -67,7 +67,7 @@ class SakitAdminController extends Controller
             $izin = Izin::find($id);
 
             $izin->update([
-                'status_izin' => 2,
+                'status_process' => 2,
             ]);
 
             return redirect()->back()->with('success', 'Success.');
@@ -81,7 +81,7 @@ class SakitAdminController extends Controller
             $izin = Izin::find($id);
 
             $izin->update([
-                'status_izin' => 3,
+                'status_process' => 3,
             ]);
 
             return redirect()->back()->with('success', 'Success.');
