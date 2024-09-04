@@ -49,8 +49,8 @@
                 <th>No.</th>
                 <th>Profile Picture</th>
                 <th>Name</th>
-                <th>Email</th>
                 <th>No. HP</th>
+                <th>Email</th>
                 <th>Jabatan</th>
                 <th>Action</th>
               </tr>
@@ -61,7 +61,7 @@
                   <td>{{ ($users->currentPage() - 1) * $users->perPage() + $loop->iteration }}</td>
                   <td><a href="/profile-picture/{{ $user->profile_picture }}" target="_blank"><img src="/profile-picture/{{ $user->profile_picture }}" alt="" class="img-fluid" width="50"></a></td>
                   <td>{{ $user->name }}</td>
-                  <td>{{ $user->phone_number ?? '-' }}</td>
+                  <td>{{ $user->phone ?? '-' }}</td>
                   <td>{{ $user->email ?? '-' }}</td>
                   <td>{{ $user->jabatan ?? '-' }}</td>
                   <td>
