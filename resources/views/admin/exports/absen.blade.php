@@ -1,5 +1,11 @@
 @foreach ($months as $month => $absens)
-  <div>{{ $month }}</div>
+<table>
+    <tbody>
+        <tr>
+            <td>{{ $month }}</td>
+        </tr>
+    </tbody>
+</table>
   <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
     <thead>
         <tr>
