@@ -24,7 +24,7 @@
           <div>Dari : {{ $izin->dari }}</div>
           <div>Sampai : {{ $izin->sampai }}</div>
           <div>Keterangan : {{ $izin->keterangan }}</div>
-          <div>Lampiran : @if($izin->lampiran) <a href="/izin/{{ $izin->lampiran }}" target="_blank">{{ $izin->lampiran }}</a> @else - @endif</div>
+          <div>Lampiran : @if($izin->lampiran) <a href="/sakit/{{ $izin->lampiran }}" target="_blank">{{ $izin->lampiran }}</a> @else - @endif</div>
           <div>Status : @if($izin->status_izin == 1) <span class="badge bg-blue text-blue-fg">Pending</span> @elseif($izin->status_izin == 2) <span class="badge bg-green text-green-fg">Approved</span> @elseif($izin->status_izin == 3) <span class="badge bg-red text-red-fg">Denied</span> @endif</div>
         </div>
         <div class="card-footer">
