@@ -91,7 +91,7 @@ class PartnerController extends Controller
     private function handleFileUpload($file, $path)
     {
         if ($file) {
-            $fileName = date('YmdHis') . rand(999999999, 9999999999) . $file->getClientOriginalName();
+            $fileName = date('YmdHis') . rand(999999999, 9999999999) . '.' . $file->getClientOriginalName();
             $file->move(public_path($path), $fileName);
             return $fileName;
         }
