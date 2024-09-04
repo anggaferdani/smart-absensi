@@ -73,17 +73,17 @@
                   <td>{{ $izin->dari }}</td>
                   <td>{{ $izin->sampai }}</td>
                   <td>
-                    @if($izin->status_izin == 1)
+                    @if($izin->status_process == 1)
                       <span class="badge bg-blue text-blue-fg">Pending</span>
-                    @elseif($izin->status_izin == 2)
+                    @elseif($izin->status_process == 2)
                       <span class="badge bg-green text-green-fg">Approved</span>
-                    @elseif($izin->status_izin == 3)
+                    @elseif($izin->status_process == 3)
                       <span class="badge bg-red text-red-fg">Denied</span>
                     @endif
                   </td>
                   <td>
                     <a href="{{ route('admin.sakit.show', $izin->kode) }}" class="btn btn-icon btn-primary"><i class="fa-solid fa-eye"></i></a>
-                    @if($izin->status_izin == 1)
+                    @if($izin->status_process == 1)
                     <button type="button" class="btn btn-icon btn-success" data-bs-toggle="modal" data-bs-target="#approve{{ $izin->id }}"><i class="fa-solid fa-check"></i></button>
                     <button type="button" class="btn btn-icon btn-danger" data-bs-toggle="modal" data-bs-target="#reject{{ $izin->id }}"><i class="fa-solid fa-times"></i></button>
                     @endif
