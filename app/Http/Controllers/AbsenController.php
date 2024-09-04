@@ -56,8 +56,27 @@ class AbsenController extends Controller
                 : Carbon::now()->format('Y-m-d');
         
         if ($request->has('export') && $request->export == 'excel') {
+            $users = User::with('absens')->get();
+            
+            $userLateness = $users->mapWithKeys(function($user) {
+                $lateCount = $user->absens->filter(function($absen) {
+                    return $absen->status == 3 && $absen->token->status == 1;
+                })->count();
+                return [$user->id => $lateCount];
+            });
+        
+            $userOvertime = $users->mapWithKeys(function($user) {
+                $overtime = $user->absens->filter(function($absen) {
+                    return $absen->status == 3 && $absen->token->status == 2;
+                })->count();
+                return [$user->id => $overtime];
+            });
+        
             $fileName = 'absen-' . $fileDate . '.xlsx';
-            return Excel::download(new AbsenExport($query->get()), $fileName);
+            return Excel::download(
+                new AbsenExport($query->get(), $daysInMonth, $userLateness, $userOvertime),
+                $fileName
+            );
         }
         
         if ($request->has('export') && $request->export == 'pdf') {
