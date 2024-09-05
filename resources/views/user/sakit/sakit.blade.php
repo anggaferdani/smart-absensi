@@ -1,5 +1,5 @@
 @extends('templates.user')
-@section('title', 'Izin')
+@section('title', 'Sakit')
 @section('header')
 <div class="row">
   <div class="d-flex align-items-center">
@@ -15,11 +15,11 @@
 <div style="border-radius: 70px; border-bottom-left-radius: 0; border-bottom-right-radius: 0;" class="bg-white p-0 px-5 py-5 vh-100">
   <div class="row g-2 align-items-center mb-3">
     <div class="col">
-      <h2 class="page-title">Izin</h2>
+      <h2 class="page-title">Sakit</h2>
     </div>
     <div class="col-auto ms-auto">
       <div class="btn-list">
-        <a href="#" class="btn btn-primary rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#createModal">Ajukan Izin</a>
+        <a href="{{ route('user.sakit.create') }}" class="btn btn-primary rounded-pill px-3">Ajukan Izin</a>
         <a href="{{ route('user.dashboard') }}" class="btn btn-success rounded-pill px-3">Home</a>
       </div>
     </div>
@@ -49,13 +49,13 @@
             <div>Dari : {{ $izin->dari }}</div>
             <div>Sampai : {{ $izin->sampai }}</div>
             <div>Keterangan : {{ $izin->keterangan }}</div>
-            <div>Lampiran : @if($izin->lampiran) <a href="/izin/{{ $izin->lampiran }}" target="_blank">{{ $izin->lampiran }}</a> @else - @endif</div>
+            <div>Lampiran : @if($izin->lampiran) <a href="/sakit/{{ $izin->lampiran }}" target="_blank">{{ $izin->lampiran }}</a> @else - @endif</div>
             <div>Status : @if($izin->status_process == 1) <span class="badge bg-blue text-blue-fg">Pending</span> @elseif($izin->status_process == 2) <span class="badge bg-green text-green-fg">Approved</span> @elseif($izin->status_process == 3) <span class="badge bg-red text-red-fg">Denied</span> @endif</div>
           </div>
           <div class="card-footer">
-            <button type="button" class="btn btn-icon btn-primary" data-bs-toggle="modal" data-bs-target="#edit{{ $izin->id }}"><i class="fa-solid fa-pen"></i></button>
+            <a href="{{ route('user.sakit.edit', $izin->id) }}" class="btn btn-icon btn-primary"><i class="fa-solid fa-pen"></i></a>
             <button type="button" class="btn btn-icon btn-danger" data-bs-toggle="modal" data-bs-target="#delete{{ $izin->id }}"><i class="fa-solid fa-trash"></i></button>
-            <button type="button" class="btn btn-success" onclick="sendWhatsApp('{{ route('admin.izin.show', $izin->kode) }}')">
+            <button type="button" class="btn btn-success" onclick="sendWhatsApp('{{ route('admin.sakit.show', $izin->kode) }}')">
               <i class="fa-brands fa-whatsapp"></i>&nbsp;Kirim ke WhatsApp
             </button>
           </div>
@@ -76,12 +76,10 @@
     </ul>
   </div>
 
-  @include('templates.footer')
-
   <div class="modal modal-blur fade" id="createModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
-        <form action="{{ route('user.izin.store') }}" method="POST" class="" enctype="multipart/form-data">
+        <form action="{{ route('user.sakit.store') }}" method="POST" class="" enctype="multipart/form-data">
           @csrf
           <div class="modal-header">
             <h5 class="modal-title">Create</h5>
@@ -104,8 +102,8 @@
               @error('keterangan')<div class="text-danger">{{ $message }}</div>@enderror
             </div>
             <div class="mb-3">
-              <label class="form-label">Lampiran</label>
-              <input type="file" class="form-control" name="lampiran" placeholder="">
+              <label class="form-label required">Lampiran Surat Dokter</label>
+              <input type="file" class="form-control" name="lampiran" placeholder="" required>
               @error('lampiran')<div class="text-danger">{{ $message }}</div>@enderror
             </div>
           </div>
@@ -124,7 +122,7 @@
   <div class="modal modal-blur fade" id="edit{{ $izin->id }}" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
-        <form action="{{ route('user.izin.update', $izin->id) }}" method="POST" class="" enctype="multipart/form-data">
+        <form action="{{ route('user.sakit.update', $izin->id) }}" method="POST" class="" enctype="multipart/form-data">
           @csrf
           @method('PUT')
           <div class="modal-header">
@@ -148,9 +146,9 @@
               @error('keterangan')<div class="text-danger">{{ $message }}</div>@enderror
             </div>
             <div class="mb-3">
-              <label class="form-label">Lampiran</label>
+              <label class="form-label required">Lampiran Surat Dokter</label>
               <input type="file" class="form-control" name="lampiran" placeholder="" value="{{ $izin->lampiran }}">
-              <a href="/izin/{{ $izin->lampiran }}" target="_blank">{{ $izin->lampiran }}</a>
+              <a href="/sakit/{{ $izin->lampiran }}" target="_blank">{{ $izin->lampiran }}</a>
               @error('lampiran')<div class="text-danger">{{ $message }}</div>@enderror
             </div>
           </div>
@@ -167,33 +165,34 @@
   @endforeach
 
   @foreach ($izins as $izin)
-    <div class="modal modal-blur fade" id="delete{{ $izin->id }}" tabindex="-1" role="dialog" aria-hidden="true">
-      <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          <div class="modal-status bg-danger"></div>
-          <form action="{{ route('user.izin.destroy', $izin->id) }}" method="POST">
-            @csrf
-            @method('Delete')
-            <div class="modal-body text-center py-4">
-              <svg xmlns="http://www.w3.org/2000/svg" class="icon mb-2 text-danger icon-lg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M10.24 3.957l-8.422 14.06a1.989 1.989 0 0 0 1.7 2.983h16.845a1.989 1.989 0 0 0 1.7 -2.983l-8.423 -14.06a1.989 1.989 0 0 0 -3.4 0z"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg>
-              <h3>Are you sure?</h3>
-              <div class="text-secondary">Are you sure you want to delete this? This action cannot be undone.</div>
-            </div>
-            <div class="modal-footer">
-              <div class="w-100">
-                <div class="row">
-                  <div class="col"><a href="#" class="btn w-100" data-bs-dismiss="modal">Cancel</a></div>
-                  <div class="col"><button type="submit" class="btn btn-danger w-100" data-bs-dismiss="modal">Delete</button></div>
-                </div>
+  <div class="modal modal-blur fade" id="delete{{ $izin->id }}" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-status bg-danger"></div>
+        <form action="{{ route('user.sakit.destroy', $izin->id) }}" method="POST">
+          @csrf
+          @method('Delete')
+          <div class="modal-body text-center py-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon mb-2 text-danger icon-lg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M10.24 3.957l-8.422 14.06a1.989 1.989 0 0 0 1.7 2.983h16.845a1.989 1.989 0 0 0 1.7 -2.983l-8.423 -14.06a1.989 1.989 0 0 0 -3.4 0z"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg>
+            <h3>Are you sure?</h3>
+            <div class="text-secondary">Are you sure you want to delete this? This action cannot be undone.</div>
+          </div>
+          <div class="modal-footer">
+            <div class="w-100">
+              <div class="row">
+                <div class="col"><a href="#" class="btn w-100" data-bs-dismiss="modal">Cancel</a></div>
+                <div class="col"><button type="submit" class="btn btn-danger w-100" data-bs-dismiss="modal">Delete</button></div>
               </div>
             </div>
-          </form>
-        </div>
+          </div>
+        </form>
       </div>
     </div>
-  @endforeach
+  </div>
+  @include('templates.footer')
 </div>
+@endforeach
 @endsection
 @push('scripts')
 <script>

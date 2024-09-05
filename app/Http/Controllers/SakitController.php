@@ -10,12 +10,14 @@ class SakitController extends Controller
 {
     public function index() {
         $izins = Izin::with('user')->where('user_id', Auth::id())->where('status_izin', 2)->where('status', 1)->latest()->paginate(5);
-        return view('user.sakit', compact(
+        return view('user.sakit.sakit', compact(
             'izins',
         ));
     }
 
-    public function create() {}
+    public function create() {
+        return view('user.sakit.create');
+    }
 
     public function store(Request $request) {
         $request->validate([
@@ -40,7 +42,7 @@ class SakitController extends Controller
 
             Izin::create($arrayIzin);
 
-            return redirect()->back()->with('success', 'Success.');
+            return redirect()->route('user.sakit.index')->with('success', 'Success.');
         } catch (\Throwable $th) {
             return back()->with('error', $th->getMessage());
         }
@@ -48,7 +50,12 @@ class SakitController extends Controller
 
     public function show($id) {}
 
-    public function edit($id) {}
+    public function edit($id) {
+        $izin = Izin::find($id);
+        return view('user.sakit.edit', compact(
+            'izin',
+        ));
+    }
 
     public function update(Request $request, $id) {
         $request->validate([

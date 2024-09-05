@@ -222,7 +222,7 @@
     function validateConfirmToken() {
       var tokenValue = document.getElementById('token').value.trim();
       var confirmToken = document.getElementById('confirmToken').value.trim();
-      
+
       $.ajax({
           url: '/token/check',
           type: 'POST',
@@ -232,8 +232,8 @@
           },
           success: function(response) {
               if (confirmToken === tokenValue) {
-                  document.getElementById('checkInButton').disabled = false;
-                  document.getElementById('checkOutButton').disabled = false;
+                  document.getElementById('checkInButton').disabled = response.disableCheckIn;
+                  document.getElementById('checkOutButton').disabled = response.disableCheckOut;
               } else {
                   document.getElementById('checkInButton').disabled = true;
                   document.getElementById('checkOutButton').disabled = true;

@@ -10,12 +10,14 @@ class IzinController extends Controller
 {
     public function index() {
         $izins = Izin::with('user')->where('user_id', Auth::id())->where('status_izin', 1)->where('status', 1)->latest()->paginate(5);
-        return view('user.izin', compact(
+        return view('user.izin.izin', compact(
             'izins',
         ));
     }
 
-    public function create() {}
+    public function create() {
+        return view('user.izin.create');
+    }
 
     public function store(Request $request) {
         $request->validate([
@@ -39,7 +41,7 @@ class IzinController extends Controller
 
             Izin::create($arrayIzin);
 
-            return redirect()->back()->with('success', 'Success.');
+            return redirect()->route('user.izin.index')->with('success', 'Success.');
         } catch (\Throwable $th) {
             return back()->with('error', $th->getMessage());
         }
@@ -47,7 +49,12 @@ class IzinController extends Controller
 
     public function show($id) {}
 
-    public function edit($id) {}
+    public function edit($id) {
+        $izin = Izin::find($id);
+        return view('user.izin.edit', compact(
+            'izin',
+        ));
+    }
 
     public function update(Request $request, $id) {
         $request->validate([

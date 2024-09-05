@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Absen;
 use App\Models\Token;
 use Illuminate\Http\Request;
 
@@ -10,17 +11,50 @@ class TokenController extends Controller
     public function check(Request $request)
     {
         $token = $request->input('token');
-        $exists = Token::where('token', $token)->exists();
+        $userId = auth()->id(); // Get the ID of the authenticated user
+        $today = \Carbon\Carbon::today(); // Get today's date
 
-        if ($exists) {
+        // Check if the token exists
+        $tokenExists = Token::where('token', $token)->exists();
+
+        // Check if the user has already checked in today
+        $hasCheckedInToday = Absen::where('user_id', $userId)
+            ->whereDate('tanggal', $today)
+            ->whereHas('token', function ($query) {
+                $query->where('status', 1); // Check if token status is 1 (Check In)
+            })
+            ->exists();
+
+        // Check if the user has checked out today based on the token status
+        $hasCheckedOutToday = Absen::where('user_id', $userId)
+            ->whereDate('tanggal', $today)
+            ->whereHas('token', function ($query) {
+                $query->where('status', 2); // Check if token status is 2 (Check Out)
+            })
+            ->exists();
+
+        // Determine whether to disable buttons
+        $disableCheckIn = $hasCheckedInToday;
+        $disableCheckOut = $hasCheckedOutToday;
+
+        if ($tokenExists) {
             do {
                 $newToken = mt_rand(10000, 99999);
                 $exists = Token::where('token', $newToken)->exists();
             } while ($exists);
 
-            return response()->json(['exists' => true, 'newToken' => $newToken]);
+            return response()->json([
+                'exists' => true,
+                'newToken' => $newToken,
+                'disableCheckIn' => $disableCheckIn,
+                'disableCheckOut' => $disableCheckOut
+            ]);
         } else {
-            return response()->json(['exists' => false]);
+            return response()->json([
+                'exists' => false,
+                'disableCheckIn' => $disableCheckIn,
+                'disableCheckOut' => $disableCheckOut
+            ]);
         }
     }
 
