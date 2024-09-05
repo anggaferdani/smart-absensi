@@ -89,7 +89,7 @@
                   <td>{{ $absen->tanggal }}</td>
                   <td>
                     @if($absen->shift == 'siang')
-                      <span class="badge bg-yellow text-yellow-fg">Siang</span>
+                      <span class="badge bg-yellow text-yellow-fg">Pagi</span>
                     @elseif($absen->shift == 'malam')
                       <span class="badge bg-dark text-dark-fg">Malam</span>
                     @endif

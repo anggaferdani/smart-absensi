@@ -1,8 +1,8 @@
 @extends('templates.user')
 @section('title', 'Index')
-@section('content')
+@section('header')
 <div class="row">
-  <div class="bg-blue d-flex align-items-center p-1">
+  <div class="d-flex align-items-center">
     <div class="d-flex justify-content-center p-3"><img src="/profile-picture/{{ auth()->user()->profile_picture }}" alt="" class="rounded-circle border border-dark border-3" width="70"></div>
     <div>
       <div class="text-white fs-1">{{ auth()->user()->name }}</div>
@@ -10,89 +10,66 @@
     </div>
   </div>
 </div>
-<div class="row py-3">
-  @if(Session::get('success'))
-  <div>
-    <div class="alert alert-important alert-success" role="alert">
-      @if(session('tokenMessage') && session('absenMessage'))
-      <div class="fs-3 fw-bold mb-3">Tanggal {{ session('absenMessage')->tanggal }}</div>
-        <div>Token : {{ session('tokenMessage')->token }}</div>
-        <div>Lokasi : {{ session('tokenMessage')->lokasi->nama }}</div>
-        <div>Status : @if(session('tokenMessage')->status == 1) Masuk @elseif(session('tokenMessage')->status == 2) Pulang @endif</div>
-        <div>Kode : {{ session('absenMessage')->kode }}</div>
-        <div>Nama : {{ session('absenMessage')->user->name }}</div>
-        <div>Email : {{ session('absenMessage')->user->email }}</div>
-        <div>Status : @if(session('absenMessage')->status == 1) Lebih Awal @elseif(session('absenMessage')->status == 2) Tepat Waktu @elseif(session('absenMessage')->status == 3) Terlambat @endif</div>
-      @endif
-    </div>
-  </div>
-  @endif
-  @if(Session::get('error'))
-    <div>
-      <div class="alert alert-important alert-danger" role="alert">
-        {{ Session::get('error') }}
+@endsection
+@section('content')
+<div style="border-radius: 70px; border-bottom-left-radius: 0; border-bottom-right-radius: 0;" class="bg-white p-0 px-5 py-5 vh-100">
+  <div class="row">
+    @if(Session::get('error'))
+      <div>
+        <div class="alert alert-important alert-danger" role="alert">
+          {{ Session::get('error') }}
+        </div>
       </div>
+    @endif
+    <div class="mb-3">
+      <div id="map" class="border border-3 border-dark rounded rounded-5" style="height: 300px;"></div>
     </div>
-  @endif
-  <div class="mb-3">
-    <div id="map" class="border border-3 border-dark" style="height: 300px;"></div>
-  </div>
-  <form action="{{ route('user.absen') }}" method="POST">
-      @csrf
-      <button type="button" class="btn btn-primary w-100 mb-3" id="absen">Absen</button>
-      <div id="form" style="display: none;">
-          <div class="mb-3">
-              <label class="form-label"><i class="fa-solid fa-location-dot"></i> Lokasi</label>
-              <div id="namaLokasi" class="mb-1 fw-bold fs-3"></div>
-              <div id="deskripsiLokasi"></div>
-          </div>
-          <div class="mb-3">
-              <label class="form-label"><i class="fa-solid fa-lock"></i> Token</label>
-              <input readonly type="text" class="form-control" name="token" placeholder="Token" id="token">
-              <div class="text-danger">Masukan access token diatas</div>
-          </div>
-          <div class="mb-3">
-              <label class="form-label required"><i class="fa-solid fa-key"></i> Confirm Token</label>
-              <input type="number" class="form-control" name="" placeholder="Token" id="confirmToken">
-          </div>
-          <div class="mb-3">
-            <label class="form-label required"><i class="fa-solid fa-bell"></i> Status</label>
-            <div class="form-selectgroup form-selectgroup-boxes d-flex flex-column">
-              <label class="form-selectgroup-item flex-fill">
-                <input type="radio" name="status" value="1" class="form-selectgroup-input">
-                <div class="form-selectgroup-label d-flex align-items-center p-3">
-                  <div class="me-3">
-                    <span class="form-selectgroup-check"></span>
-                  </div>
-                  <div>
-                    <div>Masuk</div>
-                  </div>
-                </div>
-              </label>
-              <label class="form-selectgroup-item flex-fill">
-                <input type="radio" name="status" value="2" class="form-selectgroup-input">
-                <div class="form-selectgroup-label d-flex align-items-center p-3">
-                  <div class="me-3">
-                    <span class="form-selectgroup-check"></span>
-                  </div>
-                  <div>
-                    <div>Pulang</div>
-                  </div>
-                </div>
-              </label>
+    <div id="lokasi-tidak-sesuai" style="display: none;">
+      <div class="text-center fs-3 fw-bold mb-3">Anda Tidak Dapat Melakukan Absensi</div>
+      <div class="text-center fw-bold fs-1">{{ \Carbon\Carbon::parse()->format('H:i:s') }}</div>
+      <div class="text-center fw-bold mb-3">{{ \Carbon\Carbon::parse()->translatedFormat('l, d F Y') }}</div>
+      <div class="border border-3 border-danger p-3 mb-3">
+        <div class="text-center text-danger fs-3 fw-bold">Lokasi Tidak Sesuai</div>
+      </div>
+      <div class="text-center fw-bold mb-3">Jika tidak sesuai dengan lokasi click button Check Lokasi lagi</div>
+    </div>
+    <form action="{{ route('user.absen') }}" method="POST">
+        @csrf
+        <div class="d-flex justify-content-center">
+          <button type="button" class="btn btn-primary px-5 rounded-pill mb-3" id="absen">Check Lokasi</button>
+        </div>
+        <div id="form" style="display: none;">
+            <div class="mb-3">
+                <label class="form-label"><i class="fa-solid fa-location-dot"></i> Lokasi</label>
+                <div id="namaLokasi" class="mb-1 fw-bold fs-5"></div>
+                <div id="deskripsiLokasi"></div>
             </div>
-          </div>
-          <input type="hidden" class="form-control" name="shift" placeholder="" value="{{ request('shift') }}">
-          <input type="hidden" class="form-control" name="lat" placeholder="" id="lat">
-          <input type="hidden" class="form-control" name="long" placeholder="" id="long">
-          <input type="hidden" class="form-control" name="lokasi_id" placeholder="" id="lokasi">
-          <input type="hidden" class="form-control" name="jam_masuk_siang" placeholder="" id="jam_masuk_siang">
-          <input type="hidden" class="form-control" name="jam_pulang_siang" placeholder="" id="jam_pulang_siang">
-          <input type="hidden" class="form-control" name="jam_masuk_malam" placeholder="" id="jam_masuk_malam">
-          <input type="hidden" class="form-control" name="jam_pulang_malam" placeholder="" id="jam_pulang_malam">
-          <button type="submit" class="btn btn-primary w-100" id="submitButton" disabled>Submit</button>
-      </div>
-  </form>
+            <div class="mb-3">
+                <label class="form-label"><i class="fa-solid fa-lock"></i> Token</label>
+                <input readonly type="text" class="form-control" name="token" placeholder="Token" id="token">
+                <div class="text-danger">Masukan access token diatas</div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label required"><i class="fa-solid fa-key"></i> Confirm Token</label>
+                <input type="number" class="form-control" name="" placeholder="Token" id="confirmToken">
+            </div>
+            <input type="hidden" class="form-control" name="status" id="status">
+            <input type="hidden" class="form-control" name="shift" placeholder="" value="{{ request('shift') }}">
+            <input type="hidden" class="form-control" name="lat" placeholder="" id="lat">
+            <input type="hidden" class="form-control" name="long" placeholder="" id="long">
+            <input type="hidden" class="form-control" name="lokasi_id" placeholder="" id="lokasi">
+            <input type="hidden" class="form-control" name="jam_masuk_siang" placeholder="" id="jam_masuk_siang">
+            <input type="hidden" class="form-control" name="jam_pulang_siang" placeholder="" id="jam_pulang_siang">
+            <input type="hidden" class="form-control" name="jam_masuk_malam" placeholder="" id="jam_masuk_malam">
+            <input type="hidden" class="form-control" name="jam_pulang_malam" placeholder="" id="jam_pulang_malam">
+            <div class="d-flex justify-content-center gap-1">
+              <button type="submit" class="btn btn-success px-3 rounded-pill" id="checkInButton" disabled>Check In</button>
+              <button type="submit" class="btn btn-danger px-3 rounded-pill" id="checkOutButton" disabled>Check Out</button>
+            </div>
+        </div>
+    </form>
+  </div>
+  @include('templates.footer')
 </div>
 @endsection
 @push('scripts')
@@ -117,7 +94,8 @@
               
               L.marker(latLng)
                   .addTo(map)
-                  .bindPopup(location.nama);
+                  .bindPopup('<div class="text-center"><strong style="margin-bottom: 5px; display: block;">' + location.nama + '</strong><div style="margin-bottom: 5px;">' + location.deskripsi + '</div></div>')
+                  .openPopup();
 
               L.circle(latLng, {
                   color: 'red',
@@ -162,6 +140,14 @@
         tokens.add(token);
     }
     return Array.from(tokens);
+  }
+
+  function getCurrentTimestamp() {
+    var now = new Date();
+    var hours = now.getHours().toString().padStart(2, '0');
+    var minutes = now.getMinutes().toString().padStart(2, '0');
+    var seconds = now.getSeconds().toString().padStart(2, '0');
+    return hours + ':' + minutes + ':' + seconds;
   }
 
   function getUserLocation() {
@@ -209,14 +195,18 @@
                 if (inRadius) {
                     document.getElementById('form').style.display = 'block';
                     document.getElementById('absen').style.display = 'none';
+                    document.getElementById('lokasi-tidak-sesuai').style.display = 'none';
                     
                     var tokens = generateUniqueTokens(5);
                     generatedToken = tokens[0];
                     document.getElementById('token').value = generatedToken;
                 } else {
                     document.getElementById('form').style.display = 'none';
+                    document.getElementById('lokasi-tidak-sesuai').style.display = 'block';
                     document.getElementById('absen').style.display = 'block';
                     document.getElementById('lokasi').value = '';
+
+                    document.querySelector('#lokasi-tidak-sesuai .fs-1').textContent = getCurrentTimestamp();
                 }
             }, function(error) {
                 console.error("Geolocation error: " + error.message);
@@ -226,11 +216,13 @@
         }
     }
 
-  function validateCofirmToken() {
+    document.getElementById('checkInButton').disabled = true;
+    document.getElementById('checkOutButton').disabled = true;
+
+    function validateConfirmToken() {
       var tokenValue = document.getElementById('token').value.trim();
       var confirmToken = document.getElementById('confirmToken').value.trim();
-      var submitButton = document.getElementById('submitButton');
-
+      
       $.ajax({
           url: '/token/check',
           type: 'POST',
@@ -239,26 +231,29 @@
               token: tokenValue
           },
           success: function(response) {
-              if (response.exists) {
-                  document.getElementById('token').value = response.newToken;
-                  validateCofirmToken();
+              if (confirmToken === tokenValue) {
+                  document.getElementById('checkInButton').disabled = false;
+                  document.getElementById('checkOutButton').disabled = false;
               } else {
-                  if (confirmToken === tokenValue) {
-                      submitButton.disabled = false;
-                  } else {
-                      submitButton.disabled = true;
-                  }
+                  document.getElementById('checkInButton').disabled = true;
+                  document.getElementById('checkOutButton').disabled = true;
               }
           }
       });
   }
 
-  document.getElementById('absen').addEventListener('click', function() {
-      getUserLocation();
+  document.getElementById('checkInButton').addEventListener('click', function() {
+      document.getElementById('status').value = '1';
   });
 
-  document.getElementById('confirmToken').addEventListener('input', function() {
-    validateCofirmToken();
+  document.getElementById('checkOutButton').addEventListener('click', function() {
+      document.getElementById('status').value = '2';
+  });
+
+  document.getElementById('confirmToken').addEventListener('input', validateConfirmToken);
+
+  document.getElementById('absen').addEventListener('click', function() {
+      getUserLocation();
   });
 </script>
 @endpush

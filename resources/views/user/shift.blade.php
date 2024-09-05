@@ -1,8 +1,8 @@
 @extends('templates.user')
 @section('title', 'Izin')
-@section('content')
+@section('header')
 <div class="row">
-  <div class="bg-blue d-flex align-items-center p-1">
+  <div class="d-flex align-items-center">
     <div class="d-flex justify-content-center p-3"><img src="/profile-picture/{{ auth()->user()->profile_picture }}" alt="" class="rounded-circle border border-dark border-3" width="70"></div>
     <div>
       <div class="text-white fs-1">{{ auth()->user()->name }}</div>
@@ -10,33 +10,37 @@
     </div>
   </div>
 </div>
-<div class="row">
-  <div class="p-3 mb-3">
-    <div id="time" class="text-center fw-bold fs-1"></div>
-    <div id="date" class="text-center fw-bold"></div>
-  </div>
-  <div class="col-3 m-auto">
-    <div class="row g-3">
-      <div class="col-12">
-        <a href="{{ route('user.index', ['shift' => 'siang']) }}">
-          <div class="border border-3 border-dark rounded-4 p-2">
-            <img src="{{ asset('images/sun.png') }}" alt="">
-          </div>
-        </a>
-        <div class="text-dark text-dacoration-none text-center">Absen Shift Siang</div>
-      </div>
-      <div class="col-12">
-        <a href="{{ route('user.index', ['shift' => 'malam']) }}">
-          <div class="border border-3 border-dark rounded-4 p-2">
-            <img src="{{ asset('images/moon.png') }}" alt="">
-          </div>
-        </a>
-        <div class="text-dark text-dacoration-none text-center">Absen Shift Malam</div>
+@endsection
+@section('content')
+<div style="border-radius: 70px; border-bottom-left-radius: 0; border-bottom-right-radius: 0;" class="bg-white p-0 px-5 py-5 vh-100">
+  <div class="row">
+    <div class="p-3 mb-3">
+      <div id="time" class="text-center fw-bold fs-1"></div>
+      <div id="date" class="text-center fw-bold fs-1"></div>
+    </div>
+    <div class="col-3 m-auto">
+      <div class="row g-3">
+        <div class="col-12">
+          <a href="{{ route('user.index', ['shift' => 'siang']) }}">
+            <div class="border border-3 border-dark rounded-4 p-2">
+              <img src="{{ asset('images/siang.jpeg') }}" alt="">
+            </div>
+          </a>
+          <div class="text-dark text-dacoration-none text-center">Absen Shift Pagi</div>
+        </div>
+        <div class="col-12">
+          <a href="{{ route('user.index', ['shift' => 'malam']) }}">
+            <div class="border border-3 border-dark rounded-4 p-2">
+              <img src="{{ asset('images/malam.jpeg') }}" alt="">
+            </div>
+          </a>
+          <div class="text-dark text-dacoration-none text-center">Absen Shift Malam</div>
+        </div>
       </div>
     </div>
   </div>
+  @include('templates.footer')
 </div>
-
 @endsection
 @push('scripts')
 <script>

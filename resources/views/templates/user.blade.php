@@ -54,18 +54,13 @@
   </header>
   <div class="col-md-4 m-auto">
     <div class="page-wrapper">
-      <div class="page-body my-1">
-        <div class="container">
+      <div class="page-body my-0">
+        <div class="container bg-blue px-0">
+          @yield('header')
+          @yield('dashboard')
           @yield('content')
         </div>
       </div>
-      <footer class="footer footer-transparent d-print-none">
-        <div class="container-xl">
-          <div class="row text-center align-items-center">
-            <div class=""><img src="{{ asset('images/logo.png') }}" alt="" class="img-fluid" width="200"></div>
-          </div>
-        </div>
-      </footer>
     </div>
   </div>
 
