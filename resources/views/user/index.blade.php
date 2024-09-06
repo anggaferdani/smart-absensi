@@ -253,7 +253,18 @@
   document.getElementById('confirmToken').addEventListener('input', validateConfirmToken);
 
   document.getElementById('absen').addEventListener('click', function() {
-      getUserLocation();
+    var button = document.getElementById('absen');
+    button.innerHTML = '<div class="spinner-border text-light" role="status"></div>';
+    button.disabled = true;
+
+    setTimeout(function() {
+        getUserLocation();
+
+        button.innerHTML = 'Check Lokasi';
+        button.disabled = false;
+    }, 3000);
+
+    getUserLocation();
   });
 </script>
 @endpush

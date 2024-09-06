@@ -62,7 +62,7 @@
       </div>
       <div class="d-flex justify-content-center gap-2 mt-5">
         <button type="submit" class="btn btn-success rounded-pill px-3">Submit</button>
-        <a href="{{ route('user.sakit.index') }}" class="btn btn-success rounded-pill px-3">Cancel</a>
+        <a href="{{ route('user.sakit.index') }}" class="btn btn-danger rounded-pill px-3">Cancel</a>
       </div>
     </form>
   </div>
