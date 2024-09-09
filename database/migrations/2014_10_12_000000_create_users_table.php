@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('password');
             $table->rememberToken();
             $table->string('phone')->unique();
-            $table->string('profile_picture')->default('default.png');
+            $table->string('profile_picture')->nullable()->default('default.png');
             $table->string('jabatan')->nullable();
             $table->integer('role');
             $table->integer('status')->default(1);
