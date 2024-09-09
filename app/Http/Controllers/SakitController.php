@@ -24,8 +24,8 @@ class SakitController extends Controller
             'keterangan' => 'required',
             'dari' => 'required',
             'sampai' => 'required|after_or_equal:dari',
-            'lampiran' => 'required|file|mimes:png,jpg,jpeg,pdf,txt,doc,docx',
-            'resep_dokter' => 'required|file|mimes:png,jpg,jpeg,pdf,txt,doc,docx',
+            'lampiran' => 'required|mimes:png,jpg,jpeg,pdf,txt,doc,docx',
+            'resep_dokter' => 'required|mimes:png,jpg,jpeg,pdf,txt,doc,docx',
         ]);
 
         try {
@@ -69,8 +69,8 @@ class SakitController extends Controller
             'keterangan' => 'required',
             'dari' => 'required',
             'sampai' => 'required|after_or_equal:dari',
-            'lampiran' => 'nullable|file|mimes:png,jpg,jpeg,pdf,txt,doc,docx',
-            'resep_dokter' => 'nullable|file|mimes:png,jpg,jpeg,pdf,txt,doc,docx',
+            'lampiran' => 'nullable|mimes:png,jpg,jpeg,pdf,txt,doc,docx',
+            'resep_dokter' => 'nullable|mimes:png,jpg,jpeg,pdf,txt,doc,docx',
         ]);
 
         try {
