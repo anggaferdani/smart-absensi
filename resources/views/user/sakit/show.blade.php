@@ -37,9 +37,9 @@
     </div>
   </div>
   <div class="row">
-    <div class="fw-bold mb-2">Surat Ijin tidak masuk karena sakit sudah disetujui.</div>
+    <div class="fw-bold mb-2">Pengajuan anda sedang dalam proses persetujuan. Cek secara berkala untuk mendapatkan status persetujuan.</div>
     <div>Nama : {{ $izin->user->name }}</div>
-    <div>Posisi : {{ $izin->user->jabatan }}</div>
+    <div>Posisi : {{ $izin->user->jabatan ?? '-' }}</div>
     <div>Dari : {{ \Carbon\Carbon::parse($izin->dari)->format('d M Y') }}</div>
     <div>Sampai dengan : {{ \Carbon\Carbon::parse($izin->sampai)->format('d M Y') }}</div>
     <div class="mb-3">Keterangan : {{ $izin->keterangan }}</div>

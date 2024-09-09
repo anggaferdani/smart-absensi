@@ -23,9 +23,9 @@ class SakitController extends Controller
         $request->validate([
             'keterangan' => 'required',
             'dari' => 'required',
-            'sampai' => 'required',
-            'lampiran' => 'required|file|max:1024',
-            'resep_dokter' => 'required|file|max:1024',
+            'sampai' => 'required|after_or_equal:dari',
+            'lampiran' => 'required|file|mimes:png,jpg,jpeg,pdf,txt,doc,docx',
+            'resep_dokter' => 'required|file|mimes:png,jpg,jpeg,pdf,txt,doc,docx',
         ]);
 
         try {
@@ -68,9 +68,9 @@ class SakitController extends Controller
         $request->validate([
             'keterangan' => 'required',
             'dari' => 'required',
-            'sampai' => 'required',
-            'lampiran' => 'nullable|file|max:1024',
-            'resep_dokter' => 'nullable|file|max:1024',
+            'sampai' => 'required|after_or_equal:dari',
+            'lampiran' => 'nullable|file|mimes:png,jpg,jpeg,pdf,txt,doc,docx',
+            'resep_dokter' => 'nullable|file|mimes:png,jpg,jpeg,pdf,txt,doc,docx',
         ]);
 
         try {

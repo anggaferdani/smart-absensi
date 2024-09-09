@@ -23,8 +23,8 @@ class IzinController extends Controller
         $request->validate([
             'keterangan' => 'required',
             'dari' => 'required',
-            'sampai' => 'required',
-            'lampiran' => 'nullable|file|max:1024',
+            'sampai' => 'required|after_or_equal:dari',
+            'lampiran' => 'nullable|file|max:1024|mimes:png,jpg,jpeg,pdf,txt,doc,docx',
         ]);
 
         try {
@@ -66,8 +66,8 @@ class IzinController extends Controller
         $request->validate([
             'keterangan' => 'required',
             'dari' => 'required',
-            'sampai' => 'required',
-            'lampiran' => 'nullable|file|max:1024',
+            'sampai' => 'required|after_or_equal:dari',
+            'lampiran' => 'nullable|file|max:1024|mimes:png,jpg,jpeg,pdf,txt,doc,docx',
         ]);
 
         try {
