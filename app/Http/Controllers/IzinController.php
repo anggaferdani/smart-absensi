@@ -24,6 +24,7 @@ class IzinController extends Controller
             'keterangan' => 'required',
             'dari' => 'required',
             'sampai' => 'required',
+            'lampiran' => 'nullable|file|max:1024',
         ]);
 
         try {
@@ -39,15 +40,20 @@ class IzinController extends Controller
                 'status_izin' => 1,
             ];
 
-            Izin::create($arrayIzin);
+            $izin = Izin::create($arrayIzin);
 
-            return redirect()->route('user.izin.index')->with('success', 'Success.');
+            return redirect()->route('user.izin.show', $izin->kode)->with('success', 'Success.');
         } catch (\Throwable $th) {
             return back()->with('error', $th->getMessage());
         }
     }
 
-    public function show($id) {}
+    public function show($kode) {
+        $izin = Izin::where('kode', $kode)->first();
+        return view('user.izin.show', compact(
+            'izin',
+        ));
+    }
 
     public function edit($id) {
         $izin = Izin::find($id);
@@ -61,6 +67,7 @@ class IzinController extends Controller
             'keterangan' => 'required',
             'dari' => 'required',
             'sampai' => 'required',
+            'lampiran' => 'nullable|file|max:1024',
         ]);
 
         try {

@@ -20,6 +20,7 @@ return new class extends Migration
             $table->date('dari');
             $table->date('sampai');
             $table->string('lampiran')->nullable();
+            $table->string('resep_dokter')->nullable();
             $table->integer('status_process')->default(1);
             $table->integer('status_izin');
             $table->integer('status')->default(1);

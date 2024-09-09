@@ -10,7 +10,7 @@
     </div>
     <div class="col-auto ms-auto d-print-none">
       <div class="btn-list">
-        <a href="{{ route('admin.lokasi.index') }}" class="btn btn-primary d-none d-sm-inline-block">Back</a>
+        <a href="{{ route('admin.lokasi.index') }}" class="btn btn-primary">Back</a>
       </div>
     </div>
   </div>

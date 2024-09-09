@@ -24,7 +24,8 @@ class SakitController extends Controller
             'keterangan' => 'required',
             'dari' => 'required',
             'sampai' => 'required',
-            'lampiran' => 'required',
+            'lampiran' => 'required|file|max:1024',
+            'resep_dokter' => 'required|file|max:1024',
         ]);
 
         try {
@@ -36,19 +37,25 @@ class SakitController extends Controller
                 'keterangan' => $request['keterangan'],
                 'dari' => $request['dari'],
                 'sampai' => $request['sampai'],
-                'lampiran' => $this->handleFileUpload($request->file('lampiran'), 'sakit/'),
+                'lampiran' => $this->handleFileUpload($request->file('lampiran'), 'sakit/surat-dokter/'),
+                'resep_dokter' => $this->handleFileUpload($request->file('resep_dokter'), 'sakit/resep-dokter/'),
                 'status_izin' => 2,
             ];
 
-            Izin::create($arrayIzin);
+            $izin = Izin::create($arrayIzin);
 
-            return redirect()->route('user.sakit.index')->with('success', 'Success.');
+            return redirect()->route('user.sakit.show', $izin->kode)->with('success', 'Success.');
         } catch (\Throwable $th) {
             return back()->with('error', $th->getMessage());
         }
     }
 
-    public function show($id) {}
+    public function show($kode) {
+        $izin = Izin::where('kode', $kode)->first();
+        return view('user.sakit.show', compact(
+            'izin',
+        ));
+    }
 
     public function edit($id) {
         $izin = Izin::find($id);
@@ -62,6 +69,8 @@ class SakitController extends Controller
             'keterangan' => 'required',
             'dari' => 'required',
             'sampai' => 'required',
+            'lampiran' => 'nullable|file|max:1024',
+            'resep_dokter' => 'nullable|file|max:1024',
         ]);
 
         try {
@@ -75,7 +84,11 @@ class SakitController extends Controller
             ];
 
             if ($request->hasFile('lampiran')) {
-                $array['lampiran'] = $this->handleFileUpload($request->file('lampiran'), 'sakit/');
+                $array['lampiran'] = $this->handleFileUpload($request->file('lampiran'), 'sakit/surat-dokter/');
+            }
+
+            if ($request->hasFile('resep_dokter')) {
+                $array['resep_dokter'] = $this->handleFileUpload($request->file('resep_dokter'), 'sakit/resep-dokter/');
             }
 
             $izin->update($array);

@@ -15,7 +15,6 @@
 <div style="border-radius: 70px; border-bottom-left-radius: 0; border-bottom-right-radius: 0;" class="bg-white p-0 px-5 py-5 vh-100">
   <div class="row g-2 align-items-center mb-3">
     <div class="col">
-      <h2 class="page-title">Izin</h2>
     </div>
     <div class="col-auto ms-auto">
       <div class="btn-list">
@@ -38,6 +37,7 @@
     </div>
   </div>
   <div class="row">
+    <div class="text-center fw-bold mb-3">PENGAJUAN IJIN KEPERLUAN</div>
     <form action="{{ route('user.izin.store') }}" method="POST" class="" enctype="multipart/form-data">
       @csrf
       <div class="mb-3">
@@ -53,10 +53,11 @@
       <div class="mb-3">
         <label class="form-label required">Keterangan</label>
         <textarea class="form-control" name="keterangan" rows="3" placeholder="Keterangan" required></textarea>
+        <div class="small text-muted">Data yang saya isi ini adalah benar dan dapat dipertanggung jawabkan.</div>
         @error('keterangan')<div class="text-danger">{{ $message }}</div>@enderror
       </div>
       <div class="mb-3">
-        <label class="form-label">Lampiran</label>
+        <label class="form-label">Lampiran *optional</label>
         <input type="file" class="form-control" name="lampiran" placeholder="">
         @error('lampiran')<div class="text-danger">{{ $message }}</div>@enderror
       </div>

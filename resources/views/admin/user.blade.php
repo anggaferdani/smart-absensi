@@ -10,7 +10,7 @@
     </div>
     <div class="col-auto ms-auto d-print-none">
       <div class="btn-list">
-        <a href="#" class="btn btn-primary d-none d-sm-inline-block" data-bs-toggle="modal" data-bs-target="#createModal">Create new report</a>
+        <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">Create new report</a>
       </div>
     </div>
   </div>
@@ -59,7 +59,7 @@
               @foreach ($users as $user)
                 <tr>
                   <td>{{ ($users->currentPage() - 1) * $users->perPage() + $loop->iteration }}</td>
-                  <td><a href="/profile-picture/{{ $user->profile_picture }}" target="_blank"><img src="/profile-picture/{{ $user->profile_picture }}" alt="" class="img-fluid" width="50"></a></td>
+                  <td><a href="/profile-picture/{{ $user->profile_picture }}" target="_blank"><img src="/profile-picture/{{ $user->profile_picture }}" alt="" class="img-fluid rounded-circle" width="70"></a></td>
                   <td>{{ $user->name }}</td>
                   <td>{{ $user->phone ?? '-' }}</td>
                   <td>{{ $user->email ?? '-' }}</td>

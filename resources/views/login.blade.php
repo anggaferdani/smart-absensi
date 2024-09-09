@@ -4,8 +4,8 @@
 <div class="container container-tight py-4">
   <div class="card card-md border-0">
     <div class="card-body py-0">
-      <div id="datetime" class="text-center fw-bold mb-5"></div>
-      <img src="{{ asset('images/login.jpeg') }}" alt="">
+      <div id="datetime" class="text-center fw-bold fs-2 mb-5"></div>
+      <img src="{{ asset('images/login.jpeg') }}" alt="" class="mb-2">
       <h1 class="text-center mb-4">Selamat Datang</h1>
       @if(Session::get('success'))
         <div class="alert alert-important alert-success" role="alert">

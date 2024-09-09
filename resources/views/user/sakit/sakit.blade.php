@@ -42,22 +42,22 @@
     @forelse($izins as $izin)
       <div>
         <div class="card">
-          <div class="card-header">
-            <h3 class="card-title">Kode {{ $izin->kode }}</h3>
-          </div>
           <div class="card-body">
+            <div>Kode : {{ $izin->kode }}</div>
             <div>Dari : {{ $izin->dari }}</div>
             <div>Sampai : {{ $izin->sampai }}</div>
             <div>Keterangan : {{ $izin->keterangan }}</div>
-            <div>Lampiran : @if($izin->lampiran) <a href="/sakit/{{ $izin->lampiran }}" target="_blank">{{ $izin->lampiran }}</a> @else - @endif</div>
-            <div>Status : @if($izin->status_process == 1) <span class="badge bg-blue text-blue-fg">Pending</span> @elseif($izin->status_process == 2) <span class="badge bg-green text-green-fg">Approved</span> @elseif($izin->status_process == 3) <span class="badge bg-red text-red-fg">Denied</span> @endif</div>
+            {{-- <div>Status : @if($izin->status_process == 1) <span class="badge bg-blue text-blue-fg">Pending</span> @elseif($izin->status_process == 2) <span class="badge bg-green text-green-fg">Approved</span> @elseif($izin->status_process == 3) <span class="badge bg-red text-red-fg">Denied</span> @endif</div> --}}
           </div>
           <div class="card-footer">
-            <a href="{{ route('user.sakit.edit', $izin->id) }}" class="btn btn-icon btn-primary"><i class="fa-solid fa-pen"></i></a>
-            <button type="button" class="btn btn-icon btn-danger" data-bs-toggle="modal" data-bs-target="#delete{{ $izin->id }}"><i class="fa-solid fa-trash"></i></button>
-            <button type="button" class="btn btn-success" onclick="sendWhatsApp('{{ route('admin.sakit.show', $izin->kode) }}')">
-              <i class="fa-brands fa-whatsapp"></i>&nbsp;Kirim ke WhatsApp
-            </button>
+            <a href="{{ route('user.sakit.show', $izin->kode) }}" class="btn btn-icon btn-primary"><i class="fa-solid fa-eye"></i></a>
+            @if($izin->status_process == 1)
+              <a href="{{ route('user.sakit.edit', $izin->id) }}" class="btn btn-icon btn-primary"><i class="fa-solid fa-pen"></i></a>
+              <button type="button" class="btn btn-icon btn-danger" data-bs-toggle="modal" data-bs-target="#delete{{ $izin->id }}"><i class="fa-solid fa-trash"></i></button>
+              <button type="button" class="btn btn-success" onclick="sendWhatsApp('{{ route('admin.sakit.show', $izin->kode) }}')">
+                <i class="fa-brands fa-whatsapp"></i>&nbsp;Kirim ke WhatsApp
+              </button>
+            @endif
           </div>
         </div>
       </div>
@@ -75,94 +75,6 @@
       @endif
     </ul>
   </div>
-
-  <div class="modal modal-blur fade" id="createModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-        <form action="{{ route('user.sakit.store') }}" method="POST" class="" enctype="multipart/form-data">
-          @csrf
-          <div class="modal-header">
-            <h5 class="modal-title">Create</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <div class="mb-3">
-              <label class="form-label required">Dari</label>
-              <input type="date" class="form-control" name="dari" placeholder="Dari" required>
-              @error('dari')<div class="text-danger">{{ $message }}</div>@enderror
-            </div>
-            <div class="mb-3">
-              <label class="form-label required">Sampai</label>
-              <input type="date" class="form-control" name="sampai" placeholder="Sampai" required>
-              @error('sampai')<div class="text-danger">{{ $message }}</div>@enderror
-            </div>
-            <div class="mb-3">
-              <label class="form-label required">Keterangan</label>
-              <textarea class="form-control" name="keterangan" rows="3" placeholder="Keterangan" required></textarea>
-              @error('keterangan')<div class="text-danger">{{ $message }}</div>@enderror
-            </div>
-            <div class="mb-3">
-              <label class="form-label required">Lampiran Surat Dokter</label>
-              <input type="file" class="form-control" name="lampiran" placeholder="" required>
-              @error('lampiran')<div class="text-danger">{{ $message }}</div>@enderror
-            </div>
-          </div>
-          <div class="modal-footer">
-            <a href="#" class="btn btn-link link-secondary" data-bs-dismiss="modal">
-              Cancel
-            </a>
-            <button type="submit" class="btn btn-primary">Submit</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-
-  @foreach ($izins as $izin)
-  <div class="modal modal-blur fade" id="edit{{ $izin->id }}" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-        <form action="{{ route('user.sakit.update', $izin->id) }}" method="POST" class="" enctype="multipart/form-data">
-          @csrf
-          @method('PUT')
-          <div class="modal-header">
-            <h5 class="modal-title">Edit</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <div class="mb-3">
-              <label class="form-label required">Dari</label>
-              <input type="date" class="form-control" name="dari" placeholder="Dari" value="{{ $izin->dari }}">
-              @error('dari')<div class="text-danger">{{ $message }}</div>@enderror
-            </div>
-            <div class="mb-3">
-              <label class="form-label required">Sampai</label>
-              <input type="date" class="form-control" name="sampai" placeholder="Sampai" value="{{ $izin->sampai }}">
-              @error('sampai')<div class="text-danger">{{ $message }}</div>@enderror
-            </div>
-            <div class="mb-3">
-              <label class="form-label required">Keterangan</label>
-              <textarea class="form-control" name="keterangan" rows="3" placeholder="Keterangan">{{ $izin->keterangan }}</textarea>
-              @error('keterangan')<div class="text-danger">{{ $message }}</div>@enderror
-            </div>
-            <div class="mb-3">
-              <label class="form-label required">Lampiran Surat Dokter</label>
-              <input type="file" class="form-control" name="lampiran" placeholder="" value="{{ $izin->lampiran }}">
-              <a href="/sakit/{{ $izin->lampiran }}" target="_blank">{{ $izin->lampiran }}</a>
-              @error('lampiran')<div class="text-danger">{{ $message }}</div>@enderror
-            </div>
-          </div>
-          <div class="modal-footer">
-            <a href="#" class="btn btn-link link-secondary" data-bs-dismiss="modal">
-              Cancel
-            </a>
-            <button type="submit" class="btn btn-primary">Submit</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-  @endforeach
 
   @foreach ($izins as $izin)
   <div class="modal modal-blur fade" id="delete{{ $izin->id }}" tabindex="-1" role="dialog" aria-hidden="true">
@@ -197,7 +109,7 @@
 @push('scripts')
 <script>
   function sendWhatsApp(kode) {
-      const phoneNumber = '6281295886877';
+      const phoneNumber = '6282124151173';
       const message = `Halo\n\nSaya ingin memberitahukan bahwa saya telah mengajukan permohonan izin. berikut\n\n${kode}\n\nLink berikut yang menunjukkan tentang pengajuan saya, termasuk tanggal dan alasan permohonan.\n\nTerima kasih.`;
       const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
       window.open(whatsappUrl, '_blank');

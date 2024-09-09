@@ -42,22 +42,22 @@
     @forelse($izins as $izin)
       <div>
         <div class="card">
-          <div class="card-header">
-            <h3 class="card-title">Kode {{ $izin->kode }}</h3>
-          </div>
           <div class="card-body">
+            <div>Kode : {{ $izin->kode }}</div>
             <div>Dari : {{ $izin->dari }}</div>
             <div>Sampai : {{ $izin->sampai }}</div>
             <div>Keterangan : {{ $izin->keterangan }}</div>
-            <div>Lampiran : @if($izin->lampiran) <a href="/izin/{{ $izin->lampiran }}" target="_blank">{{ $izin->lampiran }}</a> @else - @endif</div>
-            <div>Status : @if($izin->status_process == 1) <span class="badge bg-blue text-blue-fg">Pending</span> @elseif($izin->status_process == 2) <span class="badge bg-green text-green-fg">Approved</span> @elseif($izin->status_process == 3) <span class="badge bg-red text-red-fg">Denied</span> @endif</div>
+            {{-- <div>Status : @if($izin->status_process == 1) <span class="badge bg-blue text-blue-fg">Pending</span> @elseif($izin->status_process == 2) <span class="badge bg-green text-green-fg">Approved</span> @elseif($izin->status_process == 3) <span class="badge bg-red text-red-fg">Denied</span> @endif</div> --}}
           </div>
           <div class="card-footer">
-            <a href="{{ route('user.izin.edit', $izin->id) }}" class="btn btn-icon btn-primary"><i class="fa-solid fa-pen"></i></a>
-            <button type="button" class="btn btn-icon btn-danger" data-bs-toggle="modal" data-bs-target="#delete{{ $izin->id }}"><i class="fa-solid fa-trash"></i></button>
-            <button type="button" class="btn btn-success" onclick="sendWhatsApp('{{ route('admin.izin.show', $izin->kode) }}')">
-              <i class="fa-brands fa-whatsapp"></i>&nbsp;Kirim ke WhatsApp
-            </button>
+            <a href="{{ route('user.izin.show', $izin->kode) }}" class="btn btn-icon btn-primary"><i class="fa-solid fa-eye"></i></a>
+            @if($izin->status_process == 1)
+              <a href="{{ route('user.izin.edit', $izin->id) }}" class="btn btn-icon btn-primary"><i class="fa-solid fa-pen"></i></a>
+              <button type="button" class="btn btn-icon btn-danger" data-bs-toggle="modal" data-bs-target="#delete{{ $izin->id }}"><i class="fa-solid fa-trash"></i></button>
+              <button type="button" class="btn btn-success" onclick="sendWhatsApp('{{ route('admin.izin.show', $izin->kode) }}')">
+                <i class="fa-brands fa-whatsapp"></i>&nbsp;Kirim ke WhatsApp
+              </button>
+            @endif
           </div>
         </div>
       </div>
@@ -110,7 +110,7 @@
 @push('scripts')
 <script>
   function sendWhatsApp(kode) {
-      const phoneNumber = '6281295886877';
+      const phoneNumber = '6282124151173';
       const message = `Halo\n\nSaya ingin memberitahukan bahwa saya telah mengajukan permohonan izin. berikut\n\n${kode}\n\nLink berikut yang menunjukkan tentang pengajuan saya, termasuk tanggal dan alasan permohonan.\n\nTerima kasih.`;
       const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
       window.open(whatsappUrl, '_blank');

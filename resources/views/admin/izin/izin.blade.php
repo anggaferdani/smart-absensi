@@ -60,6 +60,7 @@
                 <th>Nama</th>
                 <th>Dari</th>
                 <th>Sampai</th>
+                <th>Keterangan</th>
                 <th>Status</th>
                 <th>Actions</th>
               </tr>
@@ -72,6 +73,7 @@
                   <td>{{ $izin->user->name }}</td>
                   <td>{{ $izin->dari }}</td>
                   <td>{{ $izin->sampai }}</td>
+                  <td>{{ $izin->keterangan }}</td>
                   <td>
                     @if($izin->status_process == 1)
                       <span class="badge bg-blue text-blue-fg">Pending</span>

@@ -13,7 +13,7 @@
         </a>
         <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
           <a href="" class="dropdown-item">Settings</a>
-          <a href="{{ route('logout') }}" class="dropdown-item">Logout</a>
+          <a href="{{ route('logout') }}" class="dropdown-item">Exit</a>
         </div>
       </div>
     </div>
