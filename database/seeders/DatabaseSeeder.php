@@ -1,4 +1,4 @@
-aut<?php
+<?php
 
 namespace Database\Seeders;
 
