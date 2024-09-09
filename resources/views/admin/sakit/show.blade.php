@@ -24,7 +24,8 @@
           <div>Dari : {{ $izin->dari }}</div>
           <div>Sampai : {{ $izin->sampai }}</div>
           <div>Keterangan : {{ $izin->keterangan }}</div>
-          <div>Lampiran : @if($izin->lampiran) <a href="/sakit/{{ $izin->lampiran }}" target="_blank">{{ $izin->lampiran }}</a> @else - @endif</div>
+          <div>Surat Dokter : @if($izin->lampiran) <a href="/sakit/surat-dokter/{{ $izin->lampiran }}" target="_blank">{{ $izin->lampiran }}</a> @else - @endif</div>
+          <div>Copy Resep Dokter : @if($izin->resep_dokter) <a href="/sakit/resep-dokter/{{ $izin->resep_dokter }}" target="_blank">{{ $izin->resep_dokter }}</a> @else - @endif</div>
           <div>Status : @if($izin->status_process == 1) <span class="badge bg-blue text-blue-fg">Pending</span> @elseif($izin->status_process == 2) <span class="badge bg-green text-green-fg">Approved</span> @elseif($izin->status_process == 3) <span class="badge bg-red text-red-fg">Denied</span> @endif</div>
         </div>
         <div class="card-footer">
