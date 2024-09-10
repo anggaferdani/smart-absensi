@@ -10,8 +10,8 @@
     </div>
     <div class="col-auto ms-auto">
       <div class="btn-list">
-        <a href="{{ route('admin.absen', array_merge(request()->query(), ['export' => 'excel'])) }}" class="btn btn-success">Excel</a>
-        <a href="{{ route('admin.absen', array_merge(request()->query(), ['export' => 'pdf'])) }}" class="btn btn-danger">PDF</a>
+        <a href="{{ route('admin.absen', array_merge(request()->query(), ['export' => 'excel'])) }}" class="btn btn-success {{ request('tanggal') ? 'disabled' : '' }}">Excel</a>
+        <a href="{{ route('admin.absen', array_merge(request()->query(), ['export' => 'pdf'])) }}" class="btn btn-danger {{ request('tanggal') ? 'disabled' : '' }}">PDF</a>
       </div>
     </div>
   </div>
@@ -58,7 +58,8 @@
                     <option value="2" {{ request('status') == '2' ? 'selected' : '' }}>Tepat Waktu</option>
                     <option value="3" {{ request('status') == '3' ? 'selected' : '' }}>Terlambat</option>
                 </select>
-                <input type="date" class="form-control" name="tanggal" value="{{ request('tanggal') }}" placeholder="">
+                <input id="inputBulan" type="month" class="form-control" name="bulan" value="{{ request('bulan') }}" placeholder="" {{ request('date') ? 'disabled' : '' }}>
+                <input id="inputTanggal" type="date" class="form-control" name="tanggal" value="{{ request('tanggal') }}" placeholder="" {{ request('bulan') ? 'disabled' : '' }}>
                 <input type="text" class="form-control" name="search" value="{{ request('search') }}" placeholder="Search">
                 <button type="submit" class="btn btn-icon btn-dark-outline"><i class="fa-solid fa-magnifying-glass"></i></button>
                 <a href="{{ route('admin.absen') }}" class="btn btn-icon btn-dark-outline"><i class="fa-solid fa-times"></i></a>
@@ -164,3 +165,31 @@
 </div>
 @endforeach
 @endsection
+@push('scripts')
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const inputBulan = document.getElementById('inputBulan');
+    const inputTanggal = document.getElementById('inputTanggal');
+
+    function updateInputState() {
+      if (inputBulan.value) {
+        inputTanggal.disabled = true;
+      } else {
+        inputTanggal.disabled = false;
+      }
+
+      if (inputTanggal.value) {
+        inputBulan.disabled = true;
+      } else {
+        inputBulan.disabled = false;
+      }
+    }
+
+    inputBulan.addEventListener('input', updateInputState);
+
+    inputTanggal.addEventListener('input', updateInputState);
+
+    updateInputState();
+  });
+</script>
+@endpush

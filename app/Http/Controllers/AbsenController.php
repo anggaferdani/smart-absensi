@@ -18,7 +18,24 @@ class AbsenController extends Controller
         
         if ($request->has('search') && !empty($request->input('search'))) {
             $search = $request->input('search');
-            $query->where('kode', 'like', '%' . $search . '%');
+            $query->where(function($q) use ($search) {
+                $q->where('kode', 'like', '%' . $search . '%')
+                  ->orWhereHas('user', function($q) use ($search) {
+                      $q->where('name', 'like', '%' . $search . '%');
+                  });
+            });
+        }
+
+        if ($request->has('bulan') && !empty($request->input('bulan'))) {
+            $bulan = $request->input('bulan');
+            $query->whereMonth('tanggal', Carbon::parse($bulan)->month)
+                  ->whereYear('tanggal', Carbon::parse($bulan)->year);
+            $daysInMonth = Carbon::parse($bulan)->daysInMonth;
+            $monthYear = Carbon::parse($bulan)->format('F Y');
+        } else {
+            $tanggal = Carbon::now()->format('Y-m-d');
+            $daysInMonth = Carbon::now()->daysInMonth;
+            $monthYear = Carbon::now()->format('F Y');
         }
         
         if ($request->has('tanggal') && !empty($request->input('tanggal'))) {
@@ -56,6 +73,11 @@ class AbsenController extends Controller
                 : Carbon::now()->format('Y-m-d');
         
         if ($request->has('export') && $request->export == 'excel') {
+            $absens = $query->get();
+            if ($absens->isEmpty()) {
+                return redirect()->back()->with('error', 'No data available to export.');
+            }
+
             $users = User::with('absens')->get();
             
             $userLateness = $users->mapWithKeys(function($user) {
@@ -80,6 +102,12 @@ class AbsenController extends Controller
         }
         
         if ($request->has('export') && $request->export == 'pdf') {
+            $absens = $query->get();
+            if ($absens->isEmpty()) {
+                return redirect()->back()->with('error', 'No data available to export.');
+            }
+            
+            
             $fileName = 'absen-' . $fileDate . '.pdf';
             $absens = $query->get();
     
