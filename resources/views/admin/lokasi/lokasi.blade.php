@@ -122,13 +122,13 @@
             @error('radius')<div class="text-danger">{{ $message }}</div>@enderror
           </div>
           <div class="mb-3">
-            <label class="form-label required">Jam Masuk Shift Siang</label>
-            <input type="time" class="form-control" name="jam_masuk_siang" placeholder="Jam Masuk Shift Siang">
+            <label class="form-label required">Jam Masuk Shift Pagi</label>
+            <input type="time" class="form-control" name="jam_masuk_siang" placeholder="Jam Masuk Shift Pagi">
             @error('jam_masuk_siang')<div class="text-danger">{{ $message }}</div>@enderror
           </div>
           <div class="mb-3">
-            <label class="form-label required">Jam Pulang Shift Siang</label>
-            <input type="time" class="form-control" name="jam_pulang_siang" placeholder="Jam Pulang Shift Siang">
+            <label class="form-label required">Jam Pulang Shift Pagi</label>
+            <input type="time" class="form-control" name="jam_pulang_siang" placeholder="Jam Pulang Shift Pagi">
             @error('jam_pulang_siang')<div class="text-danger">{{ $message }}</div>@enderror
           </div>
           <div class="mb-3">
@@ -191,13 +191,13 @@
             @error('radius')<div class="text-danger">{{ $message }}</div>@enderror
           </div>
           <div class="mb-3">
-            <label class="form-label required">Jam Masuk Shift Siang</label>
-            <input type="time" class="form-control" name="jam_masuk_siang" placeholder="Jam Masuk Shift Siang" value="{{ $lokasi->jam_masuk_siang }}">
+            <label class="form-label required">Jam Masuk Shift Pagi</label>
+            <input type="time" class="form-control" name="jam_masuk_siang" placeholder="Jam Masuk Shift Pagi" value="{{ $lokasi->jam_masuk_siang }}">
             @error('jam_masuk_siang')<div class="text-danger">{{ $message }}</div>@enderror
           </div>
           <div class="mb-3">
-            <label class="form-label required">Jam Pulang Shift Siang</label>
-            <input type="time" class="form-control" name="jam_pulang_siang" placeholder="Jam Pulang Shift Siang" value="{{ $lokasi->jam_pulang_siang }}">
+            <label class="form-label required">Jam Pulang Shift Pagi</label>
+            <input type="time" class="form-control" name="jam_pulang_siang" placeholder="Jam Pulang Shift Pagi" value="{{ $lokasi->jam_pulang_siang }}">
             @error('jam_pulang_siang')<div class="text-danger">{{ $message }}</div>@enderror
           </div>
           <div class="mb-3">
