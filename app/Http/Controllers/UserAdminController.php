@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Lokasi;
 use Illuminate\Http\Request;
 
 class UserAdminController extends Controller
@@ -22,8 +23,11 @@ class UserAdminController extends Controller
 
         $users = $query->latest()->paginate(10);
 
+        $lokasis = Lokasi::where('status', 1)->get();
+
         return view('admin.user', compact(
             'users',
+            'lokasis',
         ));
     }
 
@@ -36,16 +40,22 @@ class UserAdminController extends Controller
             'phone' => 'required|unique:users,phone',
             'email' => 'required|email|unique:users,email',
             'password' => 'required',
+            'lokasi_id' => 'required',
         ]);
 
         try {
+            $profilePicturePath = $request->hasFile('profile_picture')
+            ? $this->handleFileUpload($request->file('profile_picture'), 'profile-picture/')
+            : 'default.png';
+
             $array = [
-                'profile_picture' => $this->handleFileUpload($request->file('profile_picture'), 'profile-picture/'),
+                'profile_picture' => $profilePicturePath,
                 'name' => $request['name'],
                 'phone' => $request['phone'],
                 'email' => $request['email'],
                 'password' => bcrypt($request['password']),
                 'jabatan' => $request['jabatan'],
+                'lokasi_id' => $request['lokasi_id'],
                 'role' => 2,
             ];
 
@@ -69,6 +79,7 @@ class UserAdminController extends Controller
             'name' => 'required',
             'phone' => 'required|unique:users,phone,'.$user->id.",id",
             'email' => 'required|email|unique:users,email,'.$user->id.",id",
+            'lokasi_id' => 'required',
         ]);
 
         try {
@@ -77,6 +88,7 @@ class UserAdminController extends Controller
                 'phone' => $request['phone'],
                 'email' => $request['email'],
                 'jabatan' => $request['jabatan'],
+                'lokasi_id' => $request['lokasi_id'],
             ];
 
             if ($request['password']) {

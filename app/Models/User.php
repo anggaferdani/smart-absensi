@@ -35,4 +35,8 @@ class User extends Authenticatable
     public function izins() {
         return $this->hasMany(Izin::class);
     }
+
+    public function lokasi() {
+        return $this->belongsTo(Lokasi::class, 'lokasi_id');
+    }
 }

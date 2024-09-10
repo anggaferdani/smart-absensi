@@ -24,11 +24,7 @@ class IzinController extends Controller
             'keterangan' => 'required',
             'dari' => 'required',
             'sampai' => 'required|after_or_equal:dari',
-            'lampiran' => ['required', 'max:1024', 'file', 'mimes:png,jpg,jpeg,pdf,txt,doc,docx', function ($attribute, $value, $fail) {
-                if ($value->getClientOriginalExtension() === 'sql') {
-                    $fail('The '.$attribute.' may not be an SQL file.');
-                }
-            }],
+            'lampiran' => 'nullable|max:1024|file|mimes:png,jpg,jpeg',
         ]);
 
         try {
@@ -71,11 +67,7 @@ class IzinController extends Controller
             'keterangan' => 'required',
             'dari' => 'required',
             'sampai' => 'required|after_or_equal:dari',
-            'lampiran' => ['nullable', 'max:1024', 'file', 'mimes:png,jpg,jpeg,pdf,txt,doc,docx', function ($attribute, $value, $fail) {
-                if ($value->getClientOriginalExtension() === 'sql') {
-                    $fail('The '.$attribute.' may not be an SQL file.');
-                }
-            }],
+            'lampiran' => 'nullable|max:1024|file|mimes:png,jpg,jpeg',
         ]);
 
         try {

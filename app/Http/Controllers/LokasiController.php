@@ -30,6 +30,7 @@ class LokasiController extends Controller
     public function store(Request $request) {
         $request->validate([
             'nama' => 'required',
+            'deskripsi' => 'required',
             'lat' => 'required',
             'long' => 'required',
             'radius' => 'required',
@@ -93,6 +94,11 @@ class LokasiController extends Controller
                 'jam_masuk_malam' => $request['jam_masuk_malam'],
                 'jam_pulang_malam' => $request['jam_pulang_malam'],
             ];
+
+            if ($lokasi->nama !== $request['nama']) {
+                $slug = $this->generateSlug($request->input('nama'));
+                $array['slug'] = $slug;
+            }
 
             $lokasi->update($array);
     

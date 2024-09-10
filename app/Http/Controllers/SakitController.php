@@ -24,16 +24,8 @@ class SakitController extends Controller
             'keterangan' => 'required',
             'dari' => 'required',
             'sampai' => 'required|after_or_equal:dari',
-            'lampiran' => ['required', 'max:1024', 'file', 'mimes:png,jpg,jpeg,pdf,txt,doc,docx', function ($attribute, $value, $fail) {
-                if ($value->getClientOriginalExtension() === 'sql') {
-                    $fail('The '.$attribute.' may not be an SQL file.');
-                }
-            }],
-            'resep_dokter' => ['required', 'max:1024', 'file', 'mimes:png,jpg,jpeg,pdf,txt,doc,docx', function ($attribute, $value, $fail) {
-                if ($value->getClientOriginalExtension() === 'sql') {
-                    $fail('The '.$attribute.' may not be an SQL file.');
-                }
-            }],
+            'lampiran' => 'required|max:1024|file|mimes:png,jpg,jpeg',
+            'resep_dokter' => 'required|max:1024|file|mimes:png,jpg,jpeg',
         ]);
 
         try {
@@ -77,16 +69,8 @@ class SakitController extends Controller
             'keterangan' => 'required',
             'dari' => 'required',
             'sampai' => 'required|after_or_equal:dari',
-            'lampiran' => ['nullable', 'max:1024', 'file', 'mimes:png,jpg,jpeg,pdf,txt,doc,docx', function ($attribute, $value, $fail) {
-                if ($value->getClientOriginalExtension() === 'sql') {
-                    $fail('The '.$attribute.' may not be an SQL file.');
-                }
-            }],
-            'resep_dokter' => ['nullable', 'max:1024', 'file', 'mimes:png,jpg,jpeg,pdf,txt,doc,docx', function ($attribute, $value, $fail) {
-                if ($value->getClientOriginalExtension() === 'sql') {
-                    $fail('The '.$attribute.' may not be an SQL file.');
-                }
-            }],
+            'lampiran' => 'nullable|max:1024|file|mimes:png,jpg,jpeg',
+            'resep_dokter' => 'nullable|max:1024|file|mimes:png,jpg,jpeg',
         ]);
 
         try {

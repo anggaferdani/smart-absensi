@@ -15,7 +15,11 @@ class Lokasi extends Model
 
     protected $guarded = [];
 
-    public function token() {
-        return $this->hasOne(Token::class);
+    public function tokens() {
+        return $this->hasMany(Token::class);
+    }
+
+    public function users() {
+        return $this->hasMany(User::class);
     }
 }
