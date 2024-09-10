@@ -23,20 +23,6 @@
     </div>
   </div>
   <div class="row">
-    <div>
-      @if(Session::get('success'))
-        <div class="alert alert-important alert-success" role="alert">
-          {{ Session::get('success') }}
-        </div>
-      @endif
-      @if(Session::get('error'))
-        <div class="alert alert-important alert-danger" role="alert">
-          {{ Session::get('error') }}
-        </div>
-      @endif
-    </div>
-  </div>
-  <div class="row">
     <div class="text-center fw-bold mb-2">PENGAJUAN IJIN KEPERLUAN</div>
     <div class="text-center mb-3">Pengajuan anda sedang dalam proses persetujuan. Cek secara berkala untuk mendapatkan status persetujuan.</div>
     <div class="border border-3 border-dark rounded-5 p-3 text-center mb-3">

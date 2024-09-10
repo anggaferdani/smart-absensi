@@ -34,7 +34,7 @@
         <div class="card-header">
           <div class="ms-auto">
             <form action="{{ route('admin.admin.index') }}" class="">
-              <div class="d-flex">
+              <div class="d-flex gap-1">
                 <input type="text" class="form-control" name="search" value="{{ request('search') }}" placeholder="Search">
                 <button type="submit" class="btn btn-icon btn-dark-outline"><i class="fa-solid fa-magnifying-glass"></i></button>
                 <a href="{{ route('admin.admin.index') }}" class="btn btn-icon btn-dark-outline"><i class="fa-solid fa-times"></i></a>

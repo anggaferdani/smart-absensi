@@ -34,7 +34,7 @@
         <div class="card-header">
           <div class="ms-auto">
             <form action="{{ route('admin.user.index') }}" class="">
-              <div class="d-flex">
+              <div class="d-flex gap-1">
                 <input type="text" class="form-control" name="search" value="{{ request('search') }}" placeholder="Search">
                 <button type="submit" class="btn btn-icon btn-dark-outline"><i class="fa-solid fa-magnifying-glass"></i></button>
                 <a href="{{ route('admin.user.index') }}" class="btn btn-icon btn-dark-outline"><i class="fa-solid fa-times"></i></a>
@@ -52,6 +52,7 @@
                 <th>No. HP</th>
                 <th>Email</th>
                 <th>Jabatan</th>
+                <th>Lokasi</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -64,6 +65,7 @@
                   <td>{{ $user->phone ?? '-' }}</td>
                   <td>{{ $user->email ?? '-' }}</td>
                   <td>{{ $user->jabatan ?? '-' }}</td>
+                  <td>{{ $user->lokasi->nama ?? '-' }}</td>
                   <td>
                     <button type="button" class="btn btn-icon btn-primary" data-bs-toggle="modal" data-bs-target="#edit{{ $user->id }}"><i class="fa-solid fa-pen"></i></button>
                     <button type="button" class="btn btn-icon btn-danger" data-bs-toggle="modal" data-bs-target="#delete{{ $user->id }}"><i class="fa-solid fa-trash"></i></button>
@@ -101,6 +103,16 @@
             <label class="form-label">Profile Picture</label>
             <input type="file" class="form-control" name="profile_picture" placeholder="Profile Picture">
             @error('profile_picture')<div class="text-danger">{{ $message }}</div>@enderror
+          </div>
+          <div class="mb-3">
+            <label class="form-label required">Lokasi</label>
+            <select class="form-select" name="lokasi_id">
+              <option disabled selected value="">Pilih</option>
+              @foreach($lokasis as $lokasi)
+                  <option value="{{ $lokasi->id }}">{{ $lokasi->nama }}</option>
+              @endforeach
+            </select>
+            @error('lokasi_id')<div class="text-danger">{{ $message }}</div>@enderror
           </div>
           <div class="mb-3">
             <label class="form-label required">Name</label>
@@ -156,6 +168,16 @@
             <input type="file" class="form-control" name="profile_picture" placeholder="Profile Picture">
             <a href="/profile-picture/{{ $user->profile_picture }}" target="_blank">{{ $user->profile_picture }}</a>
             @error('profile_picture')<div class="text-danger">{{ $message }}</div>@enderror
+          </div>
+          <div class="mb-3">
+            <label class="form-label required">Lokasi</label>
+            <select class="form-select" name="lokasi_id">
+              <option disabled selected value="">Pilih</option>
+              @foreach($lokasis as $lokasi)
+                <option value="{{ $lokasi->id }}" @if($user->lokasi_id == $lokasi->id) @selected(true) @endif>{{ $lokasi->nama }}</option>
+              @endforeach
+            </select>
+            @error('lokasi_id')<div class="text-danger">{{ $message }}</div>@enderror
           </div>
           <div class="mb-3">
             <label class="form-label required">Name</label>

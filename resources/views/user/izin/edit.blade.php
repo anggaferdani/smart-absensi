@@ -61,6 +61,7 @@
         <label class="form-label">Lampiran *optional</label>
         <input type="file" class="form-control" name="lampiran" placeholder="" value="{{ $izin->lampiran }}">
         <a href="/izin/{{ $izin->lampiran }}" target="_blank">{{ $izin->lampiran }}</a>
+        <div class="small text-muted">Size maksimal 1 MB dengan format .png .jpg .jpeg</div>
         @error('lampiran')<div class="text-danger">{{ $message }}</div>@enderror
       </div>
       <div class="d-flex justify-content-center gap-2 mt-5">

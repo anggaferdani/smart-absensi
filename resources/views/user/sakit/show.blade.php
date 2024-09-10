@@ -23,20 +23,6 @@
     </div>
   </div>
   <div class="row">
-    <div>
-      @if(Session::get('success'))
-        <div class="alert alert-important alert-success" role="alert">
-          {{ Session::get('success') }}
-        </div>
-      @endif
-      @if(Session::get('error'))
-        <div class="alert alert-important alert-danger" role="alert">
-          {{ Session::get('error') }}
-        </div>
-      @endif
-    </div>
-  </div>
-  <div class="row">
     <div class="fw-bold mb-2">Pengajuan anda sedang dalam proses persetujuan. Cek secara berkala untuk mendapatkan status persetujuan.</div>
     <div>Nama : {{ $izin->user->name }}</div>
     <div>Posisi : {{ $izin->user->jabatan ?? '-' }}</div>
@@ -44,8 +30,8 @@
     <div>Sampai dengan : {{ \Carbon\Carbon::parse($izin->sampai)->format('d M Y') }}</div>
     <div class="mb-3">Keterangan : {{ $izin->keterangan }}</div>
     <div class="fw-bold">Lampiran :</div>
-    <div class="">1. Surat Dokter : <a href="/sakit/surat-dokter/{{ $izin->lampiran }}">{{ $izin->lampiran }}</a></div>
-    <div class="mb-3">2. Copy Resep Dokter : <a href="/sakit/resep-dokter/{{ $izin->resep_dokter }}">{{ $izin->resep_dokter }}</a></div>
+    <div class="">1. Surat Dokter : <a href="/sakit/surat-dokter/{{ $izin->lampiran }}" target="_blank">{{ $izin->lampiran }}</a></div>
+    <div class="mb-3">2. Copy Resep Dokter : <a href="/sakit/resep-dokter/{{ $izin->resep_dokter }}" target="_blank">{{ $izin->resep_dokter }}</a></div>
     <div class="fw-bold mb-3">SEMOGA LEKAS SEMBUH!</div>
     <div class="text-center fw-bold mb-2">STATUS</div>
     @if($izin->status_process == 1)

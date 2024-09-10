@@ -3,7 +3,7 @@
 @section('content')
 <div class="container-xl">
   <div class="row">
-    <div class="col-6 m-auto">
+    <div class="col-8 m-auto">
       @if(Session::get('success'))
         <div class="alert alert-important alert-success" role="alert">
           {{ Session::get('success') }}
@@ -15,22 +15,61 @@
         </div>
       @endif
       <div class="card">
-        <div class="card-header">
-          <h3 class="card-title">Kode Sakit {{ $izin->kode }}</h3>
-        </div>
         <div class="card-body">
-          <div>Nama : {{ $izin->user->name }}</div>
-          <div>Email : {{ $izin->user->email ?? '-' }}</div>
-          <div>Dari : {{ $izin->dari }}</div>
-          <div>Sampai : {{ $izin->sampai }}</div>
-          <div>Keterangan : {{ $izin->keterangan }}</div>
-          <div>Surat Dokter : @if($izin->lampiran) <a href="/sakit/surat-dokter/{{ $izin->lampiran }}" target="_blank">{{ $izin->lampiran }}</a> @else - @endif</div>
-          <div>Copy Resep Dokter : @if($izin->resep_dokter) <a href="/sakit/resep-dokter/{{ $izin->resep_dokter }}" target="_blank">{{ $izin->resep_dokter }}</a> @else - @endif</div>
-          <div>Status : @if($izin->status_process == 1) <span class="badge bg-blue text-blue-fg">Pending</span> @elseif($izin->status_process == 2) <span class="badge bg-green text-green-fg">Approved</span> @elseif($izin->status_process == 3) <span class="badge bg-red text-red-fg">Denied</span> @endif</div>
+          <div class="d-flex align-items-center mb-5">
+            <div class="" style="position: absolute; transform: translate(40px, 0px);"><img src="{{ asset('images/logo2.png') }}" alt="" class="" width="70"></div>
+            <div class="m-auto">
+              <div class="fw-bold text-center fs-3">PT GUNA CIPTA KREASI</div>
+              <div class="fw-bold text-center">Jalan Lapangan Bola No. 7 Kebon Jeruk Jakarta Barat</div>
+            </div>
+          </div>
+          <hr>
+          <div class="text-center fs-3 fw-bold mb-5">FORMULIR PENGAJUAN IJIN TIDAK MASUK KARENA SAKIT</div>
+          <div class="mb-3">Kepada YTH</div>
+          <div>HRD PT Guna Cipta Kreasi</div>
+          <div>di</div>
+          <div class="mb-3">Tempat</div>
+          <div class="mb-5">Perihal : <span class="fw-bold">{{ $izin->keterangan }}</span></div>
+          <div class="mb-5">Saya yang bertanda tangan dibawah ini :</div>
+          <table class="mb-3 w-100">
+            <tr>
+              <td style="width: 20%;">Nama</td>
+              <td>: <span class="fw-bold">{{ $izin->user->name }}</span></td>
+            </tr>
+            <tr>
+              <td style="width: 20%;">Jabatan</td>
+              <td>: <span class="fw-bold">{{ $izin->user->jabatan }}</span></td>
+            </tr>
+            <tr>
+              <td style="width: 20%;">Unit Kerja</td>
+              <td>: {{ $izin->user->lokasi->nama }}</td>
+            </tr>
+            <tr>
+              <td style="width: 20%;">Lokasi Kerja</td>
+              <td>: {{ $izin->user->lokasi->deskripsi }}</td>
+            </tr>
+          </table>
+          <div class="mb-3">Bermaksut untuk mengajukan permohonan ijin sakit selama hari dari tanggal <span class="fw-bold">{{ \Carbon\Carbon::parse($izin->dari)->translatedFormat('d') }}</span> bulan <span class="fw-bold">{{ \Carbon\Carbon::parse($izin->dari)->translatedFormat('F') }}</span> tahun <span class="fw-bold">{{ \Carbon\Carbon::parse($izin->dari)->translatedFormat('Y') }}</span> sampai dengan tanggal <span class="fw-bold">{{ \Carbon\Carbon::parse($izin->sampai)->translatedFormat('d') }}</span> bulan <span class="fw-bold">{{ \Carbon\Carbon::parse($izin->sampai)->translatedFormat('F') }}</span> tahun <span class="fw-bold">{{ \Carbon\Carbon::parse($izin->sampai)->translatedFormat('Y') }}</span>.</div>
+          <div class="mb-3">Demikian surat permohonan ini saya buat dan saya lampirkan surat dokter serta copy resep dokter. Atas perhatian nya saya ucapkan terima kasih.</div>
+          <div class="mb-3"><span class="fw-bold">{{ \Carbon\Carbon::parse($izin->sampai)->locale('id')->translatedFormat('l, d F Y') }}</span></div>
+          <div class="mb-3">Hormat Saya,</div>
+          <div class="mb-5"><span class="fw-bold">{{ $izin->user->name }}</span></div>
+          <div class="d-flex gap-3">
+            @if($izin->lampiran)
+              <div>
+                <img src="/sakit/surat-dokter/{{ $izin->lampiran }}" alt="" width="250">
+              </div>
+            @endif
+            @if($izin->resep_dokter)
+              <div>
+                <img src="/sakit/resep-dokter/{{ $izin->resep_dokter }}" alt="" width="250">
+              </div>
+            @endif
+          </div>
         </div>
         <div class="card-footer">
           <a href="{{ route('admin.sakit') }}" class="btn btn-primary">Back</a>
-          @if($izin->status_izin == 1)
+          @if($izin->status_process == 1)
           <button type="button" class="btn btn-icon btn-success" data-bs-toggle="modal" data-bs-target="#approve{{ $izin->id }}"><i class="fa-solid fa-check"></i></button>
           <button type="button" class="btn btn-icon btn-danger" data-bs-toggle="modal" data-bs-target="#reject{{ $izin->id }}"><i class="fa-solid fa-times"></i></button>
           @endif
