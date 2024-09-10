@@ -34,16 +34,18 @@ class UserAdminController extends Controller
     public function create() {}
 
     public function store(Request $request) {
-        $request->validate([
-            'profile_picture' => 'image|mimes:jpeg,png,jpg|dimensions:ratio=1/1',
-            'name' => 'required',
-            'phone' => 'required|unique:users,phone',
-            'email' => 'nullable|email|unique:users,email',
-            'password' => 'required',
-            'lokasi_id' => 'required',
-        ]);
-
         try {
+            $request->validate([
+                'profile_picture' => 'image|mimes:jpeg,png,jpg|dimensions:ratio=1/1',
+                'name' => 'required',
+                'phone' => 'required|unique:users,phone',
+                'email' => 'nullable|email|unique:users,email',
+                'password' => 'required',
+                'lokasi_id' => 'required',
+            ], [
+                'profile_picture.dimensions' => 'Foto profil harus memiliki rasio 1:1.',
+            ]);
+            
             $profilePicturePath = $request->hasFile('profile_picture')
             ? $this->handleFileUpload($request->file('profile_picture'), 'profile-picture/')
             : 'default.png';
@@ -80,6 +82,8 @@ class UserAdminController extends Controller
             'phone' => 'required|unique:users,phone,'.$user->id.",id",
             'email' => 'nullable|email|unique:users,email,'.$user->id.",id",
             'lokasi_id' => 'required',
+        ], [
+            'profile_picture.dimensions' => 'Foto profil harus memiliki rasio 1:1.',
         ]);
 
         try {

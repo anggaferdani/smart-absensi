@@ -102,6 +102,7 @@
           <div class="mb-3">
             <label class="form-label">Profile Picture</label>
             <input type="file" class="form-control" name="profile_picture" placeholder="Profile Picture">
+            <div class="small text-muted">Foto profil harus memiliki rasio 1:1.</div>
             @error('profile_picture')<div class="text-danger">{{ $message }}</div>@enderror
           </div>
           <div class="mb-3">
@@ -166,6 +167,7 @@
           <div class="mb-3">
             <label class="form-label">Profile Picture</label>
             <input type="file" class="form-control" name="profile_picture" placeholder="Profile Picture">
+            <div class="small text-muted">Foto profil harus memiliki rasio 1:1.</div>
             <a href="/profile-picture/{{ $user->profile_picture }}" target="_blank">{{ $user->profile_picture }}</a>
             @error('profile_picture')<div class="text-danger">{{ $message }}</div>@enderror
           </div>
