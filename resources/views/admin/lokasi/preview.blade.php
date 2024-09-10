@@ -8,7 +8,7 @@
         Preview Lokasi {{ $lokasi->nama }}
       </h2>
     </div>
-    <div class="col-auto ms-auto d-print-none">
+    <div class="col-auto">
       <div class="btn-list">
         <a href="{{ route('admin.lokasi.index') }}" class="btn btn-primary">Back</a>
       </div>

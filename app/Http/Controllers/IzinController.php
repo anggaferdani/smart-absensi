@@ -4,14 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Models\Izin;
 use Illuminate\Http\Request;
+use App\Models\ContactPerson;
 use Illuminate\Support\Facades\Auth;
 
 class IzinController extends Controller
 {
     public function index() {
         $izins = Izin::with('user')->where('user_id', Auth::id())->where('status_izin', 1)->where('status', 1)->latest()->paginate(5);
+        $contactPerson = ContactPerson::where('status', 1)->first();
         return view('user.izin.izin', compact(
             'izins',
+            'contactPerson',
         ));
     }
 
@@ -50,8 +53,10 @@ class IzinController extends Controller
 
     public function show($kode) {
         $izin = Izin::where('kode', $kode)->first();
+        $contactPerson = ContactPerson::where('status', 1)->first();
         return view('user.izin.show', compact(
             'izin',
+            'contactPerson',
         ));
     }
 

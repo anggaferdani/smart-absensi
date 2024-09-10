@@ -46,6 +46,19 @@
         <div class="text-center text-white">TIDAK DISETUJUI</div>
       </div>
     @endif
+    <button type="button" class="btn btn-success mt-3 rounded-pill" onclick="sendWhatsApp('{{ route('admin.izin.show', $izin->kode) }}')">
+      <i class="fa-brands fa-whatsapp"></i>&nbsp;Kirim ke WhatsApp
+    </button>
   </div>
 </div>
 @endsection
+@push('scripts')
+<script>
+  function sendWhatsApp(kode) {
+      const phoneNumber = '{{ $contactPerson->phone }}';
+      const message = `Halo\n\nSaya ingin memberitahukan bahwa saya telah mengajukan permohonan izin. berikut\n\n${kode}\n\nLink berikut yang menunjukkan tentang pengajuan saya, termasuk tanggal dan alasan permohonan.\n\nTerima kasih.`;
+      const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+      window.open(whatsappUrl, '_blank');
+  }
+</script>
+@endpush

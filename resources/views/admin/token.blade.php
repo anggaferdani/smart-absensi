@@ -8,7 +8,7 @@
         Token
       </h2>
     </div>
-    <div class="col-auto ms-auto d-print-none">
+    <div class="col-auto">
       
     </div>
   </div>

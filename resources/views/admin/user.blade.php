@@ -8,7 +8,7 @@
         User
       </h2>
     </div>
-    <div class="col-auto ms-auto d-print-none">
+    <div class="col-auto">
       <div class="btn-list">
         <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">Create new report</a>
       </div>

@@ -108,7 +108,7 @@
 @push('scripts')
 <script>
   function sendWhatsApp(kode) {
-      const phoneNumber = '6282124151173';
+      const phoneNumber = '{{ $contactPerson->phone }}';
       const message = `Halo\n\nSaya ingin memberitahukan bahwa saya telah mengajukan permohonan izin. berikut\n\n${kode}\n\nLink berikut yang menunjukkan tentang pengajuan saya, termasuk tanggal dan alasan permohonan.\n\nTerima kasih.`;
       const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
       window.open(whatsappUrl, '_blank');

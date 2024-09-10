@@ -15,6 +15,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\UserAdminController;
 use App\Http\Controllers\ExperienceController;
 use App\Http\Controllers\AuthenticationController;
+use App\Http\Controllers\ContactPersonController;
 use App\Http\Controllers\IzinAdminController;
 use App\Http\Controllers\SakitAdminController;
 use App\Http\Controllers\SakitController;
@@ -63,6 +64,8 @@ Route::prefix('admin')->name('admin.')->group(function(){
         Route::get('/sakit/{kode}', [SakitAdminController::class, 'show'])->name('sakit.show');
         Route::put('/sakit/approve/{id}', [SakitAdminController::class, 'approve'])->name('sakit.approve');
         Route::put('/sakit/reject/{id}', [SakitAdminController::class, 'reject'])->name('sakit.reject');
+        Route::get('/contact-person', [ContactPersonController::class, 'index'])->name('contact-person.index');
+        Route::put('/contact-person/{id}', [ContactPersonController::class, 'update'])->name('contact-person.update');
     });
 });
 

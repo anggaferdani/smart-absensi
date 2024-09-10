@@ -4,14 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Models\Izin;
 use Illuminate\Http\Request;
+use App\Models\ContactPerson;
 use Illuminate\Support\Facades\Auth;
 
 class SakitController extends Controller
 {
     public function index() {
         $izins = Izin::with('user')->where('user_id', Auth::id())->where('status_izin', 2)->where('status', 1)->latest()->paginate(5);
+        $contactPerson = ContactPerson::where('status', 1)->first();
         return view('user.sakit.sakit', compact(
             'izins',
+            'contactPerson',
         ));
     }
 
@@ -52,8 +55,10 @@ class SakitController extends Controller
 
     public function show($kode) {
         $izin = Izin::where('kode', $kode)->first();
+        $contactPerson = ContactPerson::where('status', 1)->first();
         return view('user.sakit.show', compact(
             'izin',
+            'contactPerson',
         ));
     }
 

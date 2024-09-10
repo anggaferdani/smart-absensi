@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
+use App\Models\ContactPerson;
 use App\Models\User;
 use App\Models\Profile;
 use App\Models\Experience;
@@ -17,17 +18,26 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $users = [
+        // $users = [
+        //     [
+        //         'name' => 'Admin',
+        //         'email' => 'admin@smart-absensi.com',
+        //         'password' => bcrypt('admin123*'),
+        //         'phone' => 123456789,
+        //         'profile_picture' => 'default.png',
+        //         'role' => 1,
+        //     ],
+        // ];
+
+        // User::insert($users);
+
+        $contactPersons = [
             [
-                'name' => 'Admin',
-                'email' => 'admin@smart-absensi.com',
-                'password' => bcrypt('admin123*'),
-                'phone' => 123456789,
-                'profile_picture' => 'default.png',
-                'role' => 1,
+                'name' => 'Angga',
+                'phone' => '6282124151173',
             ],
         ];
 
-        User::insert($users);
+        ContactPerson::insert($contactPersons);
     }
 }
