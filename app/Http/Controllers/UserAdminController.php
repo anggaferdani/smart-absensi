@@ -38,7 +38,7 @@ class UserAdminController extends Controller
             'profile_picture' => 'image|mimes:jpeg,png,jpg|dimensions:ratio=1/1',
             'name' => 'required',
             'phone' => 'required|unique:users,phone',
-            'email' => 'required|email|unique:users,email',
+            'email' => 'nullable|email|unique:users,email',
             'password' => 'required',
             'lokasi_id' => 'required',
         ]);
@@ -78,7 +78,7 @@ class UserAdminController extends Controller
             'profile_picture' => 'dimensions:ratio=1/1',
             'name' => 'required',
             'phone' => 'required|unique:users,phone,'.$user->id.",id",
-            'email' => 'required|email|unique:users,email,'.$user->id.",id",
+            'email' => 'nullable|email|unique:users,email,'.$user->id.",id",
             'lokasi_id' => 'required',
         ]);
 

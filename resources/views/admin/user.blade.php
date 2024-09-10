@@ -125,7 +125,7 @@
             @error('phone')<div class="text-danger">{{ $message }}</div>@enderror
           </div>
           <div class="mb-3">
-            <label class="form-label required">Email</label>
+          <label class="form-label">Email</label>
             <input type="email" class="form-control" name="email" placeholder="Email">
             @error('email')<div class="text-danger">{{ $message }}</div>@enderror
           </div>
@@ -190,7 +190,7 @@
             @error('phone')<div class="text-danger">{{ $message }}</div>@enderror
           </div>
           <div class="mb-3">
-            <label class="form-label required">Email</label>
+            <label class="form-label">Email</label>
             <input type="email" class="form-control" name="email" placeholder="Email" value="{{ $user->email }}">
             @error('email')<div class="text-danger">{{ $message }}</div>@enderror
           </div>
