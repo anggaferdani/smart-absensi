@@ -262,9 +262,7 @@
 
         button.innerHTML = 'Check Lokasi';
         button.disabled = false;
-    }, 3000);
-
-    getUserLocation();
+    }, 1000);
   });
 </script>
 @endpush
