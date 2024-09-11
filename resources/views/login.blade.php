@@ -47,5 +47,14 @@
 
   setInterval(updateDateTime, 1000);
   updateDateTime();
+
+  document.querySelector('form').addEventListener('submit', function(event) {
+    const loginButton = document.querySelector('button[type="submit"]');
+    loginButton.disabled = true;
+
+    setTimeout(function() {
+      loginButton.disabled = false;
+    }, 3000);
+  });
 </script>
 @endpush
