@@ -54,7 +54,7 @@
 
     setTimeout(function() {
       loginButton.disabled = false;
-    }, 3000);
+    }, 60000);
   });
 </script>
 @endpush
