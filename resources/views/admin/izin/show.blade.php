@@ -24,7 +24,7 @@
             </div>
           </div>
           <hr>
-          <div class="text-center fs-3 fw-bold mb-5">FORMULIR PENGAJUAN IJIN TIDAK MASUK KARENA SAKIT</div>
+          <div class="text-center fs-3 fw-bold mb-5">FORMULIR PENGAJUAN IJIN KARYAWAN</div>
           <div class="mb-3">Kepada YTH</div>
           <div>HRD PT Guna Cipta Kreasi</div>
           <div>di</div>
