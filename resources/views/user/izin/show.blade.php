@@ -46,9 +46,11 @@
         <div class="text-center text-white">TIDAK DISETUJUI</div>
       </div>
     @endif
-    <button type="button" class="btn btn-success mt-3 rounded-pill" onclick="sendWhatsApp('{{ route('admin.izin.show', $izin->kode) }}')">
-      <i class="fa-brands fa-whatsapp"></i>&nbsp;Kirim ke WhatsApp
-    </button>
+    @if($izin->status_process == 1)
+      <button type="button" class="btn btn-success mt-3 rounded-pill" onclick="sendWhatsApp('{{ route('admin.izin.show', $izin->kode) }}')">
+        <i class="fa-brands fa-whatsapp"></i>&nbsp;Kirim ke WhatsApp
+      </button>
+    @endif
   </div>
 </div>
 @endsection
