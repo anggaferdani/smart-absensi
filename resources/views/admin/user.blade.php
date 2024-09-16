@@ -52,6 +52,7 @@
                 <th>No. HP</th>
                 <th>Email</th>
                 <th>Jabatan</th>
+                <th>Unit Kerja</th>
                 <th>Lokasi</th>
                 <th>Action</th>
               </tr>
@@ -65,6 +66,7 @@
                   <td>{{ $user->phone ?? '-' }}</td>
                   <td>{{ $user->email ?? '-' }}</td>
                   <td>{{ $user->jabatan ?? '-' }}</td>
+                  <td>{{ $user->unitKerja->nama ?? '-' }}</td>
                   <td>{{ $user->lokasi->nama ?? '-' }}</td>
                   <td>
                     <button type="button" class="btn btn-icon btn-primary" data-bs-toggle="modal" data-bs-target="#edit{{ $user->id }}"><i class="fa-solid fa-pen"></i></button>
@@ -140,6 +142,16 @@
             <input type="text" class="form-control" name="jabatan" placeholder="Jabatan">
             @error('jabatan')<div class="text-danger">{{ $message }}</div>@enderror
           </div>
+          <div class="mb-3">
+            <label class="form-label required">Unit Kerja</label>
+            <select class="form-select" name="unit_kerja_id">
+              <option disabled selected value="">Pilih</option>
+              @foreach($unitKerjas as $unitKerja)
+                  <option value="{{ $unitKerja->id }}">{{ $unitKerja->nama }}</option>
+              @endforeach
+            </select>
+            @error('unit_kerja_id')<div class="text-danger">{{ $message }}</div>@enderror
+          </div>
         </div>
         <div class="modal-footer">
           <a href="#" class="btn btn-link link-secondary" data-bs-dismiss="modal">
@@ -205,6 +217,16 @@
             <label class="form-label">Jabatan</label>
             <input type="text" class="form-control" name="jabatan" placeholder="Jabatan" value="{{ $user->jabatan }}">
             @error('jabatan')<div class="text-danger">{{ $message }}</div>@enderror
+          </div>
+          <div class="mb-3">
+            <label class="form-label required">Unit Kerja</label>
+            <select class="form-select" name="unit_kerja_id">
+              <option disabled selected value="">Pilih</option>
+              @foreach($unitKerjas as $unitKerja)
+                <option value="{{ $unitKerja->id }}" @if($user->unit_kerja_id == $unitKerja->id) @selected(true) @endif>{{ $unitKerja->nama }}</option>
+              @endforeach
+            </select>
+            @error('unit_kerja_id')<div class="text-danger">{{ $message }}</div>@enderror
           </div>
         </div>
         <div class="modal-footer">

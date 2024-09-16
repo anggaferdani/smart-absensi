@@ -39,4 +39,8 @@ class User extends Authenticatable
     public function lokasi() {
         return $this->belongsTo(Lokasi::class, 'lokasi_id');
     }
+
+    public function unitKerja() {
+        return $this->belongsTo(UnitKerja::class, 'unit_kerja_id');
+    }
 }

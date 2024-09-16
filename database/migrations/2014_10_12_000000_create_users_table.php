@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('profile_picture')->nullable();
             $table->string('jabatan')->nullable();
             $table->unsignedBigInteger('lokasi_id')->nullable();
+            $table->unsignedBigInteger('unit_kerja_id')->nullable();
             $table->integer('role');
             $table->integer('status')->default(1);
             $table->timestamps();

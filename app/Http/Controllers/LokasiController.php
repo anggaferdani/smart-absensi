@@ -71,6 +71,7 @@ class LokasiController extends Controller
     public function update(Request $request, $id) {
         $request->validate([
             'nama' => 'required',
+            'deskripsi' => 'required',
             'lat' => 'required',
             'long' => 'required',
             'radius' => 'required',

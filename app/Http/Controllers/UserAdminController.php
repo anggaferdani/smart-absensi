@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Lokasi;
+use App\Models\UnitKerja;
 use Illuminate\Http\Request;
 
 class UserAdminController extends Controller
@@ -24,10 +25,12 @@ class UserAdminController extends Controller
         $users = $query->latest()->paginate(10);
 
         $lokasis = Lokasi::where('status', 1)->get();
+        $unitKerjas = UnitKerja::where('status', 1)->get();
 
         return view('admin.user', compact(
             'users',
             'lokasis',
+            'unitKerjas',
         ));
     }
 
@@ -42,6 +45,7 @@ class UserAdminController extends Controller
                 'email' => 'nullable|email|unique:users,email',
                 'password' => 'required',
                 'lokasi_id' => 'required',
+                'unit_kerja_id' => 'required',
             ], [
                 'profile_picture.dimensions' => 'Foto profil harus memiliki rasio 1:1.',
             ]);
@@ -58,6 +62,7 @@ class UserAdminController extends Controller
                 'password' => bcrypt($request['password']),
                 'jabatan' => $request['jabatan'],
                 'lokasi_id' => $request['lokasi_id'],
+                'unit_kerja_id' => $request['unit_kerja_id'],
                 'role' => 2,
             ];
 
@@ -82,6 +87,7 @@ class UserAdminController extends Controller
             'phone' => 'required|unique:users,phone,'.$user->id.",id",
             'email' => 'nullable|email|unique:users,email,'.$user->id.",id",
             'lokasi_id' => 'required',
+            'unit_kerja_id' => 'required',
         ], [
             'profile_picture.dimensions' => 'Foto profil harus memiliki rasio 1:1.',
         ]);
@@ -93,6 +99,7 @@ class UserAdminController extends Controller
                 'email' => $request['email'],
                 'jabatan' => $request['jabatan'],
                 'lokasi_id' => $request['lokasi_id'],
+                'unit_kerja_id' => $request['unit_kerja_id'],
             ];
 
             if ($request['password']) {

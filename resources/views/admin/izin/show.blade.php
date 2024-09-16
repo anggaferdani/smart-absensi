@@ -42,15 +42,15 @@
             </tr>
             <tr>
               <td style="width: 20%;">Unit Kerja</td>
-              <td>: {{ $izin->user->lokasi->nama }}</td>
+              <td>: {{ $izin->user->unitKerja->nama }}</td>
             </tr>
             <tr>
               <td style="width: 20%;">Lokasi Kerja</td>
-              <td>: {{ $izin->user->lokasi->deskripsi }}</td>
+              <td>: {{ $izin->user->lokasi->nama }}, {{ $izin->user->lokasi->deskripsi }}</td>
             </tr>
           </table>
-          <div class="mb-3">Bermaksut untuk mengajukan permohonan ijin selama hari dari tanggal <span class="fw-bold">{{ \Carbon\Carbon::parse($izin->dari)->translatedFormat('d') }}</span> bulan <span class="fw-bold">{{ \Carbon\Carbon::parse($izin->dari)->translatedFormat('F') }}</span> tahun <span class="fw-bold">{{ \Carbon\Carbon::parse($izin->dari)->translatedFormat('Y') }}</span> sampai dengan tanggal <span class="fw-bold">{{ \Carbon\Carbon::parse($izin->sampai)->translatedFormat('d') }}</span> bulan <span class="fw-bold">{{ \Carbon\Carbon::parse($izin->sampai)->translatedFormat('F') }}</span> tahun <span class="fw-bold">{{ \Carbon\Carbon::parse($izin->sampai)->translatedFormat('Y') }}</span>.</div>
-          <div class="mb-3">Demikian surat permohonan ini saya buat dan saya lampirkan surat dokter serta copy resep dokter. Atas perhatian nya saya ucapkan terima kasih.</div>
+          <div class="mb-3">Bermaksut untuk mengajukan permohonan ijin selama {{ \Carbon\Carbon::parse($izin->dari)->diffInDays(\Carbon\Carbon::parse($izin->sampai)) + 1 }} hari dari tanggal <span class="fw-bold">{{ \Carbon\Carbon::parse($izin->dari)->translatedFormat('d') }}</span> bulan <span class="fw-bold">{{ \Carbon\Carbon::parse($izin->dari)->translatedFormat('F') }}</span> tahun <span class="fw-bold">{{ \Carbon\Carbon::parse($izin->dari)->translatedFormat('Y') }}</span> sampai dengan tanggal <span class="fw-bold">{{ \Carbon\Carbon::parse($izin->sampai)->translatedFormat('d') }}</span> bulan <span class="fw-bold">{{ \Carbon\Carbon::parse($izin->sampai)->translatedFormat('F') }}</span> tahun <span class="fw-bold">{{ \Carbon\Carbon::parse($izin->sampai)->translatedFormat('Y') }}</span>.</div>
+          <div class="mb-3">Demikian surat permohonan ini saya buat. Atas perhatian nya saya ucapkan terima kasih.</div>
           <div class="mb-3"><span class="fw-bold">{{ \Carbon\Carbon::parse($izin->sampai)->locale('id')->translatedFormat('l, d F Y') }}</span></div>
           <div class="mb-3">Hormat Saya,</div>
           <div class="mb-5"><span class="fw-bold">{{ $izin->user->name }}</span></div>
@@ -63,7 +63,7 @@
           </div>
         </div>
         <div class="card-footer">
-          <a href="{{ route('admin.sakit') }}" class="btn btn-primary">Back</a>
+          <a href="{{ route('admin.sakit.index') }}" class="btn btn-primary">Back</a>
           @if($izin->status_process == 1)
           <button type="button" class="btn btn-icon btn-success" data-bs-toggle="modal" data-bs-target="#approve{{ $izin->id }}"><i class="fa-solid fa-check"></i></button>
           <button type="button" class="btn btn-icon btn-danger" data-bs-toggle="modal" data-bs-target="#reject{{ $izin->id }}"><i class="fa-solid fa-times"></i></button>

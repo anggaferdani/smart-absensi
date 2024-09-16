@@ -11,7 +11,7 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class IzinAdminController extends Controller
 {
-    public function izin(Request $request) {
+    public function index(Request $request) {
         $query = Izin::with('user')
                 ->where('status_izin', 1)
                 ->orderByRaw('CASE WHEN status_process = 1 THEN 0 ELSE 1 END')
@@ -60,6 +60,20 @@ class IzinAdminController extends Controller
     public function show($kode) {
         $izin = Izin::where('kode', $kode)->first();
         return view('admin.izin.show', compact('izin'));
+    }
+
+    public function destroy($id) {
+        try {
+            $izin = Izin::find($id);
+
+            $izin->update([
+                'status' => 2,
+            ]);
+
+            return redirect()->back()->with('success', 'Success.');
+        } catch (\Throwable $th) {
+            return back()->with('error', $th->getMessage());
+        }
     }
 
     public function approve($id) {
