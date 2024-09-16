@@ -42,7 +42,7 @@
             </tr>
             <tr>
               <td style="width: 20%;">Unit Kerja</td>
-              <td>: {{ $izin->user->unitKerja->nama }}</td>
+              <td>: {{ $izin->user->unitKerja->nama ?? '-' }}</td>
             </tr>
             <tr>
               <td style="width: 20%;">Lokasi Kerja</td>
