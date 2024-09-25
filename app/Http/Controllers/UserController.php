@@ -136,6 +136,7 @@ class UserController extends Controller
     
         $selectedMonth = $request->get('bulan', $currentMonth);
     
+        // Fetch attendance records for the user
         $absens = Absen::with('token', 'token.lokasi', 'user')
             ->where('user_id', $userId)
             ->whereYear('tanggal', $currentYear)
@@ -143,6 +144,7 @@ class UserController extends Controller
             ->latest()
             ->paginate(5);
     
+        // Count izin (leave) days
         $izinDays = Izin::where('user_id', $userId)
             ->where('status_izin', 1)
             ->where('status', 1)
@@ -150,6 +152,7 @@ class UserController extends Controller
             ->whereMonth('dari', $selectedMonth)
             ->sum(DB::raw("DATEDIFF(sampai, dari) + 1"));
     
+        // Count sick days
         $sickDays = Izin::where('user_id', $userId)
             ->where('status_izin', 2)
             ->where('status', 1)
@@ -157,6 +160,7 @@ class UserController extends Controller
             ->whereMonth('dari', $selectedMonth)
             ->sum(DB::raw("DATEDIFF(sampai, dari) + 1"));
     
+        // Count late days
         $lateDays = Absen::where('user_id', $userId)
             ->where('status', 3)
             ->whereHas('token', function($query) {
@@ -166,11 +170,21 @@ class UserController extends Controller
             ->whereMonth('tanggal', $selectedMonth)
             ->count();
     
+        // Count total working days in the selected month
         $totalDaysInMonth = $this->countBusinessDays($currentYear, $selectedMonth);
     
+        // Count actual attended days (based on records)
+        $actualAttendanceDays = $absens->count();
+    
+        // Total absent days are the sum of izin days and sick days
         $absentDays = $izinDays + $sickDays;
     
-        $attendancePercentage = (($totalDaysInMonth - $absentDays) / $totalDaysInMonth) * 100;
+        // Calculate attendance percentage
+        if ($totalDaysInMonth > 0) {
+            $attendancePercentage = (($actualAttendanceDays) / $totalDaysInMonth) * 100;
+        } else {
+            $attendancePercentage = 0; // Avoid division by zero
+        }
     
         return view('user.history', compact('absens', 'selectedMonth', 'izinDays', 'sickDays', 'lateDays', 'attendancePercentage'));
     }
@@ -180,6 +194,7 @@ class UserController extends Controller
     
         $date = \Carbon\Carbon::create($year, $month, 1);
         while ($date->month == $month) {
+            // Count only if it's not Sunday
             if ($date->dayOfWeek != \Carbon\Carbon::SUNDAY) {
                 $totalDays++;
             }
@@ -187,7 +202,7 @@ class UserController extends Controller
         }
     
         return $totalDays;
-    }
+    }    
 
     private function generateKodeAbsen() {
         do {
