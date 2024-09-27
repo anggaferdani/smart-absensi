@@ -86,8 +86,8 @@
             <div>Kode : {{ $absen->kode }}</div>
             <div>Tanggal : {{ $absen->tanggal }}</div>
             <div>Lokasi : {{ $absen->token->lokasi->nama }}</div>
-            <div>Status @if($absen->token->status == 1) Masuk @elseif($absen->token->status == 2) Pulang @endif : @if($absen->status == 1) Lebih Awal @elseif($absen->status == 2) Tepat Waktu @elseif($absen->status == 3) Terlambat @endif</div>
-            <div>Shift : @if($absen->shift == 'siang') Siang @elseif($absen->shift == 'malam') Malam @endif</div>
+            <div>Status : @if($absen->token->status == 1) Masuk @if($absen->status == 1) Lebih Awal @elseif($absen->status == 2) Tepat Waktu @elseif($absen->status == 3) Terlambat @endif @elseif($absen->token->status == 2) Pulang @endif</div>
+            <div>Shift : @if($absen->shift == 'siang') Pagi @elseif($absen->shift == 'malam') Malam @endif</div>
           </div>
         </div>
       </div>

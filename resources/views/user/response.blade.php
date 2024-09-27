@@ -16,12 +16,14 @@
   <div class="row">
     <div class="p-3">
       <div class="text-center fs-3 fw-bold mb-3">Anda Sudah Melakukan Absensi</div>
-      <div class="text-center fs-3 fw-bold mb-1">
+      <div class="text-center fs-3 fw-bold mb-2">
         @if($absen->token->status == 1) Masuk @elseif($absen->token->status == 2) Pulang @endif
       </div>
-      <div class="text-center fs-1 fw-bold mb-2">
-        @if($absen->status == 1) <span class="text-success">Lebih Awal</span> @elseif($absen->status == 2) <span class="text-primary">Tepat Waktu</span> @elseif($absen->status == 3) <span class="text-danger">Terlambat</span> @endif
-      </div>
+      @if($absen->token->status == 1)
+        <div class="text-center fs-1 fw-bold mb-2">
+          @if($absen->status == 1) <span class="text-success">Lebih Awal</span> @elseif($absen->status == 2) <span class="text-primary">Tepat Waktu</span> @elseif($absen->status == 3) <span class="text-danger">Terlambat</span> @endif
+        </div>
+      @endif
       <div class="text-center fs-3 fw-bold mb-2">{{ $absen->kode }}</div>
       <div class="text-center fw-bold fs-1">{{ \Carbon\Carbon::parse($absen->tanggal)->format('H:i:s') }}</div>
       <div class="text-center fw-bold mb-3">{{ \Carbon\Carbon::parse($absen->tanggal)->translatedFormat('l, d F Y') }}</div>
