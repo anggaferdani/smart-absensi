@@ -26,9 +26,15 @@ class IzinAdminController extends Controller
             });
         }
 
-        if ($request->has('tanggal') && !empty($request->input('tanggal'))) {
-            $tanggal = $request->input('tanggal');
-            $query->whereDate('dari', $tanggal);
+        $dari = $request->input('dari');
+        $sampai = $request->input('sampai');
+
+        if (!empty($dari) && !empty($sampai)) {
+            $query->whereBetween('dari', [$dari, $sampai]);
+        } elseif (!empty($dari)) {
+            $query->where('dari', '>=', $dari);
+        } elseif (!empty($sampai)) {
+            $query->where('dari', '<=', $sampai);
         }
 
         if ($request->has('status') && !empty($request->input('status'))) {
@@ -36,9 +42,7 @@ class IzinAdminController extends Controller
             $query->where('status_process', $status);
         }
 
-        $fileDate = $request->has('tanggal') && !empty($request->input('tanggal'))
-                ? $request->input('tanggal')
-                : Carbon::now()->format('Y-m-d');
+        $fileDate = Carbon::now()->format('Y-m-d');
 
         if ($request->has('export') && $request->export == 'excel') {
             $fileName = 'izin-' . $fileDate . '.xlsx';
@@ -57,8 +61,16 @@ class IzinAdminController extends Controller
         return view('admin.izin.izin', compact('izins'));
     }
 
-    public function show($kode) {
+    public function show($kode, Request $request) {
         $izin = Izin::where('kode', $kode)->first();
+        $fileDate = Carbon::now()->format('Y-m-d');
+
+        if ($request->has('export') && $request->export == 'pdf') {
+            $fileName = 'izin-' . $fileDate . '.pdf';
+            $pdf = Pdf::loadView('admin.izin.pdf', compact('izin'));
+            return $pdf->stream($fileName);
+        }
+
         return view('admin.izin.show', compact('izin'));
     }
 

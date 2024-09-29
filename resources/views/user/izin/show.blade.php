@@ -31,6 +31,9 @@
       <div>Dari : {{ \Carbon\Carbon::parse($izin->dari)->format('d M Y') }}</div>
       <div>Sampai dengan : {{ \Carbon\Carbon::parse($izin->sampai)->format('d M Y') }}</div>
       <div>	Keperluan : {{ $izin->keterangan }}</div>
+      @if($izin->lampiran)
+        <div>	Lampiran : <a href="/izin/{{ $izin->lampiran }}" target="_blank">{{ $izin->lampiran }}</a></div>
+      @endif
     </div>
     <div class="text-center fw-bold mb-2">STATUS</div>
     @if($izin->status_process == 1)

@@ -26,9 +26,15 @@ class SakitAdminController extends Controller
             });
         }
 
-        if ($request->has('tanggal') && !empty($request->input('tanggal'))) {
-            $tanggal = $request->input('tanggal');
-            $query->whereDate('dari', $tanggal);
+        $dari = $request->input('dari');
+        $sampai = $request->input('sampai');
+
+        if (!empty($dari) && !empty($sampai)) {
+            $query->whereBetween('dari', [$dari, $sampai]);
+        } elseif (!empty($dari)) {
+            $query->where('dari', '>=', $dari);
+        } elseif (!empty($sampai)) {
+            $query->where('dari', '<=', $sampai);
         }
 
         if ($request->has('status') && !empty($request->input('status'))) {
@@ -36,17 +42,15 @@ class SakitAdminController extends Controller
             $query->where('status_process', $status);
         }
 
-        $fileDate = $request->has('tanggal') && !empty($request->input('tanggal'))
-                ? $request->input('tanggal')
-                : Carbon::now()->format('Y-m-d');
+        $fileDate = Carbon::now()->format('Y-m-d');
 
         if ($request->has('export') && $request->export == 'excel') {
-            $fileName = 'izin-' . $fileDate . '.xlsx';
+            $fileName = 'sakit-' . $fileDate . '.xlsx';
             return Excel::download(new IzinExport($query->get()), $fileName);
         }
     
         if ($request->has('export') && $request->export == 'pdf') {
-            $fileName = 'izin-' . $fileDate . '.pdf';
+            $fileName = 'sakit-' . $fileDate . '.pdf';
             $izins = $query->get();
             $pdf = Pdf::loadView('admin.exports.izin', compact('izins'));
             return $pdf->download($fileName);
@@ -57,8 +61,16 @@ class SakitAdminController extends Controller
         return view('admin.sakit.sakit', compact('izins'));
     }
 
-    public function show($kode) {
+    public function show($kode, Request $request) {
         $izin = Izin::where('kode', $kode)->first();
+        $fileDate = Carbon::now()->format('Y-m-d');
+
+        if ($request->has('export') && $request->export == 'pdf') {
+            $fileName = 'sakit-' . $fileDate . '.pdf';
+            $pdf = Pdf::loadView('admin.sakit.pdf', compact('izin'));
+            return $pdf->stream($fileName);
+        }
+
         return view('admin.sakit.show', compact('izin'));
     }
 

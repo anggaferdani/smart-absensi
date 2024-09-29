@@ -10,8 +10,8 @@
     </div>
     <div class="col-auto ms-auto">
       <div class="btn-list">
-        <a href="{{ route('admin.absen', array_merge(request()->query(), ['export' => 'excel'])) }}" class="btn btn-success {{ request('tanggal') ? 'disabled' : '' }}">Excel</a>
-        <a href="{{ route('admin.absen', array_merge(request()->query(), ['export' => 'pdf'])) }}" class="btn btn-danger {{ request('tanggal') ? 'disabled' : '' }}">PDF</a>
+        <a href="{{ route('admin.absen', array_merge(request()->query(), ['export' => 'excel'])) }}" class="btn btn-success {{ request('tanggal') ? 'disabled' : '' }}">Export Excel</a>
+        <a href="{{ route('admin.absen', array_merge(request()->query(), ['export' => 'pdf'])) }}" class="btn btn-danger {{ request('tanggal') ? 'disabled' : '' }}">Export PDF</a>
       </div>
     </div>
   </div>

@@ -10,8 +10,8 @@
     </div>
     <div class="col-auto ms-auto">
       <div class="btn-list">
-        <a href="{{ route('admin.sakit.index', array_merge(request()->query(), ['export' => 'excel'])) }}" class="btn btn-success">Excel</a>
-        <a href="{{ route('admin.sakit.index', array_merge(request()->query(), ['export' => 'pdf'])) }}" class="btn btn-danger">PDF</a>
+        <a href="{{ route('admin.sakit.index', array_merge(request()->query(), ['export' => 'excel'])) }}" class="btn btn-success">Export Excel</a>
+        <a href="{{ route('admin.sakit.index', array_merge(request()->query(), ['export' => 'pdf'])) }}" class="btn btn-danger">Export PDF</a>
       </div>
     </div>
   </div>
@@ -43,7 +43,8 @@
                       <option value="2" {{ request('status') == '2' ? 'selected' : '' }}>Approved</option>
                       <option value="3" {{ request('status') == '3' ? 'selected' : '' }}>Denied</option>
                   </select>
-                  <input type="date" class="form-control" name="tanggal" value="{{ request('tanggal') }}" placeholder="">
+                  <input type="date" class="form-control" name="dari" value="{{ request('dari') }}" placeholder="">
+                  <input type="date" class="form-control" name="sampai" value="{{ request('sampai') }}" placeholder="">
                   <input type="text" class="form-control" name="search" value="{{ request('search') }}" placeholder="Search">
                   <button type="submit" class="btn btn-icon btn-dark-outline"><i class="fa-solid fa-magnifying-glass"></i></button>
                   <a href="{{ route('admin.sakit.index') }}" class="btn btn-icon btn-dark-outline"><i class="fa-solid fa-times"></i></a>
@@ -71,8 +72,8 @@
                   <td>{{ ($izins->currentPage() - 1) * $izins->perPage() + $loop->iteration }}</td>
                   <td>{{ $izin->kode }}</td>
                   <td>{{ $izin->user->name }}</td>
-                  <td>{{ $izin->dari }}</td>
-                  <td>{{ $izin->sampai }}</td>
+                  <td>{{ \Carbon\Carbon::parse($izin->dari)->format('d-m-Y') }}</td>
+                  <td>{{ \Carbon\Carbon::parse($izin->sampai)->format('d-m-Y') }}</td>
                   <td>{{ $izin->keterangan }}</td>
                   <td>
                     @if($izin->status_process == 1)

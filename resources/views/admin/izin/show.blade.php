@@ -29,8 +29,8 @@
           <div>HRD PT Guna Cipta Kreasi</div>
           <div>di</div>
           <div class="mb-3">Tempat</div>
-          <div class="mb-5">Perihal : <span class="fw-bold">{{ $izin->keterangan }}</span></div>
-          <div class="mb-5">Saya yang bertanda tangan dibawah ini :</div>
+          <div class="mb-3">Perihal : <span class="fw-bold">{{ $izin->keterangan }}</span></div>
+          <div class="mb-3">Saya yang bertanda tangan dibawah ini :</div>
           <table class="mb-3 w-100">
             <tr>
               <td style="width: 20%;">Nama</td>
@@ -49,7 +49,7 @@
               <td>: {{ $izin->user->lokasi->nama }}, {{ $izin->user->lokasi->deskripsi }}</td>
             </tr>
           </table>
-          <div class="mb-3">Bermaksut untuk mengajukan permohonan ijin selama {{ \Carbon\Carbon::parse($izin->dari)->diffInDays(\Carbon\Carbon::parse($izin->sampai)) + 1 }} hari dari tanggal <span class="fw-bold">{{ \Carbon\Carbon::parse($izin->dari)->translatedFormat('d') }}</span> bulan <span class="fw-bold">{{ \Carbon\Carbon::parse($izin->dari)->translatedFormat('F') }}</span> tahun <span class="fw-bold">{{ \Carbon\Carbon::parse($izin->dari)->translatedFormat('Y') }}</span> sampai dengan tanggal <span class="fw-bold">{{ \Carbon\Carbon::parse($izin->sampai)->translatedFormat('d') }}</span> bulan <span class="fw-bold">{{ \Carbon\Carbon::parse($izin->sampai)->translatedFormat('F') }}</span> tahun <span class="fw-bold">{{ \Carbon\Carbon::parse($izin->sampai)->translatedFormat('Y') }}</span>.</div>
+          <div class="mb-3">Bermaksud untuk mengajukan permohonan ijin selama {{ \Carbon\Carbon::parse($izin->dari)->diffInDays(\Carbon\Carbon::parse($izin->sampai)) + 1 }} hari dari tanggal <span class="fw-bold">{{ \Carbon\Carbon::parse($izin->dari)->translatedFormat('d') }}</span> bulan <span class="fw-bold">{{ \Carbon\Carbon::parse($izin->dari)->translatedFormat('F') }}</span> tahun <span class="fw-bold">{{ \Carbon\Carbon::parse($izin->dari)->translatedFormat('Y') }}</span> sampai dengan tanggal <span class="fw-bold">{{ \Carbon\Carbon::parse($izin->sampai)->translatedFormat('d') }}</span> bulan <span class="fw-bold">{{ \Carbon\Carbon::parse($izin->sampai)->translatedFormat('F') }}</span> tahun <span class="fw-bold">{{ \Carbon\Carbon::parse($izin->sampai)->translatedFormat('Y') }}</span>.</div>
           <div class="mb-3">Demikian surat permohonan ini saya buat. Atas perhatian nya saya ucapkan terima kasih.</div>
           <div class="mb-3"><span class="fw-bold">{{ \Carbon\Carbon::parse($izin->sampai)->locale('id')->translatedFormat('l, d F Y') }}</span></div>
           <div class="mb-3">Hormat Saya,</div>
@@ -57,17 +57,19 @@
           <div class="d-flex gap-3">
             @if($izin->lampiran)
               <div>
-                <img src="/sakit/surat-dokter/{{ $izin->lampiran }}" alt="" width="250">
+                <div class="mb-2">Lampiran :</div>
+                <img src="/izin/{{ $izin->lampiran }}" alt="" width="250">
               </div>
             @endif
           </div>
         </div>
         <div class="card-footer">
-          <a href="{{ route('admin.sakit.index') }}" class="btn btn-primary">Back</a>
+          <a href="{{ route('admin.izin.index') }}" class="btn btn-primary">Back</a>
           @if($izin->status_process == 1)
           <button type="button" class="btn btn-icon btn-success" data-bs-toggle="modal" data-bs-target="#approve{{ $izin->id }}"><i class="fa-solid fa-check"></i></button>
           <button type="button" class="btn btn-icon btn-danger" data-bs-toggle="modal" data-bs-target="#reject{{ $izin->id }}"><i class="fa-solid fa-times"></i></button>
           @endif
+          <a href="{{ route('admin.izin.show', array_merge(request()->query(), ['izin' => $izin->kode, 'export' => 'pdf'])) }}" class="btn btn-secondary" target="_blank">Print Dokumen</a>
         </div>
       </div>
     </div>
