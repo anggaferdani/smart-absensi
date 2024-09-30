@@ -103,12 +103,16 @@
                     @endif
                   </td>
                   <td>
-                    @if($absen->status == 1)
-                      <span class="badge bg-blue text-blue-fg">Lebih Awal</span>
-                    @elseif($absen->status == 2)
-                      <span class="badge bg-green text-green-fg">Tepat Waktu</span>
-                    @elseif($absen->status == 3)
-                      <span class="badge bg-red text-red-fg">Terlambat</span>
+                    @if($absen->token->status == 1)
+                      @if($absen->status == 1)
+                        <span class="badge bg-blue text-blue-fg">Lebih Awal</span>
+                      @elseif($absen->status == 2)
+                        <span class="badge bg-green text-green-fg">Tepat Waktu</span>
+                      @elseif($absen->status == 3)
+                        <span class="badge bg-red text-red-fg">Terlambat</span>
+                      @endif
+                    @else
+                      -
                     @endif
                   </td>
                   <td>
