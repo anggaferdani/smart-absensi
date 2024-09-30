@@ -27,7 +27,7 @@ class IzinController extends Controller
             'keterangan' => 'required',
             'dari' => 'required',
             'sampai' => 'required|after_or_equal:dari',
-            'lampiran' => 'nullable|max:1024|file|mimes:png,jpg,jpeg',
+            'lampiran' => 'nullable|max:2048|file|mimes:png,jpg,jpeg',
         ]);
 
         try {
@@ -72,7 +72,7 @@ class IzinController extends Controller
             'keterangan' => 'required',
             'dari' => 'required',
             'sampai' => 'required|after_or_equal:dari',
-            'lampiran' => 'nullable|max:1024|file|mimes:png,jpg,jpeg',
+            'lampiran' => 'nullable|max:2048|file|mimes:png,jpg,jpeg',
         ]);
 
         try {
