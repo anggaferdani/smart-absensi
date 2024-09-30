@@ -145,6 +145,51 @@ class AbsenController extends Controller
             $pdf->setPaper('A4', 'landscape');
             return $pdf->download($fileName);
         }
+
+        if ($request->has('export') && $request->export == 'print') {
+            $absens = $query->get();
+            if ($absens->isEmpty()) {
+                return redirect()->back()->with('error', 'No data available to export.');
+            }
+            
+            
+            $fileName = 'absen-' . $fileDate . '.pdf';
+            $absens = $query->get();
+    
+            $absens = $absens->map(function($absen) {
+                $absen->tanggal = Carbon::parse($absen->tanggal);
+                return $absen;
+            });
+    
+            $users = User::with('absens')->get();
+            
+            $userLateness = $users->mapWithKeys(function($user) {
+                $lateCount = $user->absens->filter(function($absen) {
+                    return $absen->status == 3 && $absen->token->status == 1;
+                })->count();
+                return [$user->id => $lateCount];
+            });
+    
+            $userOvertime = $users->mapWithKeys(function($user) {
+                $overtime = $user->absens->filter(function($absen) {
+                    return $absen->status == 3 && $absen->token->status == 2;
+                })->count();
+                return [$user->id => $overtime];
+            });
+    
+            $months = $absens->groupBy(function($date) {
+                return Carbon::parse($date->tanggal)->format('F Y');
+            });
+            
+            $pdf = Pdf::loadView('admin.exports.absen', [
+                'months' => $months,
+                'daysInMonth' => $daysInMonth,
+                'userLateness' => $userLateness,
+                'userOvertime' => $userOvertime,
+            ]);
+            $pdf->setPaper('A4', 'landscape');
+            return $pdf->stream($fileName);
+        }
         
         $absens = $query->paginate(10);
         $lokasis = Lokasi::where('status', 1)->get();

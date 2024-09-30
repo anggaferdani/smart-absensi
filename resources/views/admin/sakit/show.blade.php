@@ -24,7 +24,7 @@
             </div>
           </div>
           <hr>
-          <div class="text-center fs-3 fw-bold mb-5">FORMULIR PENGAJUAN IJIN TIDAK MASUK KARENA SAKIT</div>
+          <div class="text-center fs-3 fw-bold mb-5">FORMULIR PENGAJUAN IZIN TIDAK MASUK KARENA SAKIT</div>
           <div class="mb-3">Kepada YTH</div>
           <div>HRD PT Guna Cipta Kreasi</div>
           <div>di</div>
@@ -49,7 +49,7 @@
               <td>: {{ $izin->user->lokasi->nama }}, {{ $izin->user->lokasi->deskripsi }}</td>
             </tr>
           </table>
-          <div class="mb-3">Bermaksud untuk mengajukan permohonan ijin sakit selama {{ \Carbon\Carbon::parse($izin->dari)->diffInDays(\Carbon\Carbon::parse($izin->sampai)) + 1 }} hari dari tanggal <span class="fw-bold">{{ \Carbon\Carbon::parse($izin->dari)->translatedFormat('d') }}</span> bulan <span class="fw-bold">{{ \Carbon\Carbon::parse($izin->dari)->translatedFormat('F') }}</span> tahun <span class="fw-bold">{{ \Carbon\Carbon::parse($izin->dari)->translatedFormat('Y') }}</span> sampai dengan tanggal <span class="fw-bold">{{ \Carbon\Carbon::parse($izin->sampai)->translatedFormat('d') }}</span> bulan <span class="fw-bold">{{ \Carbon\Carbon::parse($izin->sampai)->translatedFormat('F') }}</span> tahun <span class="fw-bold">{{ \Carbon\Carbon::parse($izin->sampai)->translatedFormat('Y') }}</span>.</div>
+          <div class="mb-3">Bermaksud untuk mengajukan permohonan izin sakit selama {{ \Carbon\Carbon::parse($izin->dari)->diffInDays(\Carbon\Carbon::parse($izin->sampai)) + 1 }} hari dari tanggal <span class="fw-bold">{{ \Carbon\Carbon::parse($izin->dari)->translatedFormat('d') }}</span> bulan <span class="fw-bold">{{ \Carbon\Carbon::parse($izin->dari)->translatedFormat('F') }}</span> tahun <span class="fw-bold">{{ \Carbon\Carbon::parse($izin->dari)->translatedFormat('Y') }}</span> sampai dengan tanggal <span class="fw-bold">{{ \Carbon\Carbon::parse($izin->sampai)->translatedFormat('d') }}</span> bulan <span class="fw-bold">{{ \Carbon\Carbon::parse($izin->sampai)->translatedFormat('F') }}</span> tahun <span class="fw-bold">{{ \Carbon\Carbon::parse($izin->sampai)->translatedFormat('Y') }}</span>.</div>
           <div class="mb-3">Demikian surat permohonan ini saya buat dan saya lampirkan surat dokter serta copy resep dokter. Atas perhatian nya saya ucapkan terima kasih.</div>
           <div class="mb-3"><span class="fw-bold">{{ \Carbon\Carbon::parse($izin->sampai)->locale('id')->translatedFormat('l, d F Y') }}</span></div>
           <div class="mb-3">Hormat Saya,</div>

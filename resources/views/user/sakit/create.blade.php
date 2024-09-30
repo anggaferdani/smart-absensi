@@ -37,7 +37,7 @@
     </div>
   </div>
   <div class="row">
-    <div class="text-center fw-bold mb-3">PENGAJUAN IJIN SAKIT</div>
+    <div class="text-center fw-bold mb-3">PENGAJUAN IZIN SAKIT</div>
     <form action="{{ route('user.sakit.store') }}" method="POST" class="" enctype="multipart/form-data">
       @csrf
       <div class="mb-3">

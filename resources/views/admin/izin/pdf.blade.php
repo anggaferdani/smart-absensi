@@ -11,7 +11,7 @@
         </div>
       </div>
       <hr style="margin-bottom: 30px;">
-      <div style="text-align: center; font-size: 1rem; font-weight: bold; margin-bottom: 30px;">FORMULIR PENGAJUAN IJIN KARYAWAN</div>
+      <div style="text-align: center; font-size: 1rem; font-weight: bold; margin-bottom: 30px;">FORMULIR PENGAJUAN IZIN KARYAWAN</div>
       <div style="margin-bottom: 15px;">Kepada YTH</div>
       <div>HRD PT Guna Cipta Kreasi</div>
       <div>di</div>
@@ -37,7 +37,7 @@
         </tr>
       </table>
       <div style="margin-bottom: 15px;">
-        Bermaksud untuk mengajukan permohonan ijin selama 
+        Bermaksud untuk mengajukan permohonan izin selama 
         <strong>{{ \Carbon\Carbon::parse($izin->dari)->diffInDays(\Carbon\Carbon::parse($izin->sampai)) + 1 }}</strong> 
         hari dari tanggal 
         <strong>{{ \Carbon\Carbon::parse($izin->dari)->translatedFormat('d') }}</strong> bulan 

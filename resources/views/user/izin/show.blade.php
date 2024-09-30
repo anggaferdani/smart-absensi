@@ -23,11 +23,11 @@
     </div>
   </div>
   <div class="row">
-    <div class="text-center fw-bold mb-2">PENGAJUAN IJIN KEPERLUAN</div>
+    <div class="text-center fw-bold mb-2">PENGAJUAN IZIN KEPERLUAN</div>
     <div class="text-center mb-3">Pengajuan anda sedang dalam proses persetujuan. Cek secara berkala untuk mendapatkan status persetujuan.</div>
     <div class="border border-3 border-dark rounded-5 p-3 text-center mb-3">
       <div>Nama : {{ $izin->user->name }}</div>
-      <div>Ijin tidak masuk kerja</div>
+      <div>Izin tidak masuk kerja</div>
       <div>Dari : {{ \Carbon\Carbon::parse($izin->dari)->format('d M Y') }}</div>
       <div>Sampai dengan : {{ \Carbon\Carbon::parse($izin->sampai)->format('d M Y') }}</div>
       <div>	Keperluan : {{ $izin->keterangan }}</div>

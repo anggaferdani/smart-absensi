@@ -55,6 +55,13 @@ class SakitAdminController extends Controller
             $pdf = Pdf::loadView('admin.exports.izin', compact('izins'));
             return $pdf->download($fileName);
         }
+
+        if ($request->has('export') && $request->export == 'print') {
+            $fileName = 'sakit-' . $fileDate . '.pdf';
+            $izins = $query->get();
+            $pdf = Pdf::loadView('admin.exports.izin', compact('izins'));
+            return $pdf->stream($fileName);
+        }
     
         $izins = $query->paginate(10);
     
