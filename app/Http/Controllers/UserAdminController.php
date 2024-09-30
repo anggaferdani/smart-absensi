@@ -48,6 +48,16 @@ class UserAdminController extends Controller
                 'unit_kerja_id' => 'required',
             ], [
                 'profile_picture.dimensions' => 'Foto profil harus memiliki rasio 1:1.',
+                'profile_picture.image' => 'Foto profil harus berupa gambar.',
+                'profile_picture.mimes' => 'Foto profil harus berformat jpeg, png, atau jpg.',
+                'name.required' => 'Nama wajib diisi.',
+                'phone.required' => 'Nomor telepon wajib diisi.',
+                'phone.unique' => 'Nomor telepon sudah terdaftar.',
+                'email.email' => 'Email harus berformat valid.',
+                'email.unique' => 'Email sudah terdaftar.',
+                'password.required' => 'Password wajib diisi.',
+                'lokasi_id.required' => 'Lokasi wajib diisi.',
+                'unit_kerja_id.required' => 'Unit kerja wajib diisi.',
             ]);
             
             $profilePicturePath = $request->hasFile('profile_picture')
@@ -90,6 +100,13 @@ class UserAdminController extends Controller
             'unit_kerja_id' => 'required',
         ], [
             'profile_picture.dimensions' => 'Foto profil harus memiliki rasio 1:1.',
+            'name.required' => 'Nama wajib diisi.',
+            'phone.required' => 'Nomor telepon wajib diisi.',
+            'phone.unique' => 'Nomor telepon sudah terdaftar.',
+            'email.email' => 'Email harus berformat valid.',
+            'email.unique' => 'Email sudah terdaftar.',
+            'lokasi_id.required' => 'Lokasi wajib diisi.',
+            'unit_kerja_id.required' => 'Unit kerja wajib diisi.',
         ]);
 
         try {
