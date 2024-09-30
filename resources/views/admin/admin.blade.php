@@ -59,7 +59,7 @@
                   <td>{{ ($admins->currentPage() - 1) * $admins->perPage() + $loop->iteration }}</td>
                   <td>{{ $admin->name }}</td>
                   <td>{{ $admin->email }}</td>
-                  <td>{{ $user->phone ?? '-' }}</td>
+                  <td>{{ $admin->phone ?? '-' }}</td>
                   <td>
                     <button type="button" class="btn btn-icon btn-primary" data-bs-toggle="modal" data-bs-target="#edit{{ $admin->id }}"><i class="fa-solid fa-pen"></i></button>
                     <button type="button" class="btn btn-icon btn-danger" data-bs-toggle="modal" data-bs-target="#delete{{ $admin->id }}"><i class="fa-solid fa-trash"></i></button>
@@ -149,7 +149,7 @@
           </div>
           <div class="mb-3">
             <label class="form-label required">No. HP</label>
-            <input type="number" class="form-control" name="phone" placeholder="No. HP" value="{{ $user->phone }}">
+            <input type="number" class="form-control" name="phone" placeholder="No. HP" value="{{ $admin->phone }}">
             @error('phone')<div class="text-danger">{{ $message }}</div>@enderror
           </div>
           <div class="mb-3">
