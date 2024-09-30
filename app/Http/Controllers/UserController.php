@@ -143,6 +143,21 @@ class UserController extends Controller
             ->whereMonth('tanggal', $selectedMonth)
             ->latest()
             ->paginate(5);
+
+        $absenKehadiran = Absen::with('token', 'token.lokasi', 'user')
+            ->where('user_id', $userId)
+            ->whereYear('tanggal', $currentYear)
+            ->whereMonth('tanggal', $selectedMonth)
+            ->whereIn('id', function ($query) use ($userId, $currentYear, $selectedMonth) {
+                $query->select(DB::raw('MIN(id)'))
+                    ->from('absens')
+                    ->where('user_id', $userId)
+                    ->whereYear('tanggal', $currentYear)
+                    ->whereMonth('tanggal', $selectedMonth)
+                    ->groupBy(DB::raw('DATE(tanggal)'));
+            })
+            ->latest()
+            ->get();
     
         // Count izin (leave) days
         $izinDays = Izin::where('user_id', $userId)
@@ -174,7 +189,7 @@ class UserController extends Controller
         $totalDaysInMonth = $this->countBusinessDays($currentYear, $selectedMonth);
     
         // Count actual attended days (based on records)
-        $actualAttendanceDays = $absens->count();
+        $actualAttendanceDays = $absenKehadiran->count();
     
         // Total absent days are the sum of izin days and sick days
         $absentDays = $izinDays + $sickDays;
