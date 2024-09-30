@@ -31,12 +31,14 @@ class AdminController extends Controller
         $request->validate([
             'name' => 'required',
             'email' => 'required|email|unique:users,email',
+            'phone' => 'required|unique:users,phone',
             'password' => 'required',
         ]);
 
         try {
             $array = [
                 'name' => $request['name'],
+                'phone' => $request['phone'],
                 'email' => $request['email'],
                 'password' => bcrypt($request['password']),
                 'role' => 1,
@@ -60,12 +62,14 @@ class AdminController extends Controller
         $request->validate([
             'name' => 'required',
             'email' => 'required|email|unique:users,email,'.$admin->id.",id",
+            'phone' => 'required|unique:users,phone,'.$admin->id.",id",
         ]);
 
         try {
             $array = [
                 'name' => $request['name'],
                 'email' => $request['email'],
+                'phone' => $request['phone'],
             ];
 
             if($request['password']){

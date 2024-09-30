@@ -49,6 +49,7 @@
                 <th>No.</th>
                 <th>Name</th>
                 <th>Email</th>
+                <th>No. HP</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -58,6 +59,7 @@
                   <td>{{ ($admins->currentPage() - 1) * $admins->perPage() + $loop->iteration }}</td>
                   <td>{{ $admin->name }}</td>
                   <td>{{ $admin->email }}</td>
+                  <td>{{ $user->phone ?? '-' }}</td>
                   <td>
                     <button type="button" class="btn btn-icon btn-primary" data-bs-toggle="modal" data-bs-target="#edit{{ $admin->id }}"><i class="fa-solid fa-pen"></i></button>
                     <button type="button" class="btn btn-icon btn-danger" data-bs-toggle="modal" data-bs-target="#delete{{ $admin->id }}"><i class="fa-solid fa-trash"></i></button>
@@ -102,6 +104,11 @@
             @error('email')<div class="text-danger">{{ $message }}</div>@enderror
           </div>
           <div class="mb-3">
+            <label class="form-label required">No. HP</label>
+            <input type="number" class="form-control" name="phone" placeholder="No. HP">
+            @error('phone')<div class="text-danger">{{ $message }}</div>@enderror
+          </div>
+          <div class="mb-3">
             <label class="form-label required">Password</label>
             <input type="password" class="form-control" name="password" placeholder="Password">
             @error('password')<div class="text-danger">{{ $message }}</div>@enderror
@@ -139,6 +146,11 @@
             <label class="form-label required">Email</label>
             <input type="email" class="form-control" name="email" placeholder="Email" value="{{ $admin->email }}">
             @error('email')<div class="text-danger">{{ $message }}</div>@enderror
+          </div>
+          <div class="mb-3">
+            <label class="form-label required">No. HP</label>
+            <input type="number" class="form-control" name="phone" placeholder="No. HP" value="{{ $user->phone }}">
+            @error('phone')<div class="text-danger">{{ $message }}</div>@enderror
           </div>
           <div class="mb-3">
             <label class="form-label required">Password</label>
