@@ -118,8 +118,8 @@
             @php
                 $user = $absenGroup->first()->user;
                 $currentMonthYear = Carbon::parse($month)->format('Y-m');
-                $terlambat = $userLateness[$userId][$currentMonthYear] ?? 0;
-                $overtime = $userOvertime[$userId][$currentMonthYear] ?? 0;
+                $terlambat = is_array($userLateness[$userId]) ? 0 : ($userLateness[$userId] ?? 0);
+                $overtime = is_array($userOvertime[$userId]) ? 0 : ($userOvertime[$userId] ?? 0);
         
                 $totalHours = 0;
                 $workHours = [];
@@ -154,8 +154,8 @@
                         {{ $pulang ? \Carbon\Carbon::parse($pulang->tanggal)->format('H:i') : '' }}
                     </td>
                 @endfor
-                <td style="border: 1px solid black; text-align: center; font-size: 5px;">{{ $terlambat }}</td>
-                <td style="border: 1px solid black; text-align: center; font-size: 5px;">{{ $overtime }}</td>
+                <td style="border: 1px solid black; text-align: center; font-size: 5px;">{{ (string) $terlambat }}</td>
+                <td style="border: 1px solid black; text-align: center; font-size: 5px;">{{ (string) $overtime }}</td>
                 <td style="border: 1px solid black; text-align: center; font-size: 5px;">{{ number_format($totalHours, 2) }}</td>
                 <td style="border: 1px solid black; text-align: center; font-size: 5px;">
                     @php
