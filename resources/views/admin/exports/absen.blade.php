@@ -37,9 +37,8 @@
         @foreach ($absens->where('shift', 'siang')->groupBy('user_id') as $userId => $absenGroup)
             @php
                 $user = $absenGroup->first()->user;
-                $monthYear = \Carbon\Carbon::now()->format('F Y');
-                $terlambat = $userLateness[$userId][$monthYear] ?? 0;
-                $overtime = $userOvertime[$userId][$monthYear] ?? 0;
+                $terlambat = $userLateness[$month][$userId] ?? 0;
+                $overtime = $userOvertime[$month][$userId] ?? 0;
         
                 $totalHours = 0;
                 $workHours = [];
