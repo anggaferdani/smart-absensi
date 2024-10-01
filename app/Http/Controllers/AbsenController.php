@@ -80,22 +80,22 @@ class AbsenController extends Controller
 
             $users = User::with('absens')->get();
             
-            $userLateness = $users->mapWithKeys(function($user) use ($bulan) {
-                $lateCount = $user->absens->filter(function($absen) use ($bulan) {
+            $userLateness = $users->mapWithKeys(function($user) use ($month) {
+                $lateCount = $user->absens->filter(function($absen) use ($month) {
                     return $absen->status == 3 
                         && $absen->token->status == 1 
-                        && \Carbon\Carbon::parse($absen->tanggal)->format('F Y') == $bulan;
+                        && \Carbon\Carbon::parse($absen->tanggal)->format('F Y') == $month;
                 })->count();
-                return [$bulan => [$user->id => $lateCount]];
+                return [$month => [$user->id => $lateCount]];
             });
             
-            $userOvertime = $users->mapWithKeys(function($user) use ($bulan) {
-                $overtimeCount = $user->absens->filter(function($absen) use ($bulan) {
+            $userOvertime = $users->mapWithKeys(function($user) use ($month) {
+                $overtimeCount = $user->absens->filter(function($absen) use ($month) {
                     return $absen->status == 3 
                         && $absen->token->status == 2 
-                        && \Carbon\Carbon::parse($absen->tanggal)->format('F Y') == $bulan;
+                        && \Carbon\Carbon::parse($absen->tanggal)->format('F Y') == $month;
                 })->count();
-                return [$bulan => [$user->id => $overtimeCount]];
+                return [$month => [$user->id => $overtimeCount]];
             });
             
         
@@ -123,24 +123,23 @@ class AbsenController extends Controller
     
             $users = User::with('absens')->get();
             
-            $userLateness = $users->mapWithKeys(function($user) use ($bulan) {
-                $lateCount = $user->absens->filter(function($absen) use ($bulan) {
+            $userLateness = $users->mapWithKeys(function($user) use ($month) {
+                $lateCount = $user->absens->filter(function($absen) use ($month) {
                     return $absen->status == 3 
                         && $absen->token->status == 1 
-                        && \Carbon\Carbon::parse($absen->tanggal)->format('F Y') == $bulan;
+                        && \Carbon\Carbon::parse($absen->tanggal)->format('F Y') == $month;
                 })->count();
-                return [$bulan => [$user->id => $lateCount]];
+                return [$month => [$user->id => $lateCount]];
             });
             
-            $userOvertime = $users->mapWithKeys(function($user) use ($bulan) {
-                $overtimeCount = $user->absens->filter(function($absen) use ($bulan) {
+            $userOvertime = $users->mapWithKeys(function($user) use ($month) {
+                $overtimeCount = $user->absens->filter(function($absen) use ($month) {
                     return $absen->status == 3 
                         && $absen->token->status == 2 
-                        && \Carbon\Carbon::parse($absen->tanggal)->format('F Y') == $bulan;
+                        && \Carbon\Carbon::parse($absen->tanggal)->format('F Y') == $month;
                 })->count();
-                return [$bulan => [$user->id => $overtimeCount]];
-            });
-            
+                return [$month => [$user->id => $overtimeCount]];
+            });            
     
             $months = $absens->groupBy(function($date) {
                 return Carbon::parse($date->tanggal)->format('F Y');
@@ -173,24 +172,23 @@ class AbsenController extends Controller
     
             $users = User::with('absens')->get();
             
-            $userLateness = $users->mapWithKeys(function($user) use ($bulan) {
-                $lateCount = $user->absens->filter(function($absen) use ($bulan) {
+            $userLateness = $users->mapWithKeys(function($user) use ($month) {
+                $lateCount = $user->absens->filter(function($absen) use ($month) {
                     return $absen->status == 3 
                         && $absen->token->status == 1 
-                        && \Carbon\Carbon::parse($absen->tanggal)->format('F Y') == $bulan;
+                        && \Carbon\Carbon::parse($absen->tanggal)->format('F Y') == $month;
                 })->count();
-                return [$bulan => [$user->id => $lateCount]];
+                return [$month => [$user->id => $lateCount]];
             });
             
-            $userOvertime = $users->mapWithKeys(function($user) use ($bulan) {
-                $overtimeCount = $user->absens->filter(function($absen) use ($bulan) {
+            $userOvertime = $users->mapWithKeys(function($user) use ($month) {
+                $overtimeCount = $user->absens->filter(function($absen) use ($month) {
                     return $absen->status == 3 
                         && $absen->token->status == 2 
-                        && \Carbon\Carbon::parse($absen->tanggal)->format('F Y') == $bulan;
+                        && \Carbon\Carbon::parse($absen->tanggal)->format('F Y') == $month;
                 })->count();
-                return [$bulan => [$user->id => $overtimeCount]];
+                return [$month => [$user->id => $overtimeCount]];
             });
-            
     
             $months = $absens->groupBy(function($date) {
                 return Carbon::parse($date->tanggal)->format('F Y');
