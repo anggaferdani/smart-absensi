@@ -48,6 +48,8 @@ class AbsenController extends Controller
             $daysInMonth = Carbon::now()->daysInMonth;
             $monthYear = Carbon::now()->format('F Y');
         }
+
+        $selectedMonth = Carbon::parse($bulan ?? $tanggal)->format('Y-m');
         
         if ($request->has('lokasi') && !empty($request->input('lokasi'))) {
             $lokasiId = $request->input('lokasi');
@@ -79,34 +81,22 @@ class AbsenController extends Controller
             }
 
             $users = User::with('absens')->get();
-    
-            $months = $absens->groupBy(function($date) {
-                return Carbon::parse($date->tanggal)->format('F Y');
+            
+            $userLateness = $users->mapWithKeys(function($user) use ($selectedMonth) {
+                $lateCount = $user->absens->filter(function($absen) use ($selectedMonth) {
+                    return $absen->status == 3 && $absen->token->status == 1 &&
+                           Carbon::parse($absen->tanggal)->format('Y-m') == $selectedMonth;
+                })->count();
+                return [$user->id => $lateCount];
             });
-            
-            foreach ($months as $month => $absens) {
-                $userLateness = $users->mapWithKeys(function($user) use ($month) {
-                    $lateCount = $user->absens->filter(function($absen) use ($month) {
-                        return $absen->status == 3 
-                            && $absen->token->status == 1 
-                            && \Carbon\Carbon::parse($absen->tanggal)->format('F Y') == $month;
-                    })->count();
-                    return [$month => [$user->id => $lateCount]];
-                });
-            
-                $userOvertime = $users->mapWithKeys(function($user) use ($month) {
-                    $overtimeCount = $user->absens->filter(function($absen) use ($month) {
-                        return $absen->status == 3 
-                            && $absen->token->status == 2 
-                            && \Carbon\Carbon::parse($absen->tanggal)->format('F Y') == $month;
-                    })->count();
-                    return [$month => [$user->id => $overtimeCount]];
-                });
-            
-                // Menggunakan hasilnya di sini
-                $terlambat = $userLateness[$month][$userId] ?? 0;
-                $overtime = $userOvertime[$month][$userId] ?? 0;
-            }
+        
+            $userOvertime = $users->mapWithKeys(function($user) use ($selectedMonth) {
+                $overtime = $user->absens->filter(function($absen) use ($selectedMonth) {
+                    return $absen->status == 3 && $absen->token->status == 2 &&
+                           Carbon::parse($absen->tanggal)->format('Y-m') == $selectedMonth;
+                })->count();
+                return [$user->id => $overtime];
+            });
         
             $fileName = 'absen-' . $fileDate . '.xlsx';
             return Excel::download(
@@ -131,34 +121,26 @@ class AbsenController extends Controller
             });
     
             $users = User::with('absens')->get();
+            
+            $userLateness = $users->mapWithKeys(function($user) use ($selectedMonth) {
+                $lateCount = $user->absens->filter(function($absen) use ($selectedMonth) {
+                    return $absen->status == 3 && $absen->token->status == 1 &&
+                           Carbon::parse($absen->tanggal)->format('Y-m') == $selectedMonth;
+                })->count();
+                return [$user->id => $lateCount];
+            });
+        
+            $userOvertime = $users->mapWithKeys(function($user) use ($selectedMonth) {
+                $overtime = $user->absens->filter(function($absen) use ($selectedMonth) {
+                    return $absen->status == 3 && $absen->token->status == 2 &&
+                           Carbon::parse($absen->tanggal)->format('Y-m') == $selectedMonth;
+                })->count();
+                return [$user->id => $overtime];
+            });
     
             $months = $absens->groupBy(function($date) {
                 return Carbon::parse($date->tanggal)->format('F Y');
             });
-
-            foreach ($months as $month => $absens) {
-                $userLateness = $users->mapWithKeys(function($user) use ($month) {
-                    $lateCount = $user->absens->filter(function($absen) use ($month) {
-                        return $absen->status == 3 
-                            && $absen->token->status == 1 
-                            && \Carbon\Carbon::parse($absen->tanggal)->format('F Y') == $month;
-                    })->count();
-                    return [$month => [$user->id => $lateCount]];
-                });
-            
-                $userOvertime = $users->mapWithKeys(function($user) use ($month) {
-                    $overtimeCount = $user->absens->filter(function($absen) use ($month) {
-                        return $absen->status == 3 
-                            && $absen->token->status == 2 
-                            && \Carbon\Carbon::parse($absen->tanggal)->format('F Y') == $month;
-                    })->count();
-                    return [$month => [$user->id => $overtimeCount]];
-                });
-            
-                // Menggunakan hasilnya di sini
-                $terlambat = $userLateness[$month][$userId] ?? 0;
-                $overtime = $userOvertime[$month][$userId] ?? 0;
-            }
             
             $pdf = Pdf::loadView('admin.exports.absen', [
                 'months' => $months,
@@ -186,34 +168,26 @@ class AbsenController extends Controller
             });
     
             $users = User::with('absens')->get();
+            
+            $userLateness = $users->mapWithKeys(function($user) use ($selectedMonth) {
+                $lateCount = $user->absens->filter(function($absen) use ($selectedMonth) {
+                    return $absen->status == 3 && $absen->token->status == 1 &&
+                           Carbon::parse($absen->tanggal)->format('Y-m') == $selectedMonth;
+                })->count();
+                return [$user->id => $lateCount];
+            });
+        
+            $userOvertime = $users->mapWithKeys(function($user) use ($selectedMonth) {
+                $overtime = $user->absens->filter(function($absen) use ($selectedMonth) {
+                    return $absen->status == 3 && $absen->token->status == 2 &&
+                           Carbon::parse($absen->tanggal)->format('Y-m') == $selectedMonth;
+                })->count();
+                return [$user->id => $overtime];
+            });
     
             $months = $absens->groupBy(function($date) {
                 return Carbon::parse($date->tanggal)->format('F Y');
             });
-
-            foreach ($months as $month => $absens) {
-                $userLateness = $users->mapWithKeys(function($user) use ($month) {
-                    $lateCount = $user->absens->filter(function($absen) use ($month) {
-                        return $absen->status == 3 
-                            && $absen->token->status == 1 
-                            && \Carbon\Carbon::parse($absen->tanggal)->format('F Y') == $month;
-                    })->count();
-                    return [$month => [$user->id => $lateCount]];
-                });
-            
-                $userOvertime = $users->mapWithKeys(function($user) use ($month) {
-                    $overtimeCount = $user->absens->filter(function($absen) use ($month) {
-                        return $absen->status == 3 
-                            && $absen->token->status == 2 
-                            && \Carbon\Carbon::parse($absen->tanggal)->format('F Y') == $month;
-                    })->count();
-                    return [$month => [$user->id => $overtimeCount]];
-                });
-            
-                // Menggunakan hasilnya di sini
-                $terlambat = $userLateness[$month][$userId] ?? 0;
-                $overtime = $userOvertime[$month][$userId] ?? 0;
-            }
             
             $pdf = Pdf::loadView('admin.exports.absen', [
                 'months' => $months,
