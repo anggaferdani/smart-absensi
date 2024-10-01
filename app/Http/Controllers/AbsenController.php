@@ -163,16 +163,16 @@ class AbsenController extends Controller
     
             $users = User::with('absens')->get();
             
-            $userLateness = $users->mapWithKeys(function($user) {
-                $lateCount = $user->absens->filter(function($absen) {
-                    return $absen->status == 3 && $absen->token->status == 1;
+            $userLateness = $users->mapWithKeys(function($user) use ($bulan) {
+                $lateCount = $user->absens->filter(function($absen) use ($bulan) {
+                    return $absen->status == 3 && $absen->token->status == 1 && Carbon::parse($absen->tanggal)->month == Carbon::parse($bulan)->month;
                 })->count();
                 return [$user->id => $lateCount];
             });
     
-            $userOvertime = $users->mapWithKeys(function($user) {
-                $overtime = $user->absens->filter(function($absen) {
-                    return $absen->status == 3 && $absen->token->status == 2;
+            $userOvertime = $users->mapWithKeys(function($user) use ($bulan) {
+                $overtime = $user->absens->filter(function($absen) use ($bulan) {
+                    return $absen->status == 3 && $absen->token->status == 2 && Carbon::parse($absen->tanggal)->month == Carbon::parse($bulan)->month;
                 })->count();
                 return [$user->id => $overtime];
             });
