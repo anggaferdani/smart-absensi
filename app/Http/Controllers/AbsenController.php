@@ -79,22 +79,30 @@ class AbsenController extends Controller
             }
 
             $users = User::with('absens')->get();
-            
-            $userLateness = $users->mapWithKeys(function($user) use ($bulan) {
-                $lateCount = $user->absens->filter(function($absen) use ($bulan) {
-                    return $absen->status == 3 && $absen->token->status == 1 && 
-                           Carbon::parse($absen->tanggal)->format('Y-m') == Carbon::parse($bulan)->format('Y-m');
-                })->count();
-                return [$user->id => $lateCount];
+
+            $months = $absens->groupBy(function($date) {
+                return Carbon::parse($date->tanggal)->format('F Y');
             });
             
-            $userOvertime = $users->mapWithKeys(function($user) use ($bulan) {
-                $overtime = $user->absens->filter(function($absen) use ($bulan) {
-                    return $absen->status == 3 && $absen->token->status == 2 && 
-                           Carbon::parse($absen->tanggal)->format('Y-m') == Carbon::parse($bulan)->format('Y-m');
-                })->count();
-                return [$user->id => $overtime];
-            });
+            $userLateness = [];
+            $userOvertime = [];
+
+            foreach ($months as $month => $absens) {
+                $users = User::with('absens')->get();
+
+                foreach ($users as $user) {
+                    $lateCount = $absens->filter(function ($absen) use ($user) {
+                        return $absen->user_id == $user->id && $absen->status == 3 && $absen->token->status == 1;
+                    })->count();
+
+                    $overtimeCount = $absens->filter(function ($absen) use ($user) {
+                        return $absen->user_id == $user->id && $absen->status == 3 && $absen->token->status == 2;
+                    })->count();
+
+                    $userLateness[$user->id][$month] = $lateCount;
+                    $userOvertime[$user->id][$month] = $overtimeCount;
+                }
+            }
         
             $fileName = 'absen-' . $fileDate . '.xlsx';
             return Excel::download(
@@ -119,26 +127,30 @@ class AbsenController extends Controller
             });
     
             $users = User::with('absens')->get();
-            
-            $userLateness = $users->mapWithKeys(function($user) use ($bulan) {
-                $lateCount = $user->absens->filter(function($absen) use ($bulan) {
-                    return $absen->status == 3 && $absen->token->status == 1 && 
-                           Carbon::parse($absen->tanggal)->format('Y-m') == Carbon::parse($bulan)->format('Y-m');
-                })->count();
-                return [$user->id => $lateCount];
-            });
-            
-            $userOvertime = $users->mapWithKeys(function($user) use ($bulan) {
-                $overtime = $user->absens->filter(function($absen) use ($bulan) {
-                    return $absen->status == 3 && $absen->token->status == 2 && 
-                           Carbon::parse($absen->tanggal)->format('Y-m') == Carbon::parse($bulan)->format('Y-m');
-                })->count();
-                return [$user->id => $overtime];
-            });
     
             $months = $absens->groupBy(function($date) {
                 return Carbon::parse($date->tanggal)->format('F Y');
             });
+
+            $userLateness = [];
+            $userOvertime = [];
+
+            foreach ($months as $month => $absens) {
+                $users = User::with('absens')->get();
+
+                foreach ($users as $user) {
+                    $lateCount = $absens->filter(function ($absen) use ($user) {
+                        return $absen->user_id == $user->id && $absen->status == 3 && $absen->token->status == 1;
+                    })->count();
+
+                    $overtimeCount = $absens->filter(function ($absen) use ($user) {
+                        return $absen->user_id == $user->id && $absen->status == 3 && $absen->token->status == 2;
+                    })->count();
+
+                    $userLateness[$user->id][$month] = $lateCount;
+                    $userOvertime[$user->id][$month] = $overtimeCount;
+                }
+            }
             
             $pdf = Pdf::loadView('admin.exports.absen', [
                 'months' => $months,
@@ -166,26 +178,30 @@ class AbsenController extends Controller
             });
     
             $users = User::with('absens')->get();
-            
-            $userLateness = $users->mapWithKeys(function($user) use ($bulan) {
-                $lateCount = $user->absens->filter(function($absen) use ($bulan) {
-                    return $absen->status == 3 && $absen->token->status == 1 && 
-                           Carbon::parse($absen->tanggal)->format('Y-m') == Carbon::parse($bulan)->format('Y-m');
-                })->count();
-                return [$user->id => $lateCount];
-            });
-            
-            $userOvertime = $users->mapWithKeys(function($user) use ($bulan) {
-                $overtime = $user->absens->filter(function($absen) use ($bulan) {
-                    return $absen->status == 3 && $absen->token->status == 2 && 
-                           Carbon::parse($absen->tanggal)->format('Y-m') == Carbon::parse($bulan)->format('Y-m');
-                })->count();
-                return [$user->id => $overtime];
-            });
     
             $months = $absens->groupBy(function($date) {
                 return Carbon::parse($date->tanggal)->format('F Y');
             });
+
+            $userLateness = [];
+                $userOvertime = [];
+
+                foreach ($months as $month => $absens) {
+                    $users = User::with('absens')->get();
+
+                    foreach ($users as $user) {
+                        $lateCount = $absens->filter(function ($absen) use ($user) {
+                            return $absen->user_id == $user->id && $absen->status == 3 && $absen->token->status == 1;
+                        })->count();
+
+                        $overtimeCount = $absens->filter(function ($absen) use ($user) {
+                            return $absen->user_id == $user->id && $absen->status == 3 && $absen->token->status == 2;
+                        })->count();
+
+                        $userLateness[$user->id][$month] = $lateCount;
+                        $userOvertime[$user->id][$month] = $overtimeCount;
+                    }
+                }
             
             $pdf = Pdf::loadView('admin.exports.absen', [
                 'months' => $months,
