@@ -73,8 +73,8 @@
                         {{ $pulang ? \Carbon\Carbon::parse($pulang->tanggal)->format('H:i') : '' }}
                     </td>
                 @endfor
-                <td style="border: 1px solid black; text-align: center; font-size: 5px;">{{ $terlambat }}</td>
-                <td style="border: 1px solid black; text-align: center; font-size: 5px;">{{ $overtime }}</td>
+                <td style="border: 1px solid black; text-align: center; font-size: 5px;">{{ $userLateness[$user->id][$month] ?? 0 }}</td>
+                <td style="border: 1px solid black; text-align: center; font-size: 5px;">{{ $userOvertime[$user->id][$month] ?? 0 }}</td>
                 <td style="border: 1px solid black; text-align: center; font-size: 5px;">{{ number_format($totalHours, 2) }}</td>
                 <td style="border: 1px solid black; text-align: center; font-size: 5px;">
                     @php

@@ -80,18 +80,31 @@ class AbsenController extends Controller
 
             $users = User::with('absens')->get();
             
-            $userLateness = $users->mapWithKeys(function($user) {
-                $lateCount = $user->absens->filter(function($absen) {
-                    return $absen->status == 3 && $absen->token->status == 1;
-                })->count();
-                return [$user->id => $lateCount];
+            $userLateness = $users->mapWithKeys(function($user) use ($absens) {
+                // Group absens by month
+                $latenessByMonth = $absens->filter(function($absen) use ($user) {
+                    return $absen->user_id == $user->id && $absen->status == 3 && $absen->token->status == 1;
+                })->groupBy(function($absen) {
+                    return \Carbon\Carbon::parse($absen->tanggal)->format('Y-m'); // Format as Year-Month
+                });
+                
+                return [$user->id => $latenessByMonth->map(function($group) {
+                    return $group->count(); // Count lateness per month
+                })];
             });
-        
-            $userOvertime = $users->mapWithKeys(function($user) {
-                $overtime = $user->absens->filter(function($absen) {
-                    return $absen->status == 3 && $absen->token->status == 2;
-                })->count();
-                return [$user->id => $overtime];
+            
+            // Perhitungan untuk userOvertime (lembur) per bulan
+            $userOvertime = $users->mapWithKeys(function($user) use ($absens) {
+                // Group absens by month
+                $overtimeByMonth = $absens->filter(function($absen) use ($user) {
+                    return $absen->user_id == $user->id && $absen->status == 3 && $absen->token->status == 2;
+                })->groupBy(function($absen) {
+                    return \Carbon\Carbon::parse($absen->tanggal)->format('Y-m'); // Format as Year-Month
+                });
+                
+                return [$user->id => $overtimeByMonth->map(function($group) {
+                    return $group->count(); // Count overtime per month
+                })];
             });
         
             $fileName = 'absen-' . $fileDate . '.xlsx';
@@ -118,18 +131,31 @@ class AbsenController extends Controller
     
             $users = User::with('absens')->get();
             
-            $userLateness = $users->mapWithKeys(function($user) {
-                $lateCount = $user->absens->filter(function($absen) {
-                    return $absen->status == 3 && $absen->token->status == 1;
-                })->count();
-                return [$user->id => $lateCount];
+            $userLateness = $users->mapWithKeys(function($user) use ($absens) {
+                // Group absens by month
+                $latenessByMonth = $absens->filter(function($absen) use ($user) {
+                    return $absen->user_id == $user->id && $absen->status == 3 && $absen->token->status == 1;
+                })->groupBy(function($absen) {
+                    return \Carbon\Carbon::parse($absen->tanggal)->format('Y-m'); // Format as Year-Month
+                });
+                
+                return [$user->id => $latenessByMonth->map(function($group) {
+                    return $group->count(); // Count lateness per month
+                })];
             });
-    
-            $userOvertime = $users->mapWithKeys(function($user) {
-                $overtime = $user->absens->filter(function($absen) {
-                    return $absen->status == 3 && $absen->token->status == 2;
-                })->count();
-                return [$user->id => $overtime];
+            
+            // Perhitungan untuk userOvertime (lembur) per bulan
+            $userOvertime = $users->mapWithKeys(function($user) use ($absens) {
+                // Group absens by month
+                $overtimeByMonth = $absens->filter(function($absen) use ($user) {
+                    return $absen->user_id == $user->id && $absen->status == 3 && $absen->token->status == 2;
+                })->groupBy(function($absen) {
+                    return \Carbon\Carbon::parse($absen->tanggal)->format('Y-m'); // Format as Year-Month
+                });
+                
+                return [$user->id => $overtimeByMonth->map(function($group) {
+                    return $group->count(); // Count overtime per month
+                })];
             });
     
             $months = $absens->groupBy(function($date) {
@@ -163,18 +189,31 @@ class AbsenController extends Controller
     
             $users = User::with('absens')->get();
             
-            $userLateness = $users->mapWithKeys(function($user) {
-                $lateCount = $user->absens->filter(function($absen) {
-                    return $absen->status == 3 && $absen->token->status == 1;
-                })->count();
-                return [$user->id => $lateCount];
+            $userLateness = $users->mapWithKeys(function($user) use ($absens) {
+                // Group absens by month
+                $latenessByMonth = $absens->filter(function($absen) use ($user) {
+                    return $absen->user_id == $user->id && $absen->status == 3 && $absen->token->status == 1;
+                })->groupBy(function($absen) {
+                    return \Carbon\Carbon::parse($absen->tanggal)->format('Y-m'); // Format as Year-Month
+                });
+                
+                return [$user->id => $latenessByMonth->map(function($group) {
+                    return $group->count(); // Count lateness per month
+                })];
             });
-    
-            $userOvertime = $users->mapWithKeys(function($user) {
-                $overtime = $user->absens->filter(function($absen) {
-                    return $absen->status == 3 && $absen->token->status == 2;
-                })->count();
-                return [$user->id => $overtime];
+            
+            // Perhitungan untuk userOvertime (lembur) per bulan
+            $userOvertime = $users->mapWithKeys(function($user) use ($absens) {
+                // Group absens by month
+                $overtimeByMonth = $absens->filter(function($absen) use ($user) {
+                    return $absen->user_id == $user->id && $absen->status == 3 && $absen->token->status == 2;
+                })->groupBy(function($absen) {
+                    return \Carbon\Carbon::parse($absen->tanggal)->format('Y-m'); // Format as Year-Month
+                });
+                
+                return [$user->id => $overtimeByMonth->map(function($group) {
+                    return $group->count(); // Count overtime per month
+                })];
             });
     
             $months = $absens->groupBy(function($date) {
