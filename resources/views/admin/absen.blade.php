@@ -155,7 +155,7 @@
           <div>Nama : {{ $absen->user->name }}</div>
           <div>Email : {{ $absen->user->email }}</div>
           <div>Tanggal : {{ $absen->tanggal }}</div>
-          <div>Status @if($absen->token->status == 1) Masuk @elseif($absen->token->status == 2) Pulang @endif : @if($absen->status == 1) Lebih Awal @elseif($absen->status == 2) Tepat Waktu @elseif($absen->status == 3) Terlambat @endif</div>
+          <div>Status : @if($absen->token->status == 1) Masuk @if($absen->status == 1) Lebih Awal @elseif($absen->status == 2) Tepat Waktu @elseif($absen->status == 3) Terlambat @endif @elseif($absen->token->status == 2) Pulang @endif</div>
           <div>Lat : {{ $absen->lat }}</div>
           <div>Long : {{ $absen->long }}</div>
         </div>
