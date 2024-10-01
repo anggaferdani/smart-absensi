@@ -117,8 +117,8 @@
         @foreach ($absens->where('shift', 'malam')->groupBy('user_id') as $userId => $absenGroup)
             @php
                 $user = $absenGroup->first()->user;
-                $terlambat = $userLateness[$userId] ?? 0;
-                $overtime = $userOvertime[$userId] ?? 0;
+                $terlambat = $userLateness->get($userId, 0);
+                $overtime = $userOvertime->get($userId, 0);
         
                 $totalHours = 0;
                 $workHours = [];

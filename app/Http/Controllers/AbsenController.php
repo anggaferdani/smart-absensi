@@ -78,23 +78,20 @@ class AbsenController extends Controller
                 return redirect()->back()->with('error', 'No data available to export.');
             }
 
-            $users = User::with(['absens' => function ($query) use ($monthYear) {
-                $query->whereMonth('tanggal', Carbon::parse($monthYear)->month)
-                      ->whereYear('tanggal', Carbon::parse($monthYear)->year);
-            }])->get();
-            
+            $users = User::with('absens')->get();
+
             $userLateness = $users->mapWithKeys(function($user) {
                 $lateCount = $user->absens->filter(function($absen) {
                     return $absen->status == 3 && $absen->token->status == 1;
                 })->count();
                 return [$user->id => $lateCount];
             });
-            
+
             $userOvertime = $users->mapWithKeys(function($user) {
-                $overtime = $user->absens->filter(function($absen) {
+                $overtimeCount = $user->absens->filter(function($absen) {
                     return $absen->status == 3 && $absen->token->status == 2;
                 })->count();
-                return [$user->id => $overtime];
+                return [$user->id => $overtimeCount];
             });
         
             $fileName = 'absen-' . $fileDate . '.xlsx';
