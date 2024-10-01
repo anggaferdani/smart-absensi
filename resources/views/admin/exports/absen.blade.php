@@ -117,8 +117,9 @@
         @foreach ($absens->where('shift', 'malam')->groupBy('user_id') as $userId => $absenGroup)
             @php
                 $user = $absenGroup->first()->user;
-                $terlambat = $userLateness->get($userId, 0);
-                $overtime = $userOvertime->get($userId, 0);
+                $currentMonthYear = Carbon::parse($month)->format('Y-m');
+                $terlambat = $userLateness[$userId][$currentMonthYear] ?? 0;
+                $overtime = $userOvertime[$userId][$currentMonthYear] ?? 0;
         
                 $totalHours = 0;
                 $workHours = [];
