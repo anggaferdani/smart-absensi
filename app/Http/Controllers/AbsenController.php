@@ -202,6 +202,6 @@ class AbsenController extends Controller
         // Pagination for the regular view
         $absens = $query->paginate(10);
         $lokasis = Lokasi::all();
-        return view('admin.absen.index', compact('absens', 'lokasis', 'monthYear'));
+        return view('admin.absen', compact('absens', 'lokasis', 'monthYear'));
     }
 }
