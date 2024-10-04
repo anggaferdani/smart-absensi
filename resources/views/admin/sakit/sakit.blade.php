@@ -44,8 +44,7 @@
                       <option value="2" {{ request('status') == '2' ? 'selected' : '' }}>Approved</option>
                       <option value="3" {{ request('status') == '3' ? 'selected' : '' }}>Denied</option>
                   </select>
-                  <input type="date" class="form-control" name="dari" value="{{ request('dari') }}" placeholder="">
-                  <input type="date" class="form-control" name="sampai" value="{{ request('sampai') }}" placeholder="">
+                  <input type="text" class="form-control" name="date_range" value="{{ request('date_range') }}" placeholder="Dari - Sampai" id="dateRangePicker">
                   <input type="text" class="form-control" name="search" value="{{ request('search') }}" placeholder="Search">
                   <button type="submit" class="btn btn-icon btn-dark-outline"><i class="fa-solid fa-magnifying-glass"></i></button>
                   <a href="{{ route('admin.sakit.index') }}" class="btn btn-icon btn-dark-outline"><i class="fa-solid fa-times"></i></a>
@@ -196,3 +195,23 @@
 </div>
 @endforeach
 @endsection
+@push('scripts')
+<script>
+  $(function() {
+      $('#dateRangePicker').daterangepicker({
+          locale: {
+              format: 'YYYY-MM-DD'
+          },
+          autoUpdateInput: false,
+      });
+  
+      $('#dateRangePicker').on('apply.daterangepicker', function(ev, picker) {
+          $(this).val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
+      });
+  
+      $('#dateRangePicker').on('cancel.daterangepicker', function(ev, picker) {
+          $(this).val('');
+      });
+  });
+</script>
+@endpush

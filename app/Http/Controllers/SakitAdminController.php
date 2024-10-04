@@ -26,15 +26,10 @@ class SakitAdminController extends Controller
             });
         }
 
-        $dari = $request->input('dari');
-        $sampai = $request->input('sampai');
-
-        if (!empty($dari) && !empty($sampai)) {
+        $dateRange = $request->input('date_range');
+        if (!empty($dateRange)) {
+            [$dari, $sampai] = explode(' - ', $dateRange);
             $query->whereBetween('dari', [$dari, $sampai]);
-        } elseif (!empty($dari)) {
-            $query->where('dari', '>=', $dari);
-        } elseif (!empty($sampai)) {
-            $query->where('dari', '<=', $sampai);
         }
 
         if ($request->has('status') && !empty($request->input('status'))) {

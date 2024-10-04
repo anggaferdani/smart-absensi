@@ -18,7 +18,7 @@
           <td style="border: 1px black solid; text-align: center;">{{ \Carbon\Carbon::parse($izin->sampai)->format('d-m-Y') }}</td>
           <td style="border: 1px black solid; text-align: center;">{{ $izin->user->name }}</td>
           <td style="border: 1px black solid; text-align: center;">{{ $izin->keterangan }}</td>
-          <td style="border: 1px black solid; text-align: center;">{{ $izin->jangka_waktu }} Hari</td>
+          <td style="border: 1px black solid; text-align: center;">{{ \Carbon\Carbon::parse($izin->dari)->diffInDays(\Carbon\Carbon::parse($izin->sampai)) + 1 }} Hari</td>
           <td style="border: 1px black solid; text-align: center;">@if($izin->status_process == 1) Pending @elseif($izin->status_process == 2) Approved @elseif($izin->status_process == 3) Denied @endif</td>
       </tr>
       @endforeach

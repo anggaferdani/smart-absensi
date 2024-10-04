@@ -35,7 +35,7 @@ class TokenController extends Controller
 
         // Determine whether to disable buttons
         $disableCheckIn = $hasCheckedInToday;
-        $disableCheckOut = $hasCheckedOutToday;
+        $disableCheckOut = !$hasCheckedInToday || $hasCheckedOutToday;
 
         if ($tokenExists) {
             do {

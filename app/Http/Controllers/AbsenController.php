@@ -26,23 +26,18 @@ class AbsenController extends Controller
             });
         }
 
-        if ($request->has('bulan') && !empty($request->input('bulan'))) {
-            $bulan = $request->input('bulan');
-            $query->whereMonth('tanggal', Carbon::parse($bulan)->month)
-                  ->whereYear('tanggal', Carbon::parse($bulan)->year);
-            $daysInMonth = Carbon::parse($bulan)->daysInMonth;
-            $monthYear = Carbon::parse($bulan)->format('F Y');
-        } else {
-            $tanggal = Carbon::now()->format('Y-m-d');
-            $daysInMonth = Carbon::now()->daysInMonth;
-            $monthYear = Carbon::now()->format('F Y');
-        }
-        
-        if ($request->has('tanggal') && !empty($request->input('tanggal'))) {
-            $tanggal = $request->input('tanggal');
-            $daysInMonth = Carbon::parse($tanggal)->daysInMonth;
-            $monthYear = Carbon::parse($tanggal)->format('F Y');
-            $query->whereDate('tanggal', $tanggal);
+        if ($request->has('date_range') && !empty($request->input('date_range'))) {
+            $dateRange = explode(' - ', $request->input('date_range'));
+            
+            if (count($dateRange) === 2) {
+                $startDate = Carbon::parse(trim($dateRange[0]))->startOfDay();
+                $endDate = Carbon::parse(trim($dateRange[1]))->endOfDay();
+                
+                $query->whereBetween('tanggal', [$startDate, $endDate]);
+                
+                $daysInMonth = $startDate->daysInMonth;
+                $monthYear = $startDate->format('F Y');
+            }
         } else {
             $tanggal = Carbon::now()->format('Y-m-d');
             $daysInMonth = Carbon::now()->daysInMonth;
@@ -117,7 +112,6 @@ class AbsenController extends Controller
                 return redirect()->back()->with('error', 'No data available to export.');
             }
             
-            
             $fileName = 'absen-' . $fileDate . '.pdf';
             $absens = $query->get();
     
@@ -167,7 +161,6 @@ class AbsenController extends Controller
             if ($absens->isEmpty()) {
                 return redirect()->back()->with('error', 'No data available to export.');
             }
-            
             
             $fileName = 'absen-' . $fileDate . '.pdf';
             $absens = $query->get();
