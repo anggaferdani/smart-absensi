@@ -11,29 +11,25 @@ class TokenController extends Controller
     public function check(Request $request)
     {
         $token = $request->input('token');
-        $userId = auth()->id(); // Get the ID of the authenticated user
-        $today = \Carbon\Carbon::today(); // Get today's date
+        $userId = auth()->id();
+        $today = \Carbon\Carbon::now()->setTime(4, 0);
 
-        // Check if the token exists
         $tokenExists = Token::where('token', $token)->exists();
 
-        // Check if the user has already checked in today
         $hasCheckedInToday = Absen::where('user_id', $userId)
             ->whereDate('tanggal', $today)
             ->whereHas('token', function ($query) {
-                $query->where('status', 1); // Check if token status is 1 (Check In)
+                $query->where('status', 1);
             })
             ->exists();
 
-        // Check if the user has checked out today based on the token status
         $hasCheckedOutToday = Absen::where('user_id', $userId)
             ->whereDate('tanggal', $today)
             ->whereHas('token', function ($query) {
-                $query->where('status', 2); // Check if token status is 2 (Check Out)
+                $query->where('status', 2);
             })
             ->exists();
 
-        // Determine whether to disable buttons
         $disableCheckIn = $hasCheckedInToday;
         $disableCheckOut = !$hasCheckedInToday || $hasCheckedOutToday;
 
