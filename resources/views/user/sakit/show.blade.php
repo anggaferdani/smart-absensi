@@ -30,8 +30,12 @@
     <div>Sampai dengan : {{ \Carbon\Carbon::parse($izin->sampai)->format('d M Y') }}</div>
     <div class="mb-3">Keterangan : {{ $izin->keterangan }}</div>
     <div class="fw-bold">Lampiran :</div>
+    @if($izin->lampiran)
     <div class="">1. Surat Dokter : <a href="/sakit/surat-dokter/{{ $izin->lampiran }}" target="_blank">{{ $izin->lampiran }}</a></div>
+    @endif
+    @if($izin->resep_dokter)
     <div class="mb-3">2. Copy Resep Dokter : <a href="/sakit/resep-dokter/{{ $izin->resep_dokter }}" target="_blank">{{ $izin->resep_dokter }}</a></div>
+    @endif
     <div class="fw-bold mb-3">SEMOGA LEKAS SEMBUH!</div>
     <div class="text-center fw-bold mb-2">STATUS</div>
     @if($izin->status_process == 1)

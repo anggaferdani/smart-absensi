@@ -57,14 +57,14 @@
         @error('keterangan')<div class="text-danger">{{ $message }}</div>@enderror
       </div>
       <div class="mb-3">
-        <label class="form-label required">Lampiran Surat Dokter</label>
-        <input type="file" class="form-control" name="lampiran" placeholder="" required>
+        <label class="form-label">Lampiran Surat Dokter</label>
+        <input type="file" class="form-control" name="lampiran" placeholder="">
         <div class="small text-muted">Size maksimal 1 MB dengan format .png .jpg .jpeg</div>
         @error('lampiran')<div class="text-danger">{{ $message }}</div>@enderror
       </div>
       <div class="mb-3">
-        <label class="form-label required">Copy Resep Dokter</label>
-        <input type="file" class="form-control" name="resep_dokter" placeholder="" required>
+        <label class="form-label">Copy Resep Dokter</label>
+        <input type="file" class="form-control" name="resep_dokter" placeholder="">
         <div class="small text-muted">Size maksimal 1 MB dengan format .png .jpg .jpeg</div>
         @error('resep_dokter')<div class="text-danger">{{ $message }}</div>@enderror
       </div>
