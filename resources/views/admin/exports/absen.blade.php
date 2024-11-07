@@ -35,56 +35,64 @@
     </thead>
     <tbody>
         @foreach ($absens->where('shift', 'siang')->groupBy('user_id') as $userId => $absenGroup)
-            @php
-                $user = $absenGroup->first()->user;
-                
-                $terlambat = $userLateness[$userId][$month] ?? 0;
-                $overtime = $userOvertime[$userId][$month] ?? 0;
-        
-                $totalHours = 0;
-                $workHours = [];
-            @endphp
-            <tr>
-                <td style="border: 1px solid black; text-align: center; font-size: 5px;">{{ $loop->iteration }}</td>
-                <td style="border: 1px solid black; text-align: center; font-size: 5px;">{{ $user->name }}</td>
-                @for ($day = 1; $day <= $daysInMonth; $day++)
-                @php
-                    $masuk = $absenGroup->firstWhere(function($absen) use ($day) {
-                        return $absen->token->status == 1 && \Carbon\Carbon::parse($absen->tanggal)->day == $day;
-                    });
-                    $pulang = $absenGroup->firstWhere(function($absen) use ($day) {
-                        return $absen->token->status == 2 && \Carbon\Carbon::parse($absen->tanggal)->day == $day;
-                    });
-        
-                    if ($masuk && $pulang) {
-                        $entryTime = \Carbon\Carbon::parse($masuk->tanggal);
-                        $exitTime = \Carbon\Carbon::parse($pulang->tanggal);
-                        $hoursWorked = $exitTime->diffInHours($entryTime) + $exitTime->diffInMinutes($entryTime) / 60;
-                        $totalHours += $hoursWorked;
-                    }
-                @endphp
-                    <td style="border: 1px solid black; text-align: center; font-size: 5px; 
-                        @if ($masuk && $masuk->status == 3 && $masuk->token->status == 1)
-                            color: red;
-                        @endif
-                    ">
-                        {{ $masuk ? \Carbon\Carbon::parse($masuk->tanggal)->format('H:i') : '' }}
-                    </td>
-                    <td style="border: 1px solid black; text-align: center; font-size: 5px;">
-                        {{ $pulang ? \Carbon\Carbon::parse($pulang->tanggal)->format('H:i') : '' }}
-                    </td>
-                @endfor
-                <td style="border: 1px solid black; text-align: center; font-size: 5px;">{{ $terlambat }}</td>
-                <td style="border: 1px solid black; text-align: center; font-size: 5px;">{{ $overtime }}</td>
-                <td style="border: 1px solid black; text-align: center; font-size: 5px;">{{ number_format($totalHours, 2) }}</td>
-                <td style="border: 1px solid black; text-align: center; font-size: 5px;">
-                    @php
-                        $averageHours = $daysInMonth ? $totalHours / $daysInMonth : 0;
-                    @endphp
-                    {{ number_format($averageHours, 2) }}
-                </td>
-            </tr>
-        @endforeach
+          @php
+              $izinData = App\Models\Izin::where('user_id', $userId)->get();
+              $user = $absenGroup->first()->user;
+              $terlambat = $userLateness[$userId][$month] ?? 0;
+              $overtime = $userOvertime[$userId][$month] ?? 0;
+          
+              $totalHours = 0;
+              $workHours = [];
+              $userIzin = $izinData->where('user_id', $userId);
+          @endphp
+          <tr>
+              <td style="border: 1px solid black; text-align: center; font-size: 5px;">{{ $loop->iteration }}</td>
+              <td style="border: 1px solid black; text-align: center; font-size: 5px;">{{ $user->name }}</td>
+              @for ($day = 1; $day <= $daysInMonth; $day++)
+                  @php
+                      $izinOnDate = $userIzin->firstWhere(function ($izin) use ($day, $month) {
+                          $date = Carbon\Carbon::createFromFormat('F Y', $month)->day($day);
+                          return $date->between($izin->dari, $izin->sampai) && $izin->status_process == 1;
+                      });
+
+                      $izinStatus = '';
+                      if ($izinOnDate) {
+                          $izinStatus = $izinOnDate->status_izin == 1 ? 'i' : ($izinOnDate->status_izin == 2 ? 's' : '');
+                      }
+
+                      $masuk = $absenGroup->firstWhere(function($absen) use ($day) {
+                          return $absen->token->status == 1 && \Carbon\Carbon::parse($absen->tanggal)->day == $day;
+                      });
+                      $pulang = $absenGroup->firstWhere(function($absen) use ($day) {
+                          return $absen->token->status == 2 && \Carbon\Carbon::parse($absen->tanggal)->day == $day;
+                      });
+
+                      if (!$izinStatus && $masuk && $pulang) {
+                          $entryTime = \Carbon\Carbon::parse($masuk->tanggal);
+                          $exitTime = \Carbon\Carbon::parse($pulang->tanggal);
+                          $hoursWorked = $exitTime->diffInHours($entryTime) + $exitTime->diffInMinutes($entryTime) / 60;
+                          $totalHours += $hoursWorked;
+                      }
+                  @endphp
+                  <td style="border: 1px solid black; text-align: center; font-size: 5px; @if ($masuk && $masuk->status == 3 && $masuk->token->status == 1) color: red; @endif">
+                      {{ $izinStatus ? $izinStatus : ($masuk ? \Carbon\Carbon::parse($masuk->tanggal)->format('H:i') : '') }}
+                  </td>
+                  <td style="border: 1px solid black; text-align: center; font-size: 5px;">
+                      {{ $izinStatus ? $izinStatus : ($pulang ? \Carbon\Carbon::parse($pulang->tanggal)->format('H:i') : '') }}
+                  </td>
+              @endfor
+
+              <td style="border: 1px solid black; text-align: center; font-size: 5px;">{{ $terlambat }}</td>
+              <td style="border: 1px solid black; text-align: center; font-size: 5px;">{{ $overtime }}</td>
+              <td style="border: 1px solid black; text-align: center; font-size: 5px;">{{ number_format($totalHours, 2) }}</td>
+              <td style="border: 1px solid black; text-align: center; font-size: 5px;">
+                  @php
+                      $averageHours = $daysInMonth ? $totalHours / $daysInMonth : 0;
+                  @endphp
+                  {{ number_format($averageHours, 2) }}
+              </td>
+          </tr>
+      @endforeach
     </tbody>
   </table>
   <table>
@@ -117,43 +125,52 @@
     <tbody>
         @foreach ($absens->where('shift', 'malam')->groupBy('user_id') as $userId => $absenGroup)
             @php
+                $izinData = App\Models\Izin::where('user_id', $userId)->get();
                 $user = $absenGroup->first()->user;
                 $terlambat = $userLateness[$userId][$month] ?? 0;
                 $overtime = $userOvertime[$userId][$month] ?? 0;
-        
+            
                 $totalHours = 0;
                 $workHours = [];
+                $userIzin = $izinData->where('user_id', $userId);
             @endphp
             <tr>
                 <td style="border: 1px solid black; text-align: center; font-size: 5px;">{{ $loop->iteration }}</td>
                 <td style="border: 1px solid black; text-align: center; font-size: 5px;">{{ $user->name }}</td>
                 @for ($day = 1; $day <= $daysInMonth; $day++)
-                @php
-                    $masuk = $absenGroup->firstWhere(function($absen) use ($day) {
-                        return $absen->token->status == 1 && \Carbon\Carbon::parse($absen->tanggal)->day == $day;
-                    });
-                    $pulang = $absenGroup->firstWhere(function($absen) use ($day) {
-                        return $absen->token->status == 2 && \Carbon\Carbon::parse($absen->tanggal)->day == $day;
-                    });
-        
-                    if ($masuk && $pulang) {
-                        $entryTime = \Carbon\Carbon::parse($masuk->tanggal);
-                        $exitTime = \Carbon\Carbon::parse($pulang->tanggal);
-                        $hoursWorked = $exitTime->diffInHours($entryTime) + $exitTime->diffInMinutes($entryTime) / 60;
-                        $totalHours += $hoursWorked;
-                    }
-                @endphp
-                    <td style="border: 1px solid black; text-align: center; font-size: 5px; 
-                        @if ($masuk && $masuk->status == 3 && $masuk->token->status == 1)
-                            color: red;
-                        @endif
-                    ">
-                        {{ $masuk ? \Carbon\Carbon::parse($masuk->tanggal)->format('H:i') : '' }}
+                    @php
+                        $izinOnDate = $userIzin->firstWhere(function ($izin) use ($day, $month) {
+                            $date = Carbon\Carbon::createFromFormat('F Y', $month)->day($day);
+                            return $date->between($izin->dari, $izin->sampai) && $izin->status_process == 1;
+                        });
+
+                        $izinStatus = '';
+                        if ($izinOnDate) {
+                            $izinStatus = $izinOnDate->status_izin == 1 ? 'i' : ($izinOnDate->status_izin == 2 ? 's' : '');
+                        }
+
+                        $masuk = $absenGroup->firstWhere(function($absen) use ($day) {
+                            return $absen->token->status == 1 && \Carbon\Carbon::parse($absen->tanggal)->day == $day;
+                        });
+                        $pulang = $absenGroup->firstWhere(function($absen) use ($day) {
+                            return $absen->token->status == 2 && \Carbon\Carbon::parse($absen->tanggal)->day == $day;
+                        });
+
+                        if (!$izinStatus && $masuk && $pulang) {
+                            $entryTime = \Carbon\Carbon::parse($masuk->tanggal);
+                            $exitTime = \Carbon\Carbon::parse($pulang->tanggal);
+                            $hoursWorked = $exitTime->diffInHours($entryTime) + $exitTime->diffInMinutes($entryTime) / 60;
+                            $totalHours += $hoursWorked;
+                        }
+                    @endphp
+                    <td style="border: 1px solid black; text-align: center; font-size: 5px; @if ($masuk && $masuk->status == 3 && $masuk->token->status == 1) color: red; @endif">
+                        {{ $izinStatus ? $izinStatus : ($masuk ? \Carbon\Carbon::parse($masuk->tanggal)->format('H:i') : '') }}
                     </td>
                     <td style="border: 1px solid black; text-align: center; font-size: 5px;">
-                        {{ $pulang ? \Carbon\Carbon::parse($pulang->tanggal)->format('H:i') : '' }}
+                        {{ $izinStatus ? $izinStatus : ($pulang ? \Carbon\Carbon::parse($pulang->tanggal)->format('H:i') : '') }}
                     </td>
                 @endfor
+
                 <td style="border: 1px solid black; text-align: center; font-size: 5px;">{{ $terlambat }}</td>
                 <td style="border: 1px solid black; text-align: center; font-size: 5px;">{{ $overtime }}</td>
                 <td style="border: 1px solid black; text-align: center; font-size: 5px;">{{ number_format($totalHours, 2) }}</td>

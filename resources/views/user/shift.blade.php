@@ -22,19 +22,19 @@
       <div class="row g-3">
         <div class="col-12">
           <a href="{{ route('user.index', ['shift' => 'siang']) }}">
-            <div class="border border-3 border-dark rounded-4 p-2">
+            <div class="border border-3 border-dark rounded-4 p-2 mb-2">
               <img src="{{ asset('images/siang.jpeg') }}" alt="">
             </div>
           </a>
-          <div class="text-dark text-dacoration-none text-center">Absen Shift Pagi</div>
+          <div class="text-dark fw-bold fs-3 lh-1 text-dacoration-none text-center">ABSEN SHIFT PAGI</div>
         </div>
         <div class="col-12">
           <a href="{{ route('user.index', ['shift' => 'malam']) }}">
-            <div class="border border-3 border-dark rounded-4 p-2">
+            <div class="border border-3 border-dark rounded-4 p-2 mb-2">
               <img src="{{ asset('images/malam.jpeg') }}" alt="">
             </div>
           </a>
-          <div class="text-dark text-dacoration-none text-center">Absen Shift Malam</div>
+          <div class="text-dark fw-bold fs-3 lh-1 text-dacoration-none text-center">ABSEN SHIFT</div>
         </div>
       </div>
     </div>
