@@ -62,7 +62,7 @@
                                 $date->between($izin->dari, $izin->sampai) ||
                                 $date->isSameDay($izin->dari) || 
                                 $date->isSameDay($izin->sampai)
-                            ) && $izin->status_process == 2;
+                            ) && $izin->status_process == 2 && $izin->status == 1;
                         });
 
                       $izinStatus = '';
@@ -158,7 +158,7 @@
                                 $date->between($izin->dari, $izin->sampai) ||
                                 $date->isSameDay($izin->dari) || 
                                 $date->isSameDay($izin->sampai)
-                            ) && $izin->status_process == 2;
+                            ) && $izin->status_process == 2 && $izin->status == 1;
                         });
 
                         $izinStatus = '';
