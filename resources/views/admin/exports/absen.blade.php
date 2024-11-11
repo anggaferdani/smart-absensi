@@ -46,7 +46,7 @@
           
               $totalHours = 0;
               $workHours = [];
-              $userIzin = $izinData->where('user_id', $userId)->where('status', 1);
+              $userIzin = $izinData->where('user_id', $userId);
           @endphp
           <tr>
               <td style="border: 1px solid black; text-align: center; font-size: 5px;">{{ $loop->iteration }}</td>
@@ -57,12 +57,12 @@
 
                       $izinOnDate = $userIzin->firstWhere(function ($izin) use ($day, $month) {
                           $date = Carbon\Carbon::createFromFormat('F Y', $month)->day($day);
-                          return $date->between($izin->dari, $izin->sampai);
+                          return $date->between($izin->dari, $izin->sampai) && $izin->status_process == 2;
                       });
 
                       $izinStatus = '';
                       if ($izinOnDate) {
-                          $izinStatus = ($izinOnDate->status_izin == 1) ? 'i' : (($izinOnDate->status_izin == 2) ? 's' : null);
+                          $izinStatus = $izinOnDate->status_izin == 1 ? 'i' : ($izinOnDate->status_izin == 2 ? 's' : '');
                       }
 
                       $masuk = $absenGroup->firstWhere(function($absen) use ($day) {
@@ -148,12 +148,12 @@
 
                         $izinOnDate = $userIzin->firstWhere(function ($izin) use ($day, $month) {
                             $date = Carbon\Carbon::createFromFormat('F Y', $month)->day($day);
-                            return $date->between($izin->dari, $izin->sampai);
+                            return $date->between($izin->dari, $izin->sampai) && $izin->status_process == 2;
                         });
 
                         $izinStatus = '';
                         if ($izinOnDate) {
-                            $izinStatus = ($izinOnDate->status_izin == 1) ? 'i' : (($izinOnDate->status_izin == 2) ? 's' : null);
+                            $izinStatus = $izinOnDate->status_izin == 1 ? 'i' : ($izinOnDate->status_izin == 2 ? 's' : '');
                         }
 
                         $masuk = $absenGroup->firstWhere(function($absen) use ($day) {
