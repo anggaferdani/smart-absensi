@@ -80,10 +80,10 @@
                       }
                   @endphp
                   <td style="border: 1px solid black; text-align: center; font-size: 5px; @if ($masuk && $masuk->status == 3 && $masuk->token->status == 1) color: red; @endif">
-                      {{ $izinStatus ? $izinStatus : ($masuk ? \Carbon\Carbon::parse($masuk->tanggal)->format('H:i') : ($currentDate->greaterThan($today) ? 'a' : '')) }}
+                      {{ $izinStatus ? $izinStatus : ($masuk ? \Carbon\Carbon::parse($masuk->tanggal)->format('H:i') : ($currentDate->lte($today) ? 'a' : '')) }}
                   </td>
                   <td style="border: 1px solid black; text-align: center; font-size: 5px;">
-                      {{ $izinStatus ? $izinStatus : ($pulang ? \Carbon\Carbon::parse($pulang->tanggal)->format('H:i') : ($currentDate->greaterThan($today) ? 'a' : '')) }}
+                      {{ $izinStatus ? $izinStatus : ($pulang ? \Carbon\Carbon::parse($pulang->tanggal)->format('H:i') : ($currentDate->lte($today) ? 'a' : '')) }}
                   </td>
               @endfor
 
@@ -171,10 +171,10 @@
                         }
                     @endphp
                     <td style="border: 1px solid black; text-align: center; font-size: 5px; @if ($masuk && $masuk->status == 3 && $masuk->token->status == 1) color: red; @endif">
-                        {{ $izinStatus ? $izinStatus : ($masuk ? \Carbon\Carbon::parse($masuk->tanggal)->format('H:i') : ($currentDate->greaterThan($today) ? 'a' : '')) }}
+                        {{ $izinStatus ? $izinStatus : ($masuk ? \Carbon\Carbon::parse($masuk->tanggal)->format('H:i') : ($currentDate->lte($today) ? 'a' : '')) }}
                     </td>
                     <td style="border: 1px solid black; text-align: center; font-size: 5px;">
-                        {{ $izinStatus ? $izinStatus : ($pulang ? \Carbon\Carbon::parse($pulang->tanggal)->format('H:i') : ($currentDate->greaterThan($today) ? 'a' : '')) }}
+                        {{ $izinStatus ? $izinStatus : ($pulang ? \Carbon\Carbon::parse($pulang->tanggal)->format('H:i') : ($currentDate->lte($today) ? 'a' : '')) }}
                     </td>
                 @endfor
 
