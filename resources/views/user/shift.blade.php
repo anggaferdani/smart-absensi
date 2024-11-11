@@ -26,7 +26,7 @@
               <img src="{{ asset('images/siang.jpeg') }}" alt="">
             </div>
           </a>
-          <div class="text-dark fw-bold fs-3 lh-1 text-dacoration-none text-center">ABSEN SHIFT PAGI</div>
+          <div class="text-dark fw-bold fs-3 lh-1 text-dacoration-none text-center">ABSEN MASUK PAGI</div>
         </div>
         <div class="col-12">
           <a href="{{ route('user.index', ['shift' => 'malam']) }}">
@@ -34,7 +34,7 @@
               <img src="{{ asset('images/malam.jpeg') }}" alt="">
             </div>
           </a>
-          <div class="text-dark fw-bold fs-3 lh-1 text-dacoration-none text-center">ABSEN SHIFT</div>
+          <div class="text-dark fw-bold fs-3 lh-1 text-dacoration-none text-center">ABSEN MASUK MALAM</div>
         </div>
       </div>
     </div>
