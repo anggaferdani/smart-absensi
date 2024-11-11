@@ -56,7 +56,7 @@
 
                       $izinOnDate = $userIzin->firstWhere(function ($izin) use ($day, $month) {
                           $date = Carbon\Carbon::createFromFormat('F Y', $month)->day($day);
-                          return $date->between($izin->dari, $izin->sampai) && $izin->status_process == 2;
+                          return $date->between($izin->dari, $izin->sampai);
                       });
 
                       $izinStatus = '';
@@ -147,7 +147,7 @@
 
                     $izinOnDate = $userIzin->firstWhere(function ($izin) use ($day, $month) {
                         $date = Carbon\Carbon::createFromFormat('F Y', $month)->day($day);
-                        return $date->between($izin->dari, $izin->sampai) && $izin->status_process == 2;
+                        return $date->between($izin->dari, $izin->sampai);
                     });
 
                     $izinStatus = '';
