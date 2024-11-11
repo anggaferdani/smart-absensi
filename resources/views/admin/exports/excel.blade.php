@@ -52,7 +52,7 @@
               <td style="border: 1px solid black; text-align: center;">{{ $user->name }}</td>
               @for ($day = 1; $day <= $daysInMonth; $day++)
                   @php
-                      $currentDate = \Carbon\Carbon::createFromFormat('F Y', $month)->day($day);
+                      $currentDate = \Carbon\Carbon::createFromFormat('F Y', $month)->day($day)->hour(now()->hour)->minute(now()->minute);
 
                       $izinOnDate = $userIzin->firstWhere(function ($izin) use ($day, $month) {
                           $date = Carbon\Carbon::createFromFormat('F Y', $month)->day($day);
@@ -143,7 +143,7 @@
             <td style="border: 1px solid black; text-align: center;">{{ $user->name }}</td>
             @for ($day = 1; $day <= $daysInMonth; $day++)
                 @php
-                    $currentDate = \Carbon\Carbon::createFromFormat('F Y', $month)->day($day);
+                    $currentDate = \Carbon\Carbon::createFromFormat('F Y', $month)->day($day)->hour(now()->hour)->minute(now()->minute);
 
                     $izinOnDate = $userIzin->firstWhere(function ($izin) use ($day, $month) {
                         $date = Carbon\Carbon::createFromFormat('F Y', $month)->day($day);
