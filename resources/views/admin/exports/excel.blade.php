@@ -74,10 +74,10 @@
                       }
                   @endphp
                   <td style="border: 1px solid black; text-align: center; @if ($masuk && $masuk->status == 3 && $masuk->token->status == 1) color: red; @endif">
-                      {{ $izinStatus ? $izinStatus : ($masuk ? \Carbon\Carbon::parse($masuk->tanggal)->format('H:i') : 'a') }}
+                      {{ $izinStatus ? $izinStatus : ($masuk ? \Carbon\Carbon::parse($masuk->tanggal)->format('H:i') : '') }}
                   </td>
                   <td style="border: 1px solid black; text-align: center;">
-                      {{ $izinStatus ? $izinStatus : ($pulang ? \Carbon\Carbon::parse($pulang->tanggal)->format('H:i') : 'a') }}
+                      {{ $izinStatus ? $izinStatus : ($pulang ? \Carbon\Carbon::parse($pulang->tanggal)->format('H:i') : '') }}
                   </td>
               @endfor
 
@@ -163,10 +163,10 @@
                     }
                 @endphp
                 <td style="border: 1px solid black; text-align: center; @if ($masuk && $masuk->status == 3 && $masuk->token->status == 1) color: red; @endif">
-                    {{ $izinStatus ? $izinStatus : ($masuk ? \Carbon\Carbon::parse($masuk->tanggal)->format('H:i') : 'a') }}
+                    {{ $izinStatus ? $izinStatus : ($masuk ? \Carbon\Carbon::parse($masuk->tanggal)->format('H:i') : '') }}
                 </td>
                 <td style="border: 1px solid black; text-align: center;">
-                    {{ $izinStatus ? $izinStatus : ($pulang ? \Carbon\Carbon::parse($pulang->tanggal)->format('H:i') : 'a') }}
+                    {{ $izinStatus ? $izinStatus : ($pulang ? \Carbon\Carbon::parse($pulang->tanggal)->format('H:i') : '') }}
                 </td>
             @endfor
 
