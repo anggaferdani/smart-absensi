@@ -61,7 +61,7 @@
 
                       $izinStatus = '';
                       if ($izinOnDate) {
-                          $izinStatus = $izinOnDate->status_izin == 1 ? 'i' : ($izinOnDate->status_izin == 2 ? 's' : '');
+                          $izinStatus = ($izinOnDate->status_izin == 1) ? 'i' : (($izinOnDate->status_izin == 2) ? 's' : null);
                       }
 
                       $masuk = $absenGroup->firstWhere(function($absen) use ($day) {
@@ -152,7 +152,7 @@
 
                     $izinStatus = '';
                     if ($izinOnDate) {
-                        $izinStatus = $izinOnDate->status_izin == 1 ? 'i' : ($izinOnDate->status_izin == 2 ? 's' : '');
+                        $izinStatus = ($izinOnDate->status_izin == 1) ? 'i' : (($izinOnDate->status_izin == 2) ? 's' : null);
                     }
 
                     $masuk = $absenGroup->firstWhere(function($absen) use ($day) {

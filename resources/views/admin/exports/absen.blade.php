@@ -1,7 +1,7 @@
+@php
+  $today = \Carbon\Carbon::now();
+@endphp
 @foreach ($months as $month => $absens)
-    @php
-    $today = \Carbon\Carbon::now();
-    @endphp
   <table style="margin-bottom: 10px;">
       <tbody>
           <tr>
@@ -62,7 +62,7 @@
 
                       $izinStatus = '';
                       if ($izinOnDate) {
-                          $izinStatus = $izinOnDate->status_izin == 1 ? 'i' : ($izinOnDate->status_izin == 2 ? 's' : '');
+                          $izinStatus = ($izinOnDate->status_izin == 1) ? 'i' : (($izinOnDate->status_izin == 2) ? 's' : null);
                       }
 
                       $masuk = $absenGroup->firstWhere(function($absen) use ($day) {
@@ -153,7 +153,7 @@
 
                         $izinStatus = '';
                         if ($izinOnDate) {
-                            $izinStatus = $izinOnDate->status_izin == 1 ? 'i' : ($izinOnDate->status_izin == 2 ? 's' : '');
+                            $izinStatus = ($izinOnDate->status_izin == 1) ? 'i' : (($izinOnDate->status_izin == 2) ? 's' : null);
                         }
 
                         $masuk = $absenGroup->firstWhere(function($absen) use ($day) {
