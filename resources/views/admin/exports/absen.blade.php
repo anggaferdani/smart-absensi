@@ -1,7 +1,7 @@
-@php
-  $today = \Carbon\Carbon::now();
-@endphp
 @foreach ($months as $month => $absens)
+    @php
+    $today = \Carbon\Carbon::now();
+    @endphp
   <table style="margin-bottom: 10px;">
       <tbody>
           <tr>
