@@ -45,7 +45,7 @@
           
               $totalHours = 0;
               $workHours = [];
-              $userIzin = $izinData->where('user_id', $userId);
+              $userIzin = $izinData->where('user_id', $userId)->where('status', 1);
           @endphp
           <tr>
               <td style="border: 1px solid black; text-align: center;">{{ $loop->iteration }}</td>
