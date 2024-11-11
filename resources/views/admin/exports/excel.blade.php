@@ -1,3 +1,6 @@
+@php
+  $today = \Carbon\Carbon::now();
+@endphp
 <table style="margin-bottom: 10px;">
     <tbody>
         <tr>
@@ -49,10 +52,17 @@
               <td style="border: 1px solid black; text-align: center;">{{ $user->name }}</td>
               @for ($day = 1; $day <= $daysInMonth; $day++)
                   @php
-                      $izinOnDate = $userIzin->firstWhere(function ($izin) use ($day, $month) {
-                          $date = Carbon\Carbon::createFromFormat('F Y', $month)->day($day);
-                          return $date->between($izin->dari, $izin->sampai) && $izin->status_process == 2 && $izin->status == 1;
-                      });
+                      $currentDate = \Carbon\Carbon::createFromFormat('F Y', $month)->day($day)->hour(now()->hour)->minute(now()->minute);
+
+                        $izinOnDate = $userIzin->firstWhere(function ($izin) use ($day, $month) {
+                            $date = Carbon\Carbon::createFromFormat('F Y', $month)->day($day);
+
+                            return (
+                                $date->between($izin->dari, $izin->sampai) ||
+                                $date->isSameDay($izin->dari) || 
+                                $date->isSameDay($izin->sampai)
+                            ) && $izin->status_process == 2;
+                        });
 
                       $izinStatus = '';
                       if ($izinOnDate) {
@@ -74,10 +84,10 @@
                       }
                   @endphp
                   <td style="border: 1px solid black; text-align: center; @if ($masuk && $masuk->status == 3 && $masuk->token->status == 1) color: red; @endif">
-                      {{ $izinStatus ? $izinStatus : ($masuk ? \Carbon\Carbon::parse($masuk->tanggal)->format('H:i') : '') }}
+                      {{ $izinStatus ? $izinStatus : ($masuk ? \Carbon\Carbon::parse($masuk->tanggal)->format('H:i') : ($currentDate->lte($today) ? 'a' : '')) }}
                   </td>
                   <td style="border: 1px solid black; text-align: center;">
-                      {{ $izinStatus ? $izinStatus : ($pulang ? \Carbon\Carbon::parse($pulang->tanggal)->format('H:i') : '') }}
+                      {{ $izinStatus ? $izinStatus : ($pulang ? \Carbon\Carbon::parse($pulang->tanggal)->format('H:i') : ($currentDate->lte($today) ? 'a' : '')) }}
                   </td>
               @endfor
 
@@ -138,9 +148,16 @@
             <td style="border: 1px solid black; text-align: center;">{{ $user->name }}</td>
             @for ($day = 1; $day <= $daysInMonth; $day++)
                 @php
+                    $currentDate = \Carbon\Carbon::createFromFormat('F Y', $month)->day($day)->hour(now()->hour)->minute(now()->minute);
+
                     $izinOnDate = $userIzin->firstWhere(function ($izin) use ($day, $month) {
                         $date = Carbon\Carbon::createFromFormat('F Y', $month)->day($day);
-                        return $date->between($izin->dari, $izin->sampai) && $izin->status_process == 2 && $izin->status == 1;
+
+                        return (
+                            $date->between($izin->dari, $izin->sampai) ||
+                            $date->isSameDay($izin->dari) || 
+                            $date->isSameDay($izin->sampai)
+                        ) && $izin->status_process == 2;
                     });
 
                     $izinStatus = '';
@@ -163,10 +180,10 @@
                     }
                 @endphp
                 <td style="border: 1px solid black; text-align: center; @if ($masuk && $masuk->status == 3 && $masuk->token->status == 1) color: red; @endif">
-                    {{ $izinStatus ? $izinStatus : ($masuk ? \Carbon\Carbon::parse($masuk->tanggal)->format('H:i') : '') }}
+                    {{ $izinStatus ? $izinStatus : ($masuk ? \Carbon\Carbon::parse($masuk->tanggal)->format('H:i') : ($currentDate->lte($today) ? 'a' : '')) }}
                 </td>
                 <td style="border: 1px solid black; text-align: center;">
-                    {{ $izinStatus ? $izinStatus : ($pulang ? \Carbon\Carbon::parse($pulang->tanggal)->format('H:i') : '') }}
+                    {{ $izinStatus ? $izinStatus : ($pulang ? \Carbon\Carbon::parse($pulang->tanggal)->format('H:i') : ($currentDate->lte($today) ? 'a' : '')) }}
                 </td>
             @endfor
 
