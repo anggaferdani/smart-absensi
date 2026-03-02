@@ -30,7 +30,6 @@ use App\Http\Controllers\UnitKerjaAdminController;
 
 Route::post('/token/check', [TokenController::class, 'check']);
 
-
 Route::middleware(['web', 'disableBackButton'])->group(function(){
     Route::middleware(['disableRedirectToLoginPage'])->group(function(){
         Route::get('/', [AuthenticationController::class, 'login'])->name('index');
@@ -53,6 +52,10 @@ Route::prefix('admin')->name('admin.')->group(function(){
         Route::resource('lokasi', LokasiController::class);
         Route::get('/token', [TokenController::class, 'token'])->name('token');
         Route::get('/absen', [AbsenController::class, 'absen'])->name('absen');
+        Route::post('/absen/export/dispatch', [AbsenController::class, 'dispatchExport'])->name('absen.export.dispatch');
+        Route::get('/absen/export/status/{key}',   [AbsenController::class, 'exportStatus'])->name('absen.export.status');
+        Route::get('/absen/export/download/{key}', [AbsenController::class, 'downloadExport'])->name('absen.export.download');
+        Route::delete('/absen/export/destroy/{key}', [AbsenController::class, 'destroyExport'])->name('absen.export.destroy');
         Route::resource('izin', IzinAdminController::class);
         Route::put('/izin/approve/{id}', [IzinAdminController::class, 'approve'])->name('izin.approve');
         Route::put('/izin/reject/{id}', [IzinAdminController::class, 'reject'])->name('izin.reject');

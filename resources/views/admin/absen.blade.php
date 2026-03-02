@@ -10,14 +10,25 @@
     </div>
     <div class="col-auto ms-auto">
       <div class="btn-list">
-        <a href="{{ route('admin.absen', array_merge(request()->query(), ['export' => 'excel'])) }}" class="btn btn-success {{ request('tanggal') ? 'disabled' : '' }}">Export Excel</a>
-        <a href="{{ route('admin.absen', array_merge(request()->query(), ['export' => 'pdf'])) }}" class="btn btn-danger {{ request('tanggal') ? 'disabled' : '' }}">Export PDF</a>
-        <a href="{{ route('admin.absen', array_merge(request()->query(), ['export' => 'print'])) }}" class="btn btn-secondary {{ request('tanggal') ? 'disabled' : '' }}" target="_blank">Print Laporan</a>
+        {{-- Tombol sekarang memicu modal konfirmasi, bukan langsung export --}}
+        <button type="button" class="btn btn-success {{ request('tanggal') ? 'disabled' : '' }}"
+                onclick="openExportModal('excel')">
+          Export Excel
+        </button>
+        <button type="button" class="btn btn-danger {{ request('tanggal') ? 'disabled' : '' }}"
+                onclick="openExportModal('pdf')">
+          Export PDF
+        </button>
+        <button type="button" class="btn btn-secondary {{ request('tanggal') ? 'disabled' : '' }}"
+                onclick="openExportModal('print')">
+          Print Laporan
+        </button>
       </div>
     </div>
   </div>
 </div>
 @endsection
+
 @section('content')
 <div class="container-xl">
   <div class="row">
@@ -35,7 +46,7 @@
       <div class="card">
         <div class="card-header">
           <div class="ms-auto">
-            <form action="{{ route('admin.absen') }}" class="">
+            <form action="{{ route('admin.absen') }}" class="" id="filterForm">
               <div class="d-flex gap-1">
                 <select class="form-select" name="status_absen">
                   <option disabled selected value="">Status</option>
@@ -137,6 +148,9 @@
   </div>
 </div>
 
+{{-- ================================================================
+     MODAL DETAIL ABSEN (tidak diubah)
+     ================================================================ --}}
 @foreach ($absens as $absen)
 <div class="modal modal-blur fade" id="show{{ $absen->id }}" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
@@ -168,24 +182,239 @@
   </div>
 </div>
 @endforeach
+
 @endsection
+
 @push('scripts')
+{{-- SweetAlert2 --}}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-  $(function() {
-      $('#dateRangePicker').daterangepicker({
-          locale: {
-              format: 'YYYY-MM-DD'
-          },
-          autoUpdateInput: false,
-      });
-  
-      $('#dateRangePicker').on('apply.daterangepicker', function(ev, picker) {
-          $(this).val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
-      });
-  
-      $('#dateRangePicker').on('cancel.daterangepicker', function(ev, picker) {
-          $(this).val('');
-      });
+  /* ===== DATE RANGE PICKER ===== */
+  $(function () {
+    $('#dateRangePicker').daterangepicker({
+      locale: { format: 'YYYY-MM-DD' },
+      autoUpdateInput: false,
+    });
+    $('#dateRangePicker').on('apply.daterangepicker', function (ev, picker) {
+      $(this).val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
+    });
+    $('#dateRangePicker').on('cancel.daterangepicker', function () {
+      $(this).val('');
+    });
   });
+
+  /* ===== CONSTANTS ===== */
+  const STATUS_ABSEN_LABEL = { '': 'Semua', '1': 'Masuk', '2': 'Pulang' };
+  const STATUS_LABEL       = { '': 'Semua', '1': 'Lebih Awal', '2': 'Tepat Waktu', '3': 'Terlambat' };
+  const TYPE_LABEL         = { excel: 'Excel (.xlsx)', pdf: 'PDF (.pdf)', print: 'Print (PDF inline)' };
+  const TYPE_COLOR         = { excel: '#2fb344', pdf: '#d63939', print: '#626976' };
+  const LS_KEY             = 'absen_export_history';
+
+  /* ===== EXPORT HISTORY ===== */
+  function saveExportHistory(entry) {
+    let history = [];
+    try { history = JSON.parse(localStorage.getItem(LS_KEY) || '[]'); } catch (e) {}
+    history.unshift(entry);
+    if (history.length > 50) history = history.slice(0, 50);
+    localStorage.setItem(LS_KEY, JSON.stringify(history));
+  }
+
+  /* ===== FILTERS ===== */
+  function getCurrentFilters() {
+    const p = new URLSearchParams(window.location.search);
+    const lokasi = p.get('lokasi') || '';
+    let lokasiNama = 'Semua';
+    if (lokasi) {
+      const opt = document.querySelector(`select[name="lokasi"] option[value="${lokasi}"]`);
+      lokasiNama = opt ? opt.textContent.trim() : lokasi;
+    }
+    return {
+      dateRange:   p.get('date_range')   || '',
+      search:      p.get('search')       || '',
+      lokasi,
+      lokasiNama,
+      statusAbsen: p.get('status_absen') || '',
+      status:      p.get('status')       || '',
+    };
+  }
+
+  /* ===== CONFIRMATION HTML (left-aligned, bold values, no badge) ===== */
+  function buildFilterTable(type) {
+    const f = getCurrentFilters();
+    const rows = [
+      ['Tipe Export',       `<b>${TYPE_LABEL[type]}</b>`],
+      ['Tanggal',           f.dateRange   ? `<b>${f.dateRange}</b>`   : '<span style="color:#aaa">All</span>'],
+      ['Pencarian',         f.search      ? `<b>${f.search}</b>`      : '<span style="color:#aaa">All</span>'],
+      ['Lokasi',            f.lokasi      ? `<b>${f.lokasiNama}</b>`  : '<span style="color:#aaa">All</span>'],
+      ['Status Absen',      STATUS_ABSEN_LABEL[f.statusAbsen] && f.statusAbsen
+                              ? `<b>${STATUS_ABSEN_LABEL[f.statusAbsen]}</b>`
+                              : '<span style="color:#aaa">All</span>'],
+      ['Status Kedatangan', STATUS_LABEL[f.status] && f.status
+                              ? `<b>${STATUS_LABEL[f.status]}</b>`
+                              : '<span style="color:#aaa">All</span>'],
+    ];
+    return `
+      <p style="color:#6c757d;margin:0 0 10px;font-size:13px;text-align:left">
+        Data yang akan diekspor:
+      </p>
+      <table style="width:100%;font-size:13px;border-collapse:collapse;text-align:left">
+        ${rows.map(([l, v]) => `
+          <tr>
+            <td style="padding:4px 14px 4px 0;color:#6c757d;white-space:nowrap;vertical-align:middle">${l}</td>
+            <td style="padding:4px 0;vertical-align:middle">${v}</td>
+          </tr>`).join('')}
+      </table>`;
+  }
+
+  /* ===== BUTTON HELPERS ===== */
+  function setButtonLoading(btn) {
+    btn.disabled = true;
+    btn.dataset.originalHtml = btn.innerHTML;
+    btn.innerHTML = `<span class="spinner-border spinner-border-sm me-1" role="status"></span>${btn.textContent.trim()}`;
+  }
+
+  function setButtonDone(btn) {
+    btn.disabled = false;
+    if (btn.dataset.originalHtml) btn.innerHTML = btn.dataset.originalHtml;
+  }
+
+  /* ===== STEP 1: KONFIRMASI ===== */
+  function openExportModal(type) {
+    Swal.fire({
+      title: `Konfirmasi Export ${TYPE_LABEL[type]}`,
+      html:  buildFilterTable(type),
+      icon:  'question',
+      showCancelButton:   true,
+      confirmButtonText:  '<i class="fa-solid fa-file-export me-1"></i> Ya, Export',
+      cancelButtonText:   'Batal',
+      confirmButtonColor: TYPE_COLOR[type],
+      cancelButtonColor:  '#6c757d',
+      reverseButtons: true,
+      width: 460,
+      customClass: { htmlContainer: 'text-start' },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const btnMap = { excel: 0, pdf: 1, print: 2 };
+        const btns = document.querySelectorAll('.btn-list button');
+        const activeBtn = btns[btnMap[type]] || null;
+        if (activeBtn) setButtonLoading(activeBtn);
+        dispatchExportJob(type, activeBtn);
+      }
+    });
+  }
+
+  /* ===== STEP 2: DISPATCH JOB ===== */
+  function dispatchExportJob(type, btn) {
+    const filters = getCurrentFilters();
+
+    $.ajax({
+      url:    '{{ route("admin.absen.export.dispatch") }}',
+      method: 'POST',
+      data: {
+        _token:       '{{ csrf_token() }}',
+        type,
+        date_range:   filters.dateRange,
+        search:       filters.search,
+        lokasi:       filters.lokasi,
+        status_absen: filters.statusAbsen,
+        status:       filters.status,
+      },
+      success: function (response) {
+        if (response.success) {
+          startPolling(response.job_key, type, btn, filters);
+        } else {
+          if (btn) setButtonDone(btn);
+          const failTitles = { excel: 'Export Excel Gagal', pdf: 'Export PDF Gagal', print: 'Print Laporan Gagal' };
+          showToast('error', failTitles[type] ?? 'Export Gagal', 'Gagal memulai export.');
+        }
+      },
+      error: function (xhr) {
+        if (btn) setButtonDone(btn);
+        const failTitles = { excel: 'Export Excel Gagal', pdf: 'Export PDF Gagal', print: 'Print Laporan Gagal' };
+        const msg = xhr.responseJSON?.message || 'Terjadi kesalahan saat memulai export.';
+        showToast('error', failTitles[type] ?? 'Export Gagal', msg);
+      },
+    });
+  }
+
+  /* ===== STEP 3: POLLING ===== */
+  function startPolling(jobKey, type, btn, filters) {
+    const statusUrl = '{{ route("admin.absen.export.status", ["key" => "__KEY__"]) }}'
+                        .replace('__KEY__', jobKey);
+
+    // URL untuk hapus file saat toast di-close
+    const deleteUrl = '{{ route("admin.absen.export.destroy", ["key" => "__KEY__"]) }}'
+                        .replace('__KEY__', jobKey);
+
+    // Judul toast berbeda per tipe export
+    const successTitles = {
+      excel: 'Export Excel Selesai!',
+      pdf:   'Export PDF Selesai!',
+      print: 'Print Laporan Selesai!',
+    };
+    const failTitles = {
+      excel: 'Export Excel Gagal',
+      pdf:   'Export PDF Gagal',
+      print: 'Print Laporan Gagal',
+    };
+
+    const interval = setInterval(function () {
+      $.ajax({
+        url: statusUrl,
+        method: 'GET',
+        success: function (data) {
+          if (data.status === 'completed') {
+            clearInterval(interval);
+            if (btn) setButtonDone(btn);
+
+            saveExportHistory({
+              type,
+              label:       TYPE_LABEL[type],
+              filters,
+              downloadUrl: data.download_url,
+              filename:    data.filename || '',
+              at:          new Date().toISOString(),
+              status:      'completed',
+            });
+
+            showToast(
+              'success',
+              successTitles[type] ?? 'Export Selesai!',
+              `File <b>${TYPE_LABEL[type]}</b> siap diunduh.`,
+              data.download_url,
+              deleteUrl
+            );
+
+          } else if (data.status === 'failed') {
+            clearInterval(interval);
+            if (btn) setButtonDone(btn);
+
+            saveExportHistory({
+              type,
+              label:   TYPE_LABEL[type],
+              filters,
+              at:      new Date().toISOString(),
+              status:  'failed',
+              message: data.message || 'Export gagal.',
+            });
+
+            showToast(
+              'error',
+              failTitles[type] ?? 'Export Gagal',
+              data.message || 'Export gagal.',
+              null,
+              null
+            );
+          }
+          // pending / processing → lanjut polling
+        },
+        error: function () {
+          clearInterval(interval);
+          if (btn) setButtonDone(btn);
+          showToast('error', failTitles[type] ?? 'Export Gagal', 'Gagal mengecek status export.');
+        },
+      });
+    }, 2000);
+  }
 </script>
 @endpush
