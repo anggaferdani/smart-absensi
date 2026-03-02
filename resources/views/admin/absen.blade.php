@@ -380,7 +380,7 @@
             showToast(
               'success',
               successTitles[type] ?? 'Export Selesai!',
-              `File <b>${TYPE_LABEL[type]}</b> siap diunduh.`,
+              `File <b>${data.filename || TYPE_LABEL[type]}</b> siap diunduh.`,
               data.download_url,
               deleteUrl
             );
