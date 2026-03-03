@@ -30,48 +30,75 @@ class ExportAbsenJob implements ShouldQueue
 
     public function handle()
     {
+        set_time_limit(0);
+
         $query = Absen::with('token', 'token.lokasi', 'user');
+
+        if (!empty($this->filters['search'])) {
+            $search = $this->filters['search'];
+            $query->where(function($q) use ($search) {
+                $q->where('kode', 'like', '%' . $search . '%')
+                ->orWhereHas('user', fn($q) => $q->where('name', 'like', '%' . $search . '%'));
+            });
+        }
 
         if (!empty($this->filters['date_range'])) {
             $dateRange = explode(' - ', $this->filters['date_range']);
-            $startDate = Carbon::parse($dateRange[0])->startOfDay();
-            $endDate = Carbon::parse($dateRange[1])->endOfDay();
+            $startDate = Carbon::parse(trim($dateRange[0]))->startOfDay();
+            $endDate   = Carbon::parse(trim($dateRange[1]))->endOfDay();
             $query->whereBetween('tanggal', [$startDate, $endDate]);
+            $daysInMonth = $startDate->daysInMonth;
+        } else {
+            $daysInMonth = Carbon::now()->daysInMonth;
         }
 
-        $absens = $query->get();
+        if (!empty($this->filters['lokasi'])) {
+            $query->whereHas('token.lokasi', fn($q) => $q->where('id', $this->filters['lokasi']));
+        }
+
+        if (!empty($this->filters['status_absen'])) {
+            $query->whereHas('token', fn($q) => $q->where('status', $this->filters['status_absen']));
+        }
+
+        if (!empty($this->filters['status'])) {
+            $query->where('status', $this->filters['status']);
+        }
+
+        $absens = collect();
+        $query->chunk(500, function ($chunk) use (&$absens) {
+            $absens = $absens->merge($chunk);
+        });
 
         $fileName = $this->exportHistory->file_name;
+        $filePath = 'exports/' . $fileName;
+
+        $months = $absens->groupBy(fn($date) => Carbon::parse($date->tanggal)->format('F Y'));
+
+        $userLateness = [];
+        $userOvertime = [];
+        foreach ($months as $month => $monthAbsens) {
+            foreach ($monthAbsens->groupBy('user_id') as $userId => $userAbsens) {
+                $userLateness[$userId][$month] = $userAbsens->filter(
+                    fn($a) => $a->status == 3 && $a->token->status == 1
+                )->count();
+                $userOvertime[$userId][$month] = $userAbsens->filter(
+                    fn($a) => $a->status == 3 && $a->token->status == 2
+                )->count();
+            }
+        }
 
         if ($this->exportHistory->type == 'excel') {
-
-            $filePath = 'exports/' . $fileName;
-
             Excel::store(
-                new AbsenExport($absens, 30, [], []),
+                new AbsenExport($absens, $daysInMonth, $userLateness, $userOvertime),
                 $filePath,
                 'public'
             );
-
         } else {
-
-            $pdf = Pdf::loadView('admin.exports.absen', [
-                'months' => $absens->groupBy(function($date) {
-                    return Carbon::parse($date->tanggal)->format('F Y');
-                }),
-                'daysInMonth' => 30,
-                'userLateness' => [],
-                'userOvertime' => [],
-            ]);
-
-            $filePath = 'exports/' . $fileName;
-
+            $pdf = Pdf::loadView('admin.exports.absen', compact('months', 'daysInMonth', 'userLateness', 'userOvertime'));
+            $pdf->setPaper('A4', 'landscape');
             Storage::disk('public')->put($filePath, $pdf->output());
         }
 
-        $this->exportHistory->update([
-            'file_path' => $filePath,
-            'status' => 0
-        ]);
+        $this->exportHistory->update(['file_path' => $filePath, 'status' => 0]);
     }
 }
