@@ -2,11 +2,10 @@
 
 namespace App\Jobs;
 
-use App\Exports\AbsenExport;
-use App\Models\Absen;
+use App\Exports\IzinExport;
 use App\Models\ExportHistory;
+use App\Models\Izin;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -15,7 +14,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 
-class ExportAbsenJob implements ShouldQueue
+class ExportSakitJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -30,48 +29,49 @@ class ExportAbsenJob implements ShouldQueue
 
     public function handle()
     {
-        $query = Absen::with('token', 'token.lokasi', 'user');
+        $query = Izin::with('user')
+            ->where('status_izin', 2)
+            ->where('status', 1);
 
-        if (!empty($this->filters['date_range'])) {
-            $dateRange = explode(' - ', $this->filters['date_range']);
-            $startDate = Carbon::parse($dateRange[0])->startOfDay();
-            $endDate = Carbon::parse($dateRange[1])->endOfDay();
-            $query->whereBetween('tanggal', [$startDate, $endDate]);
+        if (!empty($this->filters['search'])) {
+            $search = $this->filters['search'];
+            $query->where(function ($q) use ($search) {
+                $q->where('kode', 'like', '%' . $search . '%')
+                    ->orWhereHas('user', function ($q) use ($search) {
+                        $q->where('name', 'like', '%' . $search . '%');
+                    });
+            });
         }
 
-        $absens = $query->get();
+        if (!empty($this->filters['date_range'])) {
+            [$dari, $sampai] = explode(' - ', $this->filters['date_range']);
+            $query->whereBetween('dari', [trim($dari), trim($sampai)]);
+        }
+
+        if (!empty($this->filters['status'])) {
+            $query->where('status_process', $this->filters['status']);
+        }
+
+        $izins = $query->get();
 
         $fileName = $this->exportHistory->file_name;
+        $filePath = 'exports/' . $fileName;
 
         if ($this->exportHistory->type == 'excel') {
-
-            $filePath = 'exports/' . $fileName;
-
             Excel::store(
-                new AbsenExport($absens, 30, [], []),
+                new IzinExport($izins),
                 $filePath,
                 'public'
             );
-
         } else {
-
-            $pdf = Pdf::loadView('admin.exports.absen', [
-                'months' => $absens->groupBy(function($date) {
-                    return Carbon::parse($date->tanggal)->format('F Y');
-                }),
-                'daysInMonth' => 30,
-                'userLateness' => [],
-                'userOvertime' => [],
-            ]);
-
-            $filePath = 'exports/' . $fileName;
+            $pdf = Pdf::loadView('admin.exports.izin', compact('izins'));
 
             Storage::disk('public')->put($filePath, $pdf->output());
         }
 
         $this->exportHistory->update([
             'file_path' => $filePath,
-            'status' => 0
+            'status'    => 0,
         ]);
     }
 }

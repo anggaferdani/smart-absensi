@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Izin;
-use Illuminate\Http\Request;
 use App\Exports\IzinExport;
-use Carbon\Carbon;
+use App\Jobs\ExportSakitJob;
+use App\Models\ExportHistory;
+use App\Models\Izin;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 
 class SakitAdminController extends Controller
@@ -79,11 +81,7 @@ class SakitAdminController extends Controller
     public function destroy($id) {
         try {
             $izin = Izin::find($id);
-
-            $izin->update([
-                'status' => 2,
-            ]);
-
+            $izin->update(['status' => 2]);
             return redirect()->back()->with('success', 'Success.');
         } catch (\Throwable $th) {
             return back()->with('error', $th->getMessage());
@@ -93,11 +91,7 @@ class SakitAdminController extends Controller
     public function approve($id) {
         try {
             $izin = Izin::find($id);
-
-            $izin->update([
-                'status_process' => 2,
-            ]);
-
+            $izin->update(['status_process' => 2]);
             return redirect()->back()->with('success', 'Success.');
         } catch (\Throwable $th) {
             return back()->with('error', $th->getMessage());
@@ -107,14 +101,35 @@ class SakitAdminController extends Controller
     public function reject($id) {
         try {
             $izin = Izin::find($id);
-
-            $izin->update([
-                'status_process' => 3,
-            ]);
-
+            $izin->update(['status_process' => 3]);
             return redirect()->back()->with('success', 'Success.');
         } catch (\Throwable $th) {
             return back()->with('error', $th->getMessage());
         }
+    }
+
+    public function export(Request $request)
+    {
+        $type = $request->type;
+        $fileName = 'sakit-' . now()->format('YmdHis') . '.' . ($type == 'excel' ? 'xlsx' : 'pdf');
+
+        $history = ExportHistory::create([
+            'file_name' => $fileName,
+            'type'      => $type,
+            'status'    => 1,
+            'user_id'   => auth()->id(),
+        ]);
+
+        ExportSakitJob::dispatch($request->all(), $history);
+
+        return response()->json(['success' => true, 'message' => 'Export sedang diproses']);
+    }
+
+    public function exportStatus()
+    {
+        $histories = ExportHistory::where('file_name', 'like', 'sakit-%')->latest()->get();
+        $processing = $histories->where('status', 1)->isNotEmpty();
+
+        return response()->json(['processing' => $processing, 'histories' => $histories]);
     }
 }

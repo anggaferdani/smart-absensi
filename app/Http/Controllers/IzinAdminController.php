@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Exports\IzinExport;
-use Carbon\Carbon;
+use App\Jobs\ExportIzinJob;
+use App\Models\ExportHistory;
 use App\Models\Izin;
-use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 
 class IzinAdminController extends Controller
@@ -17,7 +19,7 @@ class IzinAdminController extends Controller
                 ->orderByRaw('CASE WHEN status_process = 1 THEN 0 ELSE 1 END')
                 ->where('status', 1)
                 ->latest();
-    
+
         if ($request->has('search') && !empty($request->input('search'))) {
             $search = $request->input('search');
             $query->where('kode', 'like', '%' . $search . '%')
@@ -43,7 +45,7 @@ class IzinAdminController extends Controller
             $fileName = 'izin-' . $fileDate . '.xlsx';
             return Excel::download(new IzinExport($query->get()), $fileName);
         }
-    
+
         if ($request->has('export') && $request->export == 'pdf') {
             $fileName = 'izin-' . $fileDate . '.pdf';
             $izins = $query->get();
@@ -57,9 +59,9 @@ class IzinAdminController extends Controller
             $pdf = Pdf::loadView('admin.exports.izin', compact('izins'));
             return $pdf->stream($fileName);
         }
-    
+
         $izins = $query->paginate(10);
-    
+
         return view('admin.izin.izin', compact('izins'));
     }
 
@@ -79,11 +81,7 @@ class IzinAdminController extends Controller
     public function destroy($id) {
         try {
             $izin = Izin::find($id);
-
-            $izin->update([
-                'status' => 2,
-            ]);
-
+            $izin->update(['status' => 2]);
             return redirect()->back()->with('success', 'Success.');
         } catch (\Throwable $th) {
             return back()->with('error', $th->getMessage());
@@ -93,11 +91,7 @@ class IzinAdminController extends Controller
     public function approve($id) {
         try {
             $izin = Izin::find($id);
-
-            $izin->update([
-                'status_process' => 2,
-            ]);
-
+            $izin->update(['status_process' => 2]);
             return redirect()->back()->with('success', 'Success.');
         } catch (\Throwable $th) {
             return back()->with('error', $th->getMessage());
@@ -107,14 +101,35 @@ class IzinAdminController extends Controller
     public function reject($id) {
         try {
             $izin = Izin::find($id);
-
-            $izin->update([
-                'status_process' => 3,
-            ]);
-
+            $izin->update(['status_process' => 3]);
             return redirect()->back()->with('success', 'Success.');
         } catch (\Throwable $th) {
             return back()->with('error', $th->getMessage());
         }
+    }
+
+    public function export(Request $request)
+    {
+        $type = $request->type;
+        $fileName = 'izin-' . now()->format('YmdHis') . '.' . ($type == 'excel' ? 'xlsx' : 'pdf');
+
+        $history = ExportHistory::create([
+            'file_name' => $fileName,
+            'type'      => $type,
+            'status'    => 1,
+            'user_id'   => auth()->id(),
+        ]);
+
+        ExportIzinJob::dispatch($request->all(), $history);
+
+        return response()->json(['success' => true, 'message' => 'Export sedang diproses']);
+    }
+
+    public function exportStatus()
+    {
+        $histories = ExportHistory::where('file_name', 'like', 'izin-%')->latest()->get();
+        $processing = $histories->where('status', 1)->isNotEmpty();
+
+        return response()->json(['processing' => $processing, 'histories' => $histories]);
     }
 }
