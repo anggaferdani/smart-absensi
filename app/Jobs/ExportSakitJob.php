@@ -29,6 +29,8 @@ class ExportSakitJob implements ShouldQueue
 
     public function handle()
     {
+        set_time_limit(0);
+
         $query = Izin::with('user')
             ->where('status_izin', 2)
             ->where('status', 1);
@@ -37,9 +39,7 @@ class ExportSakitJob implements ShouldQueue
             $search = $this->filters['search'];
             $query->where(function ($q) use ($search) {
                 $q->where('kode', 'like', '%' . $search . '%')
-                    ->orWhereHas('user', function ($q) use ($search) {
-                        $q->where('name', 'like', '%' . $search . '%');
-                    });
+                    ->orWhereHas('user', fn($q) => $q->where('name', 'like', '%' . $search . '%'));
             });
         }
 
@@ -52,26 +52,20 @@ class ExportSakitJob implements ShouldQueue
             $query->where('status_process', $this->filters['status']);
         }
 
-        $izins = $query->get();
+        $izins = collect();
+        $query->chunk(500, function ($chunk) use (&$izins) {
+            $izins = $izins->merge($chunk);
+        });
 
-        $fileName = $this->exportHistory->file_name;
-        $filePath = 'exports/' . $fileName;
+        $filePath = 'exports/' . $this->exportHistory->file_name;
 
         if ($this->exportHistory->type == 'excel') {
-            Excel::store(
-                new IzinExport($izins),
-                $filePath,
-                'public'
-            );
+            Excel::store(new IzinExport($izins), $filePath, 'public');
         } else {
             $pdf = Pdf::loadView('admin.exports.izin', compact('izins'));
-
             Storage::disk('public')->put($filePath, $pdf->output());
         }
 
-        $this->exportHistory->update([
-            'file_path' => $filePath,
-            'status'    => 0,
-        ]);
+        $this->exportHistory->update(['file_path' => $filePath, 'status' => 0]);
     }
 }

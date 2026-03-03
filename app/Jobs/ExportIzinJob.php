@@ -29,6 +29,8 @@ class ExportIzinJob implements ShouldQueue
 
     public function handle()
     {
+        set_time_limit(0);
+
         $query = Izin::with('user')
             ->where('status_izin', 1)
             ->where('status', 1);
@@ -37,9 +39,7 @@ class ExportIzinJob implements ShouldQueue
             $search = $this->filters['search'];
             $query->where(function ($q) use ($search) {
                 $q->where('kode', 'like', '%' . $search . '%')
-                    ->orWhereHas('user', function ($q) use ($search) {
-                        $q->where('name', 'like', '%' . $search . '%');
-                    });
+                    ->orWhereHas('user', fn($q) => $q->where('name', 'like', '%' . $search . '%'));
             });
         }
 
@@ -52,7 +52,11 @@ class ExportIzinJob implements ShouldQueue
             $query->where('status_process', $this->filters['status']);
         }
 
-        $izins = $query->get();
+        $izins = collect();
+        $query->chunk(500, function ($chunk) use (&$izins) {
+            $izins = $izins->merge($chunk);
+        });
+
         $filePath = 'exports/' . $this->exportHistory->file_name;
 
         if ($this->exportHistory->type == 'excel') {
