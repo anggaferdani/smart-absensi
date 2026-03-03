@@ -1,11 +1,11 @@
 @extends('templates.admin')
-@section('title', 'Izin')
+@section('title', 'Sakit')
 @section('header')
 <div class="container-xl">
   <div class="row g-2 align-items-center">
     <div class="col">
       <h2 class="page-title">
-        Izin
+        Sakit
       </h2>
     </div>
     <div class="col-auto ms-auto">
@@ -52,7 +52,7 @@
       <div class="card">
         <div class="card-header">
           <div class="ms-auto">
-            <form action="{{ route('admin.izin.index') }}" class="">
+            <form action="{{ route('admin.sakit.index') }}" class="">
               <div class="d-flex gap-1">
                   <select class="form-select" name="status">
                       <option disabled selected value="">Status</option>
@@ -64,7 +64,7 @@
                   <input type="text" class="form-control" name="date_range" value="{{ request('date_range') }}" placeholder="Dari - Sampai" id="dateRangePicker" autocomplete="off">
                   <input type="text" class="form-control" name="search" value="{{ request('search') }}" placeholder="Search">
                   <button type="submit" class="btn btn-icon btn-dark-outline"><i class="fa-solid fa-magnifying-glass"></i></button>
-                  <a href="{{ route('admin.izin.index') }}" class="btn btn-icon btn-dark-outline"><i class="fa-solid fa-times"></i></a>
+                  <a href="{{ route('admin.sakit.index') }}" class="btn btn-icon btn-dark-outline"><i class="fa-solid fa-times"></i></a>
               </div>
             </form>
           </div>
@@ -103,7 +103,7 @@
                   </td>
                   <td>
                     <div class="d-flex gap-1">
-                      <a href="{{ route('admin.izin.show', $izin->kode) }}" class="btn btn-icon btn-primary"><i class="fa-solid fa-eye"></i></a>
+                      <a href="{{ route('admin.sakit.show', $izin->kode) }}" class="btn btn-icon btn-primary"><i class="fa-solid fa-eye"></i></a>
                       @if($izin->status_process == 1)
                       <button type="button" class="btn btn-icon btn-success" data-bs-toggle="modal" data-bs-target="#approve{{ $izin->id }}"><i class="fa-solid fa-check"></i></button>
                       <button type="button" class="btn btn-icon btn-danger" data-bs-toggle="modal" data-bs-target="#reject{{ $izin->id }}"><i class="fa-solid fa-times"></i></button>
@@ -136,7 +136,7 @@
     <div class="modal-content">
       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       <div class="modal-status bg-success"></div>
-      <form action="{{ route('admin.izin.approve', $izin->id) }}" method="POST">
+      <form action="{{ route('admin.sakit.approve', $izin->id) }}" method="POST">
         @csrf
         @method('PUT')
         <div class="modal-body text-center py-4">
@@ -163,7 +163,7 @@
     <div class="modal-content">
       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       <div class="modal-status bg-danger"></div>
-      <form action="{{ route('admin.izin.reject', $izin->id) }}" method="POST">
+      <form action="{{ route('admin.sakit.reject', $izin->id) }}" method="POST">
         @csrf
         @method('PUT')
         <div class="modal-body text-center py-4">
@@ -190,7 +190,7 @@
     <div class="modal-content">
       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       <div class="modal-status bg-danger"></div>
-      <form action="{{ route('admin.izin.destroy', $izin->id) }}" method="POST">
+      <form action="{{ route('admin.sakit.destroy', $izin->id) }}" method="POST">
         @csrf
         @method('Delete')
         <div class="modal-body text-center py-4">
@@ -233,11 +233,15 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach(\App\Models\ExportHistory::where('file_name', 'like', 'izin-%')->latest()->get() as $history)
+                            @foreach(\App\Models\ExportHistory::where('file_name', 'like', 'sakit-%')->latest()->get() as $history)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $history->file_name }}</td>
-                                <td><span class="badge bg-info text-white">{{ strtoupper($history->type) }}</span></td>
+                                <td>
+                                    <span class="badge bg-info text-white">
+                                        {{ strtoupper($history->type) }}
+                                    </span>
+                                </td>
                                 <td>
                                     @if($history->status == 1)
                                         <span class="badge bg-danger text-white">Processing</span>
@@ -247,7 +251,10 @@
                                 </td>
                                 <td>
                                     @if($history->status == 0)
-                                        <a href="{{ asset('storage/'.$history->file_path) }}" class="btn btn-sm btn-primary" download>Download</a>
+                                        <a href="{{ asset('storage/'.$history->file_path) }}"
+                                           class="btn btn-sm btn-primary" download>
+                                            Download
+                                        </a>
                                     @else
                                         -
                                     @endif
@@ -271,12 +278,16 @@
 <script>
   $(function() {
       $('#dateRangePicker').daterangepicker({
-          locale: { format: 'YYYY-MM-DD' },
+          locale: {
+              format: 'YYYY-MM-DD'
+          },
           autoUpdateInput: false,
       });
+  
       $('#dateRangePicker').on('apply.daterangepicker', function(ev, picker) {
           $(this).val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
       });
+  
       $('#dateRangePicker').on('cancel.daterangepicker', function(ev, picker) {
           $(this).val('');
       });
@@ -302,7 +313,7 @@
           if (result.isConfirmed) {
               startLoadingButton();
 
-              $.post("{{ route('admin.izin.export') }}", {
+              $.post("{{ route('admin.sakit.export') }}", {
                   _token: "{{ csrf_token() }}",
                   type: type,
                   status: params.get('status'),
@@ -337,12 +348,13 @@
   });
 
   function checkExportStatus() {
-      $.get("{{ route('admin.izin.export.status') }}", function(res) {
+      $.get("{{ route('admin.sakit.export.status') }}", function(res) {
           if (res.processing) {
               startLoadingButton();
           } else {
               stopLoadingButton();
           }
+
           updateHistoryTable(res.histories);
       });
   }
